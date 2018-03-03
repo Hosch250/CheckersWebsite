@@ -5,11 +5,51 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="wwwroot\images\SteelTheme\BlackChecker.png" />
+    <Content Remove="wwwroot\images\SteelTheme\BlackKing.png" />
+    <Content Remove="wwwroot\images\SteelTheme\DarkSteel.png" />
+    <Content Remove="wwwroot\images\SteelTheme\LightSteel.png" />
+    <Content Remove="wwwroot\images\SteelTheme\WhiteChecker.png" />
+    <Content Remove="wwwroot\images\SteelTheme\WhiteKing.png" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.5" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.0.2" />
   </ItemGroup>
 
   <ItemGroup>
     <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="2.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="wwwroot\images\SteelTheme\BlackChecker.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="wwwroot\images\SteelTheme\BlackKing.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="wwwroot\images\SteelTheme\DarkSteel.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="wwwroot\images\SteelTheme\LightSteel.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="wwwroot\images\SteelTheme\WhiteChecker.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="wwwroot\images\SteelTheme\WhiteKing.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="CheckersTreasury">
+      <HintPath>..\..\CheckersTreasury\CheckersTreasury\bin\Debug\netcoreapp2.0\CheckersTreasury.dll</HintPath>
+    </Reference>
+    <Reference Include="FSharp.Core">
+      <HintPath>..\..\..\..\.nuget\packages\fsharp.core\4.2.3\lib\netstandard1.6\FSharp.Core.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>
