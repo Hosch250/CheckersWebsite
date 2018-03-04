@@ -4,7 +4,23 @@
 }
 
 <div class="row">
-    <div class="col-lg-offset-2 col-lg-6">
+    <div class="col-lg-2" style="border: 1px solid black">
+        <div><b>American Checkers</b></div>
+        <div>
+            <svg width="20" height="20" style="background-color: white" version="1.1" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="10" cy="15" r="4" stroke="black" fill="white" stroke-width="2"></circle>
+            </svg>
+            Human
+        </div>
+        <div>
+            <svg width="20" height="20" style="background-color: white" version="1.1" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="10" cy="15" r="4" stroke="black" fill="black" stroke-width="2"></circle>
+            </svg>
+            Human
+        </div>
+        <div style="text-align: center">*</div>
+    </div>
+    <div class="col-lg-6">
         @Html.Partial("~/Views/CheckersBoard.cshtml", GameController.FromVariant(Variant.AmericanCheckers))
     </div>
 </div>
