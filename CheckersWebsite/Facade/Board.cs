@@ -4,7 +4,7 @@ namespace CheckersWebsite.Facade
 {
     public class Board
     {
-        public Piece[,] GameBoard { get; }
+        public Piece[,] GameBoard { get; set; }
 
         public Board(FSharpOption<Checkers.Piece.Piece>[,] board)
         {
@@ -25,7 +25,7 @@ namespace CheckersWebsite.Facade
             GameBoard = board;
         }
 
-        public Board() : this(Checkers.Board.defaultBoard) { }
+        public Board() { }
 
         public static Board EmptyBoard() =>
             new Board(Checkers.Board.emptyBoardList());

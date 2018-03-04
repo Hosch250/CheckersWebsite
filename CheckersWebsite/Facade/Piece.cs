@@ -2,8 +2,8 @@
 {
     public class Piece
     {
-        public Player Player { get; }
-        public PieceType PieceType { get; }
+        public Player Player { get; set; }
+        public PieceType PieceType { get; set; }
 
         public Piece(Player player, PieceType pieceType)
         {

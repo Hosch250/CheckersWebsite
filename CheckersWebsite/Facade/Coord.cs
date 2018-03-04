@@ -5,8 +5,10 @@ namespace CheckersWebsite.Facade
 {
     public class Coord
     {
-        public int Row { get; }
-        public int Column { get; }
+        public Coord() { }
+
+        public int Row { get; set; }
+        public int Column { get; set; }
 
         public Coord(int row, int column)
         {

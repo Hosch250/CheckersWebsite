@@ -5,6 +5,6 @@
 
 <div class="row">
     <div class="col-lg-offset-2 col-lg-6">
-        @Html.Partial("~/Views/CheckersBoard.cshtml", Board.DefaultBoard(Variant.AmericanCheckers))
+        @Html.Partial("~/Views/CheckersBoard.cshtml", GameController.FromVariant(Variant.AmericanCheckers))
     </div>
 </div>

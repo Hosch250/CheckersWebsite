@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.0</TargetFramework>
+    <TypeScriptToolsVersion>2.5</TypeScriptToolsVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -11,11 +12,14 @@
     <Content Remove="wwwroot\images\SteelTheme\LightSteel.png" />
     <Content Remove="wwwroot\images\SteelTheme\WhiteChecker.png" />
     <Content Remove="wwwroot\images\SteelTheme\WhiteKing.png" />
+    <Content Remove="wwwroot\js\site.ts" />
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="jquery.TypeScript.DefinitelyTyped" Version="3.1.2" />
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.5" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.0.2" />
+    <PackageReference Include="underscore.TypeScript.DefinitelyTyped" Version="1.6.8" />
   </ItemGroup>
 
   <ItemGroup>
@@ -50,6 +54,14 @@
     <Reference Include="FSharp.Core">
       <HintPath>..\..\..\..\.nuget\packages\fsharp.core\4.2.3\lib\netstandard1.6\FSharp.Core.dll</HintPath>
     </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <TypeScriptCompile Include="wwwroot\js\site.ts">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="wwwroot\Scripts\typings\jquery\jquery.d.ts" />
+    <TypeScriptCompile Include="wwwroot\Scripts\typings\underscore\underscore.d.ts" />
   </ItemGroup>
 
 </Project>
