@@ -49,10 +49,10 @@
 
   <ItemGroup>
     <Reference Include="CheckersTreasury">
-      <HintPath>..\..\CheckersTreasury\CheckersTreasury\bin\Debug\netcoreapp2.0\CheckersTreasury.dll</HintPath>
+      <HintPath>dlls\CheckersTreasury.dll</HintPath>
     </Reference>
     <Reference Include="FSharp.Core">
-      <HintPath>..\..\..\..\.nuget\packages\fsharp.core\4.2.3\lib\netstandard1.6\FSharp.Core.dll</HintPath>
+      <HintPath>dlls\FSharp.Core.dll</HintPath>
     </Reference>
   </ItemGroup>
 
