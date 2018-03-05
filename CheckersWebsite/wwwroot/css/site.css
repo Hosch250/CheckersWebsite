@@ -1,6 +1,5 @@
 ﻿body {
-    padding-top: 50px;
-    padding-bottom: 20px;
+    padding-top: 10px;
 }
 
 /* Wrapping element */
@@ -10,26 +9,38 @@
     padding-right: 15px;
 }
 
-/* Carousel */
-.carousel-caption p {
-    font-size: 20px;
-    line-height: 1.4;
+button.btn-link {
+    color: inherit;
 }
 
-/* Make .svg files in the carousel display properly in older browsers */
-.carousel-inner .item img[src$=".svg"] {
-    width: 100%;
+.settings {
+    padding-right: 0;
 }
 
-/* QR code generator */
-#qrCode {
-    margin: 15px;
+.glyphicon-undo:before {
+    font-family: 'Segoe UI Symbol';
+    content: "\E10E";
 }
 
-/* Hide/rearrange for smaller screens */
-@media screen and (max-width: 767px) {
-    /* Hide captions */
-    .carousel-caption {
-        display: none;
-    }
+.glyphicon-create:before {
+    font-family: 'Segoe UI Symbol';
+    content: "\E109";
+}
+
+.glyphicon-abort:before {
+    font-family: 'Segoe UI Symbol';
+    content: "\E10A";
+}
+
+.ctrl-button {
+    width: 60px;
+    height: 60px;
+}
+
+.controls {
+    margin-left: -30px;
+}
+
+.board-col {
+    z-index: 99;
 }
