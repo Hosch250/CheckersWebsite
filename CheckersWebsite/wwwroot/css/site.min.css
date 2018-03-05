@@ -1,1 +1,46 @@
-body{padding-top:50px;padding-bottom:20px}.body-content{padding-left:15px;padding-right:15px}.carousel-caption p{font-size:20px;line-height:1.4}.carousel-inner .item img[src$=".svg"]{width:100%}#qrCode{margin:15px}@media screen and (max-width:767px){.carousel-caption{display:none}}
+body {
+    padding-top: 10px;
+}
+
+/* Wrapping element */
+/* Set some basic padding to keep content from hitting the edges */
+.body-content {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+button.btn-link {
+    color: inherit;
+}
+
+.settings {
+    padding-right: 0;
+}
+
+.glyphicon-undo:before {
+    font-family: 'Segoe UI Symbol';
+    content: "\E10E";
+}
+
+.glyphicon-create:before {
+    font-family: 'Segoe UI Symbol';
+    content: "\E109";
+}
+
+.glyphicon-abort:before {
+    font-family: 'Segoe UI Symbol';
+    content: "\E10A";
+}
+
+.ctrl-button {
+    width: 60px;
+    height: 60px;
+}
+
+.controls {
+    margin-left: -30px;
+}
+
+.board-col {
+    z-index: 99;
+}
