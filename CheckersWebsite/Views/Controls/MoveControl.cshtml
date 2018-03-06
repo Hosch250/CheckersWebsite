@@ -1,0 +1,14 @@
+﻿@model List<CheckersWebsite.Facade.PdnTurn>
+
+<ol class="moves">
+    @foreach (var turn in Model)
+    {
+        <li>
+            <input id="@turn.MoveNumber-black-move" class="toggle" name="move" type="radio" value="@turn.BlackMove.DisplayString" /> <label for="@turn.MoveNumber-black-move">@turn.BlackMove.DisplayString</label>
+            @if (turn.WhiteMove != null)
+            {
+                <input id="@turn.MoveNumber-white-move" class="toggle" name="move" type="radio" value="@turn.WhiteMove.DisplayString" /> <label for="@turn.MoveNumber-white-move">@turn.BlackMove.DisplayString</label>
+            }
+        </li>
+    }
+</ol>

@@ -17,7 +17,7 @@ namespace CheckersWebsite.Controllers
                 return null;
             }
 
-            return PartialView("~/Views/CheckersBoard.cshtml", controller.Move(start, end));
+            return PartialView("~/Views/Controls/CheckersBoard.cshtml", controller.Move(start, end));
         }
     }
 }

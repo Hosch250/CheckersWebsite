@@ -21,20 +21,27 @@
         <div style="text-align: center">*</div>
     </div>
     <div class="col-lg-6 board-col">
-        @Html.Partial("~/Views/CheckersBoard.cshtml", GameController.FromVariant(Variant.AmericanCheckers))
+        @Html.Partial("~/Views/Controls/CheckersBoard.cshtml", GameController.FromVariant(Variant.AmericanCheckers))
     </div>
-    <div class="col-lg-3 controls">
-        <button class="ctrl-button">
-            <span class="glyphicon glyphicon-undo"></span>
-            <span class="sr-only">Undo</span>
-        </button>
-        <button class="ctrl-button">
-            <span class="glyphicon glyphicon-create"></span>
-            <span class="sr-only">New Game</span>
-        </button>
-        <button class="ctrl-button hide">
-            <span class="glyphicon glyphicon-abort"></span>
-            <span class="sr-only">Resign</span>
-        </button>
+    <div class="col-lg-3">
+        @Html.Partial("~/Views/Controls/MoveControl.cshtml", new List<PdnTurn>
+        {
+            new PdnTurn(0, new PdnMove(new[]{1,2}.ToList(), "", "1-2", PieceType.Checker, false), new PdnMove(new[]{1,2}.ToList(), "", "1-2", PieceType.Checker, false)),
+            new PdnTurn(1, new PdnMove(new[]{1,2}.ToList(), "", "1-2", PieceType.Checker, false), new PdnMove(new[]{1,2}.ToList(), "", "1-2", PieceType.Checker, false)),
+        })
+        <div class="controls">
+            <button class="ctrl-button">
+                <span class="glyphicon glyphicon-undo"></span>
+                <span class="sr-only">Undo</span>
+            </button>
+            <button class="ctrl-button">
+                <span class="glyphicon glyphicon-create"></span>
+                <span class="sr-only">New Game</span>
+            </button>
+            <button class="ctrl-button hide">
+                <span class="glyphicon glyphicon-abort"></span>
+                <span class="sr-only">Resign</span>
+            </button>
+        </div>
     </div>
 </div>

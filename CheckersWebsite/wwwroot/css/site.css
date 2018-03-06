@@ -44,3 +44,33 @@ button.btn-link {
 .board-col {
     z-index: 99;
 }
+
+ol.moves {
+    margin-left: -30px;
+    font-size: 20px;
+}
+
+ol.moves li span {
+    margin: 0 30px;
+}
+
+input[type="radio"].toggle {
+    display: none;
+}
+
+input[type="radio"].toggle + label {
+    margin: 0;
+    padding: 5px;
+    font-weight: normal;
+    margin-right: -5px;
+    width: 40%;
+}
+
+input[type="radio"].toggle:hover + label {
+    background: lightgrey;
+}
+
+input[type="radio"].toggle:checked + label {
+    background: blue;
+    color: white;
+}
