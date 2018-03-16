@@ -49,6 +49,12 @@ ol.moves {
 .move-history {
     overflow-y: scroll;
     border: 1px solid black;
+    display: grid;
+    grid-template-rows: auto 60px;
+}
+
+.controls {
+    margin: 0 0 0 -15px;
 }
 
 ol.moves li span {
