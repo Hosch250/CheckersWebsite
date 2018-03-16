@@ -20,14 +20,14 @@
         </div>
         <div style="text-align: center">*</div>
     </div>
-    <div class="col-lg-6 board-col">
+    <div class="col-lg-6 board-col match-height-game-control">
         @Html.Partial("~/Views/Controls/CheckersBoard.cshtml", GameController.FromVariant(Variant.AmericanCheckers))
     </div>
-    <div class="col-lg-3">
+    <div class="col-lg-3 move-history match-height-game-control">
         @Html.Partial("~/Views/Controls/MoveControl.cshtml", new List<PdnTurn>
         {
             new PdnTurn(0, new PdnMove(new[]{1,2}.ToList(), "", "1-2", PieceType.Checker, false), new PdnMove(new[]{1,2}.ToList(), "", "1-2", PieceType.Checker, false)),
-            new PdnTurn(1, new PdnMove(new[]{1,2}.ToList(), "", "1-2", PieceType.Checker, false), new PdnMove(new[]{1,2}.ToList(), "", "1-2", PieceType.Checker, false)),
+            new PdnTurn(1, new PdnMove(new[]{1,2}.ToList(), "", "1-2", PieceType.Checker, false), new PdnMove(new[]{1,2}.ToList(), "", "1-2", PieceType.Checker, false))
         })
         <div class="controls">
             <button class="ctrl-button">
@@ -45,3 +45,9 @@
         </div>
     </div>
 </div>
+
+<script>
+    $(function() {
+        $('.match-height-game-control').matchHeight({ target: $('.board-col')});
+    });
+</script>

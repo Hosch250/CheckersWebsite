@@ -15,34 +15,10 @@
               asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
         <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
     </environment>
-</head>
-<body>
-    <nav class="container" style="text-align: left">
-        <div class="row">
-            <div class="col-lg-offset-2 col-lg-6">
-                <a>Game Page</a>
-                <span>|</span>
-                <a>Board Editor</a>
-                <span>|</span>
-                <a>Rules</a>
-                
-                <button class="pull-right btn-link settings">
-                    <span class="glyphicon glyphicon-cog"></span>
-                    <span class="sr-only">Settings</span>
-                </button>
-            </div>
-        </div>
-    </nav>
-    <div class="container body-content">
-        @RenderBody()
-        <hr />
-        <footer>
-            <p>&copy; 2018 - CheckersWebsite</p>
-        </footer>
-    </div>
 
     <environment include="Development">
         <script src="~/lib/jquery/dist/jquery.js"></script>
+        <script src="~/lib/jquery-match-height/jquery-match-height.js"></script>
         <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
         <script src="~/js/site.js" asp-append-version="true"></script>
     </environment>
@@ -53,6 +29,8 @@
                 crossorigin="anonymous"
                 integrity="sha384-K+ctZQ+LL8q6tP7I94W+qzQsfRV2a+AfHIi9k8z8l9ggpc8X+Ytst4yBo/hH+8Fk">
         </script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.matchHeight/0.7.0/jquery.matchHeight-min.js"
+                asp-fallback-src="~/lib/jquery-match-height/jquery-match-height.js"></script>
         <script src="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/bootstrap.min.js"
                 asp-fallback-src="~/lib/bootstrap/dist/js/bootstrap.min.js"
                 asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal"
@@ -61,6 +39,31 @@
         </script>
         <script src="~/js/site.min.js" asp-append-version="true"></script>
     </environment>
+</head>
+<body>
+    <nav class="container" style="text-align: left">
+        <div class="row">
+            <div class="col-lg-offset-2 col-lg-6">
+                <a>Game Page</a>
+                <span>|</span>
+                <a>Board Editor</a>
+                <span>|</span>
+                <a>Rules</a>
+
+                <button class="pull-right btn-link settings">
+                    <span class="glyphicon glyphicon-cog"></span>
+                    <span class="sr-only">Settings</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+    <div class="container body-content">
+        @RenderBody()/**/
+        <hr />
+        <footer>
+            <p>&copy; 2018 - CheckersWebsite</p>
+        </footer>
+    </div>
 
     @RenderSection("Scripts", required: false)
 </body>
