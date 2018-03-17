@@ -44,17 +44,19 @@ button.btn-link {
 
 ol.moves {
     font-size: 20px;
+    overflow-y: auto;
+    margin-bottom: 0;
 }
 
 .move-history {
-    overflow-y: scroll;
     border: 1px solid black;
     display: grid;
     grid-template-rows: auto 60px;
+    padding-right: 0;
 }
 
 .controls {
-    margin: 0 0 0 -15px;
+    margin: 0 0 0 -16px;
 }
 
 ol.moves li span {

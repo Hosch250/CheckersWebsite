@@ -82,7 +82,8 @@
             byRow: true,
             property: 'height',
             target: null,
-            remove: false
+            remove: false,
+            subtractFromTarget: 0
         };
 
         if (typeof options === 'object') {
@@ -279,7 +280,8 @@
                 }
 
                 // set the height (accounting for padding and border)
-                $that.css(opts.property, (targetHeight - verticalPadding) + 'px');
+                console.log(opts.subtractFromTarget);
+                $that.css(opts.property, (targetHeight - verticalPadding - opts.subtractFromTarget) + 'px');
             });
         });
 
