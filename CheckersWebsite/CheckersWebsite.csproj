@@ -49,6 +49,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Database\Database.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Reference Include="CheckersTreasury">
       <HintPath>dlls\CheckersTreasury.dll</HintPath>
     </Reference>
