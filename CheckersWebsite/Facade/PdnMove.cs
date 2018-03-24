@@ -13,6 +13,7 @@ namespace CheckersWebsite.Facade
             ResultingFen = resultingFen;
             DisplayString = displayString;
             PieceTypeMoved = pieceTypeMoved;
+            Player = string.IsNullOrEmpty(resultingFen) ? null : resultingFen.Split('"')[1].Split(':')[0] == "W" ? (Player?) Facade.Player.Black : (Player?) Facade.Player.White;
             IsJump = isJump;
         }
 
@@ -20,6 +21,7 @@ namespace CheckersWebsite.Facade
         public string ResultingFen { get; }
         public string DisplayString { get; }
         public PieceType? PieceTypeMoved { get; }
+        public Player? Player { get; }
         public bool? IsJump { get; }
 
         public static implicit operator PdnMove(Generic.PdnMove value)
@@ -44,6 +46,31 @@ namespace CheckersWebsite.Facade
             return value == null
                 ? FSharpOption<Generic.PdnMove>.None
                 : new FSharpOption<Generic.PdnMove>(new Generic.PdnMove(Generic.listFromSeq(value.Move).Value, value.ResultingFen, value.DisplayString, value.PieceTypeMoved.ConvertBack(), value.IsJump.ConvertBack()));
+        }
+    }
+
+    public static class PdnMoveExtensions
+    {
+        public static PdnMove ToPdnMove(this Database.PdnMove move)
+        {
+            var pdnMove = new PdnMove(move.Move.Split(',').Select(int.Parse).ToList(), move.ResultingFen, move.DisplayString, (PieceType) move.PieceTypeMoved, move.IsJump);
+
+            return pdnMove;
+        }
+
+        public static Database.PdnMove ToPdnMove(this PdnMove move)
+        {
+            var pdnMove = new Database.PdnMove
+            {
+                DisplayString = move.DisplayString,
+                IsJump = move.IsJump,
+                Move = string.Join(',', move.Move),
+                PieceTypeMoved = (int) move.PieceTypeMoved,
+                ResultingFen = move.ResultingFen,
+                Player = (int) move.Player
+            };
+
+            return pdnMove;
         }
     }
 }

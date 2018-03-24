@@ -10,7 +10,7 @@ namespace CheckersWebsite.Facade
 {
     public class GameController : INotifyPropertyChanged
     {
-        private GameController(Variant variant, Board board, Player currentPlayer, string initialPosition, List<PdnTurn> moveHistory, Coord currentCoord = null)
+        internal GameController(Variant variant, Board board, Player currentPlayer, string initialPosition, List<PdnTurn> moveHistory, Coord currentCoord = null)
         {
             Variant = variant;
             Board = board;
@@ -72,12 +72,12 @@ namespace CheckersWebsite.Facade
             }
         }
 
-        public Variant Variant { get; }
-        public Player CurrentPlayer { get; }
-        public Coord CurrentCoord { get; }
-        public string InitialPosition { get; }
-        public string Fen { get; }
-        public Guid ID { get; set; }
+        public Variant Variant { get; internal set; }
+        public Player CurrentPlayer { get; internal set; }
+        public Coord CurrentCoord { get; internal set; }
+        public string InitialPosition { get; internal set; }
+        public string Fen { get; internal set; }
+        public Guid ID { get; internal set; }
 
         private List<PdnTurn> _moveHistory;
         public List<PdnTurn> MoveHistory
@@ -162,30 +162,34 @@ namespace CheckersWebsite.Facade
                     new Checkers.GameController.GameController(controller.Variant.ToGameVariant(), controller.Board, controller.CurrentPlayer.ConvertBack(), controller.InitialPosition, moveHistory, controller.CurrentCoord));
         }
 
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null) =>
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    }
 
-        public static implicit operator Database.Game(GameController controller)
+    public static class GameControllerExtensions
+    {
+        public static Database.Game ToGame(this GameController controller)
         {
             var game = new Database.Game()
             {
                 ID = controller.ID == Guid.Empty ? Guid.NewGuid() : controller.ID,
-                CurrentPlayer = (int) controller.CurrentPlayer,
+                CurrentPlayer = (int)controller.CurrentPlayer,
                 Fen = controller.Fen,
                 InitialPosition = controller.InitialPosition,
-                Variant = (int) controller.Variant
+                Variant = (int)controller.Variant,
+                Turns = controller.MoveHistory.Select(s => s.ToPdnTurn()).ToList()
             };
 
             return game;
         }
 
-        public static implicit operator GameController(Database.Game game)
+        public static GameController ToGame(this Database.Game game)
         {
-            var controller = new GameController((Variant)game.Variant, null, (Player)game.CurrentPlayer, game.InitialPosition, new List<PdnTurn>());
+            var controller = GameController.FromPosition((Variant)game.Variant, game.Fen);
+            controller.MoveHistory = game.Turns.Select(s => s.ToPdnTurn()).ToList();
 
             return controller;
         }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null) =>
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 }

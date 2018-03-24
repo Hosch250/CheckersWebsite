@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -9,19 +10,13 @@ namespace Database
         [Key]
         public Guid ID { get; set; }
 
-        public int MoveNumber { get; }
+        public int MoveNumber { get; set; }
         
         public Guid GameID { get; set; }
-        public Guid BlackMoveID { get; set; }
-        public Guid WhiteMoveID { get; set; }
 
         [ForeignKey(nameof(GameID))]
-        public virtual Game Game { get; }
+        public virtual Game Game { get; set; }
 
-        [ForeignKey(nameof(BlackMoveID))]
-        public virtual PdnMove BlackMove { get; }
-
-        [ForeignKey(nameof(WhiteMoveID))]
-        public virtual PdnMove WhiteMove { get; }
+        public ICollection<PdnMove> Moves { get; set; }
     }
 }

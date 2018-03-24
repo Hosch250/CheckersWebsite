@@ -28,9 +28,8 @@ namespace Database.Migrations
                 columns: table => new
                 {
                     ID = table.Column<Guid>(nullable: false),
-                    BlackMoveID = table.Column<Guid>(nullable: false),
                     GameID = table.Column<Guid>(nullable: false),
-                    WhiteMoveID = table.Column<Guid>(nullable: false)
+                    MoveNumber = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -48,7 +47,13 @@ namespace Database.Migrations
                 columns: table => new
                 {
                     ID = table.Column<Guid>(nullable: false),
-                    TurnID = table.Column<Guid>(nullable: true)
+                    DisplayString = table.Column<string>(nullable: true),
+                    IsJump = table.Column<bool>(nullable: true),
+                    Move = table.Column<string>(nullable: true),
+                    PieceTypeMoved = table.Column<int>(nullable: false),
+                    Player = table.Column<int>(nullable: false),
+                    ResultingFen = table.Column<string>(nullable: true),
+                    TurnID = table.Column<Guid>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -58,7 +63,7 @@ namespace Database.Migrations
                         column: x => x.TurnID,
                         principalTable: "Turns",
                         principalColumn: "ID",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(

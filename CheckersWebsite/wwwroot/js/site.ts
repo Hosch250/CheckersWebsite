@@ -17,7 +17,7 @@ function $boardClick(row, col) {
     $.ajax("Board/MovePiece",
         {
             data: {
-                fen: $('.board').attr('fen'),
+                id: $('.board').attr('id'),
                 start: {
                     row: startRow,
                     column: startCol

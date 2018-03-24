@@ -18,7 +18,7 @@ namespace Database.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "2.0.2-rtm-10011")
-                .HasAnnotation("SqlServer:ValueGenerationStrategy", 0 /*SqlServerValueGenerationStrategy.IdentityColumn*/);
+                .HasAnnotation("SqlServer:ValueGenerationStrategy", 0/*SqlServerValueGenerationStrategy.IdentityColumn*/);
 
             modelBuilder.Entity("Database.Game", b =>
                 {
@@ -43,7 +43,19 @@ namespace Database.Migrations
                     b.Property<Guid>("ID")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<Guid?>("TurnID");
+                    b.Property<string>("DisplayString");
+
+                    b.Property<bool?>("IsJump");
+
+                    b.Property<string>("Move");
+
+                    b.Property<int>("PieceTypeMoved");
+
+                    b.Property<int>("Player");
+
+                    b.Property<string>("ResultingFen");
+
+                    b.Property<Guid>("TurnID");
 
                     b.HasKey("ID");
 
@@ -57,11 +69,9 @@ namespace Database.Migrations
                     b.Property<Guid>("ID")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<Guid>("BlackMoveID");
-
                     b.Property<Guid>("GameID");
 
-                    b.Property<Guid>("WhiteMoveID");
+                    b.Property<int>("MoveNumber");
 
                     b.HasKey("ID");
 
@@ -73,13 +83,14 @@ namespace Database.Migrations
             modelBuilder.Entity("Database.PdnMove", b =>
                 {
                     b.HasOne("Database.PdnTurn", "Turn")
-                        .WithMany()
-                        .HasForeignKey("TurnID");
+                        .WithMany("Moves")
+                        .HasForeignKey("TurnID")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("Database.PdnTurn", b =>
                 {
-                    b.HasOne("Database.Game")
+                    b.HasOne("Database.Game", "Game")
                         .WithMany("Turns")
                         .HasForeignKey("GameID")
                         .OnDelete(DeleteBehavior.Cascade);

@@ -12,7 +12,7 @@ function $boardClick(row, col) {
     var startCol = parseInt(rowCol[1]);
     $.ajax("Board/MovePiece", {
         data: {
-            fen: $('.board').attr('fen'),
+            id: $('.board').attr('id'),
             start: {
                 row: startRow,
                 column: startCol
