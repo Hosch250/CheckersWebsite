@@ -77,6 +77,7 @@ namespace CheckersWebsite.Facade
         public Coord CurrentCoord { get; }
         public string InitialPosition { get; }
         public string Fen { get; }
+        public Guid ID { get; set; }
 
         private List<PdnTurn> _moveHistory;
         public List<PdnTurn> MoveHistory
@@ -159,6 +160,28 @@ namespace CheckersWebsite.Facade
 
             return FSharpOption<Checkers.GameController.GameController>.Some(
                     new Checkers.GameController.GameController(controller.Variant.ToGameVariant(), controller.Board, controller.CurrentPlayer.ConvertBack(), controller.InitialPosition, moveHistory, controller.CurrentCoord));
+        }
+
+
+        public static implicit operator Database.Game(GameController controller)
+        {
+            var game = new Database.Game()
+            {
+                ID = controller.ID == Guid.Empty ? Guid.NewGuid() : controller.ID,
+                CurrentPlayer = (int) controller.CurrentPlayer,
+                Fen = controller.Fen,
+                InitialPosition = controller.InitialPosition,
+                Variant = (int) controller.Variant
+            };
+
+            return game;
+        }
+
+        public static implicit operator GameController(Database.Game game)
+        {
+            var controller = new GameController((Variant)game.Variant, null, (Player)game.CurrentPlayer, game.InitialPosition, new List<PdnTurn>());
+
+            return controller;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

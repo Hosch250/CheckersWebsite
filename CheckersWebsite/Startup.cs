@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Database;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -21,7 +23,17 @@ namespace CheckersWebsite
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            // entity framework
+            services.AddEntityFrameworkSqlServer()
+                .AddDbContext<Context>(options =>
+                    options.UseSqlServer("Server=DESKTOP-MVHQGRM\\SQLEXPRESS;Database=CheckersDatabase;Trusted_Connection=True;")
+                );
+
+            // Add MVC services to the services container.
             services.AddMvc();
+
+            // new context on each request
+            services.AddScoped<Context, Context>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
