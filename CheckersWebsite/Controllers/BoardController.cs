@@ -49,10 +49,14 @@ namespace CheckersWebsite.Controllers
                     var newMove = turn.Moves.Single(s => !recordedTurn.Moves.Select(m => m.Player).Contains(s.Player));
 
                     recordedTurn.Moves.Add(newMove);
+
+                    game.Fen = newMove.ResultingFen;
                 }
                 else
                 {
                     game.Turns.Add(move.MoveHistory.Last().ToPdnTurn());
+
+                    game.Fen = turn.Moves.Single().ResultingFen;
                 }
             }
 
