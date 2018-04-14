@@ -33,26 +33,6 @@ function $boardClick(row, col) {
             method: 'POST',
             success(data) {
                 $('.board').parent().html(data);
-
-                $loadMoveHistory();
-            },
-            error(err) {
-                console.log(err);
-            }
-        });
-}
-
-function $loadMoveHistory() {
-    console.log($('.board').attr('id'));
-    $.ajax("Board/MoveHistory",
-        {
-            data: {
-                id: $('.board').attr('id')
-            },
-            dataType: 'html',
-            method: 'POST',
-            success(data) {
-                $('.moves').html(data);
             },
             error(err) {
                 console.log(err);

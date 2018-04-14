@@ -16,9 +16,9 @@ namespace CheckersWebsite.SignalR
             await Clients.All.InvokeAsync("SendAction", Context.User.Identity.Name, "left");
         }
 
-        public Task Update()
+        public Task Update(string html)
         {
-            return Clients.All.InvokeAsync("Update");
+            return Clients.All.InvokeAsync("Update", html);
         }
     }
 }

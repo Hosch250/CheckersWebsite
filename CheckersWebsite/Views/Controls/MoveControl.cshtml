@@ -18,8 +18,8 @@
         let httpConnection = new signalR.HttpConnection('/movesHub');
         let connection = new signalR.HubConnection(httpConnection);
 
-        connection.on('Update', function () {
-            //$loadMoveHistory();
+        connection.on('Update', function (data) {
+            $('.moves')[0].outerHTML = data;
         });
         connection.on("SendAction", function (sender, action) {
             console.log(sender + ' ' + action);

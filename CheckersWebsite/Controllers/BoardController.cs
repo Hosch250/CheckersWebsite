@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 namespace CheckersWebsite.Controllers
@@ -40,7 +41,8 @@ namespace CheckersWebsite.Controllers
             if (game == null || id == Guid.Empty)
             {
                 move.ID = Guid.NewGuid();
-                _context.Games.Add(move.ToGame());
+                game = move.ToGame();
+                _context.Games.Add(game);
             }
             else
             {
@@ -83,25 +85,36 @@ namespace CheckersWebsite.Controllers
             }
 
             _context.SaveChanges();
-
-
-
-            _hubContext.Clients.All.InvokeAsync("Update");
+            
+            _hubContext.Clients.All.InvokeAsync("Update", BuildMoveHistory.GetHtml(game.Turns.Select(s => s.ToPdnTurn()).ToList()));
 
             return PartialView("~/Views/Controls/CheckersBoard.cshtml", move);
         }
+    }
 
-        public ActionResult MoveHistory(Guid id)
+    public class BuildMoveHistory
+    {
+        public static string GetHtml(List<PdnTurn> turns)
         {
-            var game = _context.Games
-                    .Include("Turns")
-                    .Include("Turns.Moves")
-                    .FirstOrDefault(f => f.ID == id);
+            var stringWriter = new StringWriter();
+            Action<string> write = stringWriter.Write;
 
-            var controller = game?.ToGame()
-                ?? GameController.FromVariant(Variant.AmericanCheckers);
+            write(@"<ol class=""moves"">");
 
-            return PartialView("~/Views/Controls/MoveControl.cshtml", game.Turns.Select(s => s.ToPdnTurn()).ToList());
+            foreach (var turn in turns)
+            {
+                write("<li>");
+                write($@"<input id=""{turn.MoveNumber}-black-move"" class=""toggle"" name=""move"" type=""radio"" value=""{turn.BlackMove.DisplayString}"" /> <label for=""{turn.MoveNumber}-black-move"">{turn.BlackMove.DisplayString}</label>");
+
+                if (turn.WhiteMove != null)
+                {
+                    write($@"<input id=""{turn.MoveNumber}-white-move"" class=""toggle"" name=""move"" type=""radio"" value=""{turn.BlackMove.DisplayString}"" /> <label for=""{turn.MoveNumber}-white-move"">{turn.BlackMove.DisplayString}</label>");
+                }
+                write("</li>");
+            }
+            write("</ol>");
+
+            return stringWriter.ToString();
         }
     }
 }
