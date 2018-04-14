@@ -48,6 +48,11 @@ ol.moves {
     margin-left: -8px;
 }
 
+.column {
+    margin: 0 7.5px;
+    padding: 0;
+}
+
 .move-history {
     border: 1px solid black;
     display: grid;

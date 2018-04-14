@@ -4,11 +4,13 @@
 }
 
 <div class="row">
-    @Html.Partial("~/Views/Controls/Opponents.cshtml")
-    <div class="col-lg-6 board-col match-height-game-control">
+    <div class="col-lg-2 column" style="border: 1px solid black">
+        @Html.Partial("~/Views/Controls/Opponents.cshtml")
+    </div>
+    <div class="col-lg-6 column board-col match-height-game-control">
         @Html.Partial("~/Views/Controls/CheckersBoard.cshtml", GameController.FromVariant(Variant.AmericanCheckers))
     </div>
-    <div class="col-lg-3 move-history match-height-game-control">
+    <div class="col-lg-3 column move-history match-height-game-control">
         @Html.Partial("~/Views/Controls/MoveControl.cshtml", new List<PdnTurn>())
         <div class="controls">
             <button class="ctrl-button undo" onclick="$undo()">
