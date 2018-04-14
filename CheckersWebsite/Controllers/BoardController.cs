@@ -13,12 +13,16 @@ namespace CheckersWebsite.Controllers
     public class BoardController : Controller
     {
         private readonly Database.Context _context;
-        private readonly IHubContext<MovesHub> _hubContext;
+        private readonly IHubContext<MovesHub> _movesHub;
+        private readonly IHubContext<OpponentsHub> _opponentsHub;
 
-        public BoardController(Database.Context context, IHubContext<MovesHub> hubContext)
+        public BoardController(Database.Context context,
+            IHubContext<MovesHub> movesHub,
+            IHubContext<OpponentsHub> opponentsHub)
         {
             _context = context;
-            _hubContext = hubContext;
+            _movesHub = movesHub;
+            _opponentsHub = opponentsHub;
         }
 
         public ActionResult MovePiece(Guid id, Coord start, Coord end)
@@ -74,6 +78,7 @@ namespace CheckersWebsite.Controllers
 
                     game.Fen = newMove.ResultingFen;
                     game.CurrentPosition = move.GetCurrentPosition();
+                    game.CurrentPlayer = (int) move.CurrentPlayer;
                 }
                 else
                 {
@@ -81,12 +86,14 @@ namespace CheckersWebsite.Controllers
 
                     game.Fen = turn.Moves.Single().ResultingFen;
                     game.CurrentPosition = move.GetCurrentPosition();
+                    game.CurrentPlayer = (int)move.CurrentPlayer;
                 }
             }
 
             _context.SaveChanges();
             
-            _hubContext.Clients.All.InvokeAsync("Update", BuildMoveHistory.GetHtml(game.Turns.Select(s => s.ToPdnTurn()).ToList()));
+            _movesHub.Clients.All.InvokeAsync("Update", BuildMoveHistory.GetHtml(game.Turns.Select(s => s.ToPdnTurn()).ToList()));
+            _opponentsHub.Clients.All.InvokeAsync("Update", ((Player)game.CurrentPlayer).ToString());
 
             return PartialView("~/Views/Controls/CheckersBoard.cshtml", move);
         }
@@ -108,7 +115,7 @@ namespace CheckersWebsite.Controllers
 
                 if (turn.WhiteMove != null)
                 {
-                    write($@"<input id=""{turn.MoveNumber}-white-move"" class=""toggle"" name=""move"" type=""radio"" value=""{turn.BlackMove.DisplayString}"" /> <label for=""{turn.MoveNumber}-white-move"">{turn.BlackMove.DisplayString}</label>");
+                    write($@"<input id=""{turn.MoveNumber}-white-move"" class=""toggle"" name=""move"" type=""radio"" value=""{turn.WhiteMove.DisplayString}"" /> <label for=""{turn.MoveNumber}-white-move"">{turn.WhiteMove.DisplayString}</label>");
                 }
                 write("</li>");
             }

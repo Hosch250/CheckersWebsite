@@ -53,6 +53,7 @@ namespace CheckersWebsite
             app.UseSignalR(routes =>
             {
                 routes.MapHub<SignalR.MovesHub>("movesHub");
+                routes.MapHub<SignalR.OpponentsHub>("opponentsHub");
             });
 
             app.UseStaticFiles();

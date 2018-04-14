@@ -1,21 +1,25 @@
 ﻿@using CheckersWebsite.Facade
-@using Newtonsoft.Json
 @model GameController
 
 <div class="board" id="@Model.ID">
-    <div>@Model.ID</div>
+    @*<div>@Model.ID</div>*@
 
     <svg width="100%" height="100%" style="background-color: #cccccc" version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50">
+        <g></g>
+
         @for (var row = 0; row < 8; row++)
         {
             for (var col = 0; col < 8; col++)
             {
                 <image onclick="$boardClick(@row, @col)" y="@(row * 12.5m)%" x="@(col * 12.5m)%" width="12.5%" height="12.5%" xlink:href="@Url.Content($"~/images/SteelTheme/{(col % 2 == row % 2 ? "Light" : "Dark")}Steel.png")" />
-
+                
                 var piece = Model.Board[row, col];
                 if (piece != null)
                 {
-                    <image id="piece@(row)@(col)" onclick="$pieceClick(@row, @col)" y="@(row * 12.5m)%" x="@(col * 12.5m)%" width="12.5%" height="12.5%" xlink:href="@Url.Content($"~/images/SteelTheme/{piece.Player}{piece.PieceType}.png")" />
+                <svg onclick="$pieceClick(@row, @col)" y="@(row * 12.5m)%" x="@(col * 12.5m)%" width="12.5%" height="12.5%">
+                    <image id="piece@(row)@(col)" height="100%" width="100%" xlink:href="@Url.Content($"~/images/SteelTheme/{piece.Player}{piece.PieceType}.png")" />
+                    <rect class="selected-piece-highlight" height="100%" width="100%" style="fill: none; stroke: goldenrod"></rect>
+                </svg>
                 }
             }
         }

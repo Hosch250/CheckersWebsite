@@ -83,3 +83,15 @@ input[type="radio"].toggle:checked + label {
     background: blue;
     color: white;
 }
+
+.bold {
+    font-weight: bold;
+}
+
+.selected-piece-highlight {
+    stroke-width: 0;
+}
+
+.selected + .selected-piece-highlight{
+    stroke-width: .5;
+}

@@ -21,12 +21,7 @@
         connection.on('Update', function (data) {
             $('.moves')[0].outerHTML = data;
         });
-        connection.on("SendAction", function (sender, action) {
-            console.log(sender + ' ' + action);
-        });
 
-        connection.start().then(() => { 
-            console.log('started');
-        });
+        connection.start();
     });
 </script>

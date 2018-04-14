@@ -5,6 +5,8 @@ declare var signalR: any;
 function $pieceClick(row, col) {
     $('.selected').removeClass('selected');
     $(`#piece${row}${col}`).addClass('selected');
+
+    $('.selected').closest('rect').css('stroke-width', '1');
 }
 
 function $boardClick(row, col) {
