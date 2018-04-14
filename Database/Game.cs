@@ -12,6 +12,7 @@ namespace Database
         public int Variant { get; set; }
         public int CurrentPlayer { get; set; }
         public string InitialPosition { get; set; }
+        public int CurrentPosition { get; set; }
         public string Fen { get; set; }
 
         public virtual ICollection<PdnTurn> Turns { get; set; }

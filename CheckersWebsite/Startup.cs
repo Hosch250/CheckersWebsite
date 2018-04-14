@@ -26,7 +26,7 @@ namespace CheckersWebsite
             // entity framework
             services.AddEntityFrameworkSqlServer()
                 .AddDbContext<Context>(options =>
-                    options.UseSqlServer("Server=DESKTOP-MVHQGRM\\SQLEXPRESS;Database=CheckersDatabase;Trusted_Connection=True;")
+                    options.UseSqlServer("Server=LAPTOP-JPMC7HKV\\SQLEXPRESS;Database=CheckersDatabase;Trusted_Connection=True;")
                 );
 
             // Add MVC services to the services container.

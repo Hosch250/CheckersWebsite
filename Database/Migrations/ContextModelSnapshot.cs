@@ -27,6 +27,8 @@ namespace Database.Migrations
 
                     b.Property<int>("CurrentPlayer");
 
+                    b.Property<int>("CurrentPosition");
+
                     b.Property<string>("Fen");
 
                     b.Property<string>("InitialPosition");

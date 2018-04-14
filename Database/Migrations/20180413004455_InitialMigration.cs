@@ -14,6 +14,7 @@ namespace Database.Migrations
                 {
                     ID = table.Column<Guid>(nullable: false),
                     CurrentPlayer = table.Column<int>(nullable: false),
+                    CurrentPosition = table.Column<int>(nullable: false),
                     Fen = table.Column<string>(nullable: true),
                     InitialPosition = table.Column<string>(nullable: true),
                     Variant = table.Column<int>(nullable: false)

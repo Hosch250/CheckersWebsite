@@ -24,36 +24,7 @@
         @Html.Partial("~/Views/Controls/CheckersBoard.cshtml", GameController.FromVariant(Variant.AmericanCheckers))
     </div>
     <div class="col-lg-3 move-history match-height-game-control">
-        @Html.Partial("~/Views/Controls/MoveControl.cshtml", new List<PdnTurn>
-        {
-            new PdnTurn(0, new PdnMove(new[]{1,2}.ToList(), "", "1-2", PieceType.Checker, false), new PdnMove(new[]{1,2}.ToList(), "", "1-2", PieceType.Checker, false)),
-            new PdnTurn(1, new PdnMove(new[]{1,2}.ToList(), "", "1-2", PieceType.Checker, false), new PdnMove(new[]{1,2}.ToList(), "", "1-2", PieceType.Checker, false)),
-            new PdnTurn(1, new PdnMove(new[]{1,2}.ToList(), "", "1-2", PieceType.Checker, false), new PdnMove(new[]{1,2}.ToList(), "", "1-2", PieceType.Checker, false)),
-            new PdnTurn(1, new PdnMove(new[]{1,2}.ToList(), "", "1-2", PieceType.Checker, false), new PdnMove(new[]{1,2}.ToList(), "", "1-2", PieceType.Checker, false)),
-            new PdnTurn(1, new PdnMove(new[]{1,2}.ToList(), "", "1-2", PieceType.Checker, false), new PdnMove(new[]{1,2}.ToList(), "", "1-2", PieceType.Checker, false)),
-            new PdnTurn(1, new PdnMove(new[]{1,2}.ToList(), "", "1-2", PieceType.Checker, false), new PdnMove(new[]{1,2}.ToList(), "", "1-2", PieceType.Checker, false)),
-            new PdnTurn(1, new PdnMove(new[]{1,2}.ToList(), "", "1-2", PieceType.Checker, false), new PdnMove(new[]{1,2}.ToList(), "", "1-2", PieceType.Checker, false)),
-            new PdnTurn(1, new PdnMove(new[]{1,2}.ToList(), "", "1-2", PieceType.Checker, false), new PdnMove(new[]{1,2}.ToList(), "", "1-2", PieceType.Checker, false)),
-            new PdnTurn(1, new PdnMove(new[]{1,2}.ToList(), "", "1-2", PieceType.Checker, false), new PdnMove(new[]{1,2}.ToList(), "", "1-2", PieceType.Checker, false)),
-            new PdnTurn(1, new PdnMove(new[]{1,2}.ToList(), "", "1-2", PieceType.Checker, false), new PdnMove(new[]{1,2}.ToList(), "", "1-2", PieceType.Checker, false)),
-            new PdnTurn(1, new PdnMove(new[]{1,2}.ToList(), "", "1-2", PieceType.Checker, false), new PdnMove(new[]{1,2}.ToList(), "", "1-2", PieceType.Checker, false)),
-            new PdnTurn(1, new PdnMove(new[]{1,2}.ToList(), "", "1-2", PieceType.Checker, false), new PdnMove(new[]{1,2}.ToList(), "", "1-2", PieceType.Checker, false)),
-            new PdnTurn(1, new PdnMove(new[]{1,2}.ToList(), "", "1-2", PieceType.Checker, false), new PdnMove(new[]{1,2}.ToList(), "", "1-2", PieceType.Checker, false)),
-            new PdnTurn(1, new PdnMove(new[]{1,2}.ToList(), "", "1-2", PieceType.Checker, false), new PdnMove(new[]{1,2}.ToList(), "", "1-2", PieceType.Checker, false)),
-            new PdnTurn(1, new PdnMove(new[]{1,2}.ToList(), "", "1-2", PieceType.Checker, false), new PdnMove(new[]{1,2}.ToList(), "", "1-2", PieceType.Checker, false)),
-            new PdnTurn(1, new PdnMove(new[]{1,2}.ToList(), "", "1-2", PieceType.Checker, false), new PdnMove(new[]{1,2}.ToList(), "", "1-2", PieceType.Checker, false)),
-            new PdnTurn(1, new PdnMove(new[]{1,2}.ToList(), "", "1-2", PieceType.Checker, false), new PdnMove(new[]{1,2}.ToList(), "", "1-2", PieceType.Checker, false)),
-            new PdnTurn(1, new PdnMove(new[]{1,2}.ToList(), "", "1-2", PieceType.Checker, false), new PdnMove(new[]{1,2}.ToList(), "", "1-2", PieceType.Checker, false)),
-            new PdnTurn(1, new PdnMove(new[]{1,2}.ToList(), "", "1-2", PieceType.Checker, false), new PdnMove(new[]{1,2}.ToList(), "", "1-2", PieceType.Checker, false)),
-            new PdnTurn(1, new PdnMove(new[]{1,2}.ToList(), "", "1-2", PieceType.Checker, false), new PdnMove(new[]{1,2}.ToList(), "", "1-2", PieceType.Checker, false)),
-            new PdnTurn(1, new PdnMove(new[]{1,2}.ToList(), "", "1-2", PieceType.Checker, false), new PdnMove(new[]{1,2}.ToList(), "", "1-2", PieceType.Checker, false)),
-            new PdnTurn(1, new PdnMove(new[]{1,2}.ToList(), "", "1-2", PieceType.Checker, false), new PdnMove(new[]{1,2}.ToList(), "", "1-2", PieceType.Checker, false)),
-            new PdnTurn(1, new PdnMove(new[]{1,2}.ToList(), "", "1-2", PieceType.Checker, false), new PdnMove(new[]{1,2}.ToList(), "", "1-2", PieceType.Checker, false)),
-            new PdnTurn(1, new PdnMove(new[]{1,2}.ToList(), "", "1-2", PieceType.Checker, false), new PdnMove(new[]{1,2}.ToList(), "", "1-2", PieceType.Checker, false)),
-            new PdnTurn(1, new PdnMove(new[]{1,2}.ToList(), "", "1-2", PieceType.Checker, false), new PdnMove(new[]{1,2}.ToList(), "", "1-2", PieceType.Checker, false)),
-            new PdnTurn(1, new PdnMove(new[]{1,2}.ToList(), "", "1-2", PieceType.Checker, false), new PdnMove(new[]{1,2}.ToList(), "", "1-2", PieceType.Checker, false)),
-            new PdnTurn(1, new PdnMove(new[]{1,2}.ToList(), "", "1-2", PieceType.Checker, false), new PdnMove(new[]{1,2}.ToList(), "", "1-2", PieceType.Checker, false))
-        })
+        @Html.Partial("~/Views/Controls/MoveControl.cshtml", new List<PdnTurn>())
         <div class="controls">
             <button class="ctrl-button">
                 <span class="glyphicon glyphicon-undo"></span>

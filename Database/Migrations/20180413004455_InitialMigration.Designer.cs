@@ -11,7 +11,7 @@ using System;
 namespace Database.Migrations
 {
     [DbContext(typeof(Context))]
-    [Migration("20180324203759_InitialMigration")]
+    [Migration("20180413004455_InitialMigration")]
     partial class InitialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -27,6 +27,8 @@ namespace Database.Migrations
                         .ValueGeneratedOnAdd();
 
                     b.Property<int>("CurrentPlayer");
+
+                    b.Property<int>("CurrentPosition");
 
                     b.Property<string>("Fen");
 

@@ -46,17 +46,35 @@ namespace CheckersWebsite.Controllers
                 if (game.Turns.Any(t => t.MoveNumber == turn.MoveNumber))
                 {
                     var recordedTurn = game.Turns.Single(s => s.MoveNumber == turn.MoveNumber);
-                    var newMove = turn.Moves.Single(s => !recordedTurn.Moves.Select(m => m.Player).Contains(s.Player));
+                    Database.PdnMove newMove;
+                    switch (controller.CurrentPlayer)
+                    {
+                        case Player.White:
+                            newMove = move.MoveHistory.Last().WhiteMove.ToPdnMove();
+                            break;
+                        case Player.Black:
+                            newMove = move.MoveHistory.Last().BlackMove.ToPdnMove();
+                            break;
+                        default:
+                            throw new ArgumentException();
+                    }
 
+                    var existingMove = recordedTurn.Moves.FirstOrDefault(a => a.Player == (int)controller.CurrentPlayer);
+                    if (existingMove != null)
+                    {
+                        recordedTurn.Moves.Remove(existingMove);
+                    }
                     recordedTurn.Moves.Add(newMove);
 
                     game.Fen = newMove.ResultingFen;
+                    game.CurrentPosition = move.GetCurrentPosition();
                 }
                 else
                 {
                     game.Turns.Add(move.MoveHistory.Last().ToPdnTurn());
 
                     game.Fen = turn.Moves.Single().ResultingFen;
+                    game.CurrentPosition = move.GetCurrentPosition();
                 }
             }
 

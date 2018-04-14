@@ -150,5 +150,34 @@ namespace CheckersWebsite.Facade
             value == null
             ? FSharpOption<bool>.None
             : new FSharpOption<bool>(value.Value);
+
+
+        public static Player? Convert(this FSharpOption<Generic.Player> value)
+        {
+            if (value == null)
+            {
+                return null;
+            }
+
+            return value.Value.IsBlack ? Player.Black : Player.White;
+        }
+
+        public static FSharpOption<Generic.Player> ConvertBack(this Player? value)
+        {
+            if (value == null)
+            {
+                return FSharpOption<Generic.Player>.None;
+            }
+
+            switch (value.Value)
+            {
+                case Player.White:
+                    return Generic.Player.White;
+                case Player.Black:
+                    return Generic.Player.Black;
+                default:
+                    throw new ArgumentException(nameof(value));
+            }
+        }
     }
 }
