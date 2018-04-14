@@ -50,3 +50,20 @@ function $boardClick(row, col) {
             }
         });
 }
+
+function $undo() {
+    $.ajax("Board/Undo",
+        {
+            data: {
+                id: $('.board').attr('id')
+            },
+            dataType: 'html',
+            method: 'POST',
+            success(data) {
+                $('.board').parent().html(data);
+            },
+            error(err) {
+                console.log(err);
+            }
+        });
+}

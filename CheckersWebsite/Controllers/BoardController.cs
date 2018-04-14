@@ -77,17 +77,15 @@ namespace CheckersWebsite.Controllers
                     recordedTurn.Moves.Add(newMove);
 
                     game.Fen = newMove.ResultingFen;
-                    game.CurrentPosition = move.GetCurrentPosition();
-                    game.CurrentPlayer = (int) move.CurrentPlayer;
                 }
                 else
                 {
                     game.Turns.Add(move.MoveHistory.Last().ToPdnTurn());
-
                     game.Fen = turn.Moves.Single().ResultingFen;
-                    game.CurrentPosition = move.GetCurrentPosition();
-                    game.CurrentPlayer = (int)move.CurrentPlayer;
                 }
+
+                game.CurrentPosition = move.GetCurrentPosition();
+                game.CurrentPlayer = (int)move.CurrentPlayer;
             }
 
             _context.SaveChanges();
@@ -96,6 +94,57 @@ namespace CheckersWebsite.Controllers
             _opponentsHub.Clients.All.InvokeAsync("Update", ((Player)game.CurrentPlayer).ToString());
 
             return PartialView("~/Views/Controls/CheckersBoard.cshtml", move);
+        }
+
+        public ActionResult Undo(Guid id)
+        {
+            var game = _context.Games
+                    .Include("Turns")
+                    .Include("Turns.Moves")
+                    .FirstOrDefault(f => f.ID == id);
+
+            var lastTurn = game.Turns.OrderBy(a => a.MoveNumber).Last();
+
+            if (lastTurn.Moves.Count == 2)
+            {
+                // todo: figure out which is the last move based on variant
+                lastTurn.Moves.Remove(lastTurn.Moves.Single(s => (Player)s.Player == Player.White));
+                game.Fen = game.Turns.Last().Moves.Single(s => (Player)s.Player == Player.Black).ResultingFen;
+            }
+            else
+            {
+                if (game.Turns.Count == 1)
+                {
+                    Response.StatusCode = 403;
+                    return null;
+                }
+
+                game.Turns.Remove(lastTurn);
+                game.Fen = game.Turns.Last().Moves.Single(s => (Player)s.Player == Player.White).ResultingFen;
+            }
+
+            game.CurrentPosition = -1;
+
+            switch ((Player)game.CurrentPlayer)
+            {
+                case Player.White:
+                    game.CurrentPlayer = (int)Player.Black;
+                    break;
+                case Player.Black:
+                    game.CurrentPlayer = (int)Player.White;
+                    break;
+                default:
+                    break;
+            }
+
+            _context.SaveChanges();
+
+            _movesHub.Clients.All.InvokeAsync("Update", BuildMoveHistory.GetHtml(game.Turns.Select(s => s.ToPdnTurn()).ToList()));
+            _opponentsHub.Clients.All.InvokeAsync("Update", ((Player)game.CurrentPlayer).ToString());
+
+            var controller = game.ToGame();
+            controller.ID = id;
+            return PartialView("~/Views/Controls/CheckersBoard.cshtml", controller);
         }
     }
 
