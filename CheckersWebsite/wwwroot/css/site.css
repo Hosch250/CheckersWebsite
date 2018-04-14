@@ -93,5 +93,5 @@ input[type="radio"].toggle:checked + label {
 }
 
 .selected + .selected-piece-highlight{
-    stroke-width: .5;
+    stroke-width: .75;
 }

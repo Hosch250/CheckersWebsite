@@ -2,6 +2,15 @@
 
 declare var signalR: any;
 
+function getAdjustedIndex(value) {
+    switch ($('.board').attr('player').toLowerCase()) {
+        case "black":
+            return 7 - value;
+        case "white":
+            return value;
+    }
+}
+
 function $pieceClick(row, col) {
     $('.selected').removeClass('selected');
     $(`#piece${row}${col}`).addClass('selected');
@@ -15,8 +24,8 @@ function $boardClick(row, col) {
     }
 
     var rowCol = $('.selected').attr('id').replace('piece', '');
-    var startRow = parseInt(rowCol[0]);
-    var startCol = parseInt(rowCol[1]);
+    var startRow = getAdjustedIndex(parseInt(rowCol[0]));
+    var startCol = getAdjustedIndex(parseInt(rowCol[1]));
     
     $.ajax("Board/MovePiece",
         {
@@ -27,8 +36,8 @@ function $boardClick(row, col) {
                     column: startCol
                 },
                 end: {
-                    row: row,
-                    column: col
+                    row: getAdjustedIndex(row),
+                    column: getAdjustedIndex(col)
                 }
             },
             dataType: 'html',
