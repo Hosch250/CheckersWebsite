@@ -1,24 +1,28 @@
 ﻿using CheckersWebsite.Facade;
+using CheckersWebsite.SignalR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace CheckersWebsite.Controllers
 {
     public class BoardController : Controller
     {
-        private readonly Database.Context context;
+        private readonly Database.Context _context;
+        private readonly IHubContext<MovesHub> _hubContext;
 
-        public BoardController(Database.Context context)
+        public BoardController(Database.Context context, IHubContext<MovesHub> hubContext)
         {
-            this.context = context;
+            _context = context;
+            _hubContext = hubContext;
         }
 
         public ActionResult MovePiece(Guid id, Coord start, Coord end)
         {
-            var game = context.Games
+            var game = _context.Games
                     .Include("Turns")
                     .Include("Turns.Moves")
                     .FirstOrDefault(f => f.ID == id);
@@ -36,7 +40,7 @@ namespace CheckersWebsite.Controllers
             if (game == null || id == Guid.Empty)
             {
                 move.ID = Guid.NewGuid();
-                context.Games.Add(move.ToGame());
+                _context.Games.Add(move.ToGame());
             }
             else
             {
@@ -78,9 +82,26 @@ namespace CheckersWebsite.Controllers
                 }
             }
 
-            context.SaveChanges();
+            _context.SaveChanges();
+
+
+
+            _hubContext.Clients.All.InvokeAsync("Update");
 
             return PartialView("~/Views/Controls/CheckersBoard.cshtml", move);
+        }
+
+        public ActionResult MoveHistory(Guid id)
+        {
+            var game = _context.Games
+                    .Include("Turns")
+                    .Include("Turns.Moves")
+                    .FirstOrDefault(f => f.ID == id);
+
+            var controller = game?.ToGame()
+                ?? GameController.FromVariant(Variant.AmericanCheckers);
+
+            return PartialView("~/Views/Controls/MoveControl.cshtml", game.Turns.Select(s => s.ToPdnTurn()).ToList());
         }
     }
 }

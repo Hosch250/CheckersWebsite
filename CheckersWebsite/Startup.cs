@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Database;
+﻿using Database;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -34,6 +30,8 @@ namespace CheckersWebsite
 
             // new context on each request
             services.AddScoped<Context, Context>();
+
+            services.AddSignalR();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -48,6 +46,14 @@ namespace CheckersWebsite
             {
                 app.UseExceptionHandler("/Home/Error");
             }
+
+            app.UseFileServer();
+
+            app.UseWebSockets();
+            app.UseSignalR(routes =>
+            {
+                routes.MapHub<SignalR.MovesHub>("movesHub");
+            });
 
             app.UseStaticFiles();
 

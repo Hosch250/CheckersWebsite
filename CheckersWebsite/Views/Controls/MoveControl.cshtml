@@ -7,8 +7,26 @@
             <input id="@turn.MoveNumber-black-move" class="toggle" name="move" type="radio" value="@turn.BlackMove.DisplayString" /> <label for="@turn.MoveNumber-black-move">@turn.BlackMove.DisplayString</label>
             @if (turn.WhiteMove != null)
             {
-                <input id="@turn.MoveNumber-white-move" class="toggle" name="move" type="radio" value="@turn.WhiteMove.DisplayString" /> <label for="@turn.MoveNumber-white-move">@turn.BlackMove.DisplayString</label>
+                <input id="@turn.MoveNumber-white-move" class="toggle" name="move" type="radio" value="@turn.WhiteMove.DisplayString" /> <label for="@turn.MoveNumber-white-move">@turn.WhiteMove.DisplayString</label>
             }
         </li>
     }
 </ol>
+
+<script>
+    $(function () {
+        let httpConnection = new signalR.HttpConnection('/movesHub');
+        let connection = new signalR.HubConnection(httpConnection);
+
+        connection.on('Update', function () {
+            //$loadMoveHistory();
+        });
+        connection.on("SendAction", function (sender, action) {
+            console.log(sender + ' ' + action);
+        });
+
+        connection.start().then(() => { 
+            console.log('started');
+        });
+    });
+</script>
