@@ -56,6 +56,18 @@ function undo() {
         });
 }
 
+function resign() {
+    $.ajax("/Board/Resign",
+        {
+            data: {
+                id: $('.board').attr('id'),
+                player: $('.board').attr('player')
+            },
+            dataType: 'html',
+            method: 'POST'
+        });
+}
+
 function displayGame(moveID) {
     $.ajax("/Board/DisplayGame",
         {

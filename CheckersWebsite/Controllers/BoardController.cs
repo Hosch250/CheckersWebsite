@@ -37,6 +37,12 @@ namespace CheckersWebsite.Controllers
                     .Include("Turns")
                     .Include("Turns.Moves")
                     .FirstOrDefault(f => f.ID == id);
+
+            if (game == null)
+            {
+                Response.StatusCode = 403;
+                return Content("");
+            }
             
             var controller = game?.ToGame()
                 ?? GameController.FromVariant(Variant.AmericanCheckers);
@@ -137,6 +143,12 @@ namespace CheckersWebsite.Controllers
                     .Include("Turns.Moves")
                     .FirstOrDefault(f => f.ID == id);
 
+            if (game == null)
+            {
+                Response.StatusCode = 403;
+                return Content("");
+            }
+
             var lastTurn = game.Turns.OrderBy(a => a.MoveNumber).Last();
 
             if (lastTurn.Moves.Count == 2)
@@ -176,6 +188,43 @@ namespace CheckersWebsite.Controllers
             _movesHub.Clients.All.InvokeAsync("Update", BuildMoveHistory.GetHtml(game.Turns.Select(s => s.ToPdnTurn()).ToList()));
             _boardHub.Clients.All.InvokeAsync("Update", id, BuildBoard.GetHtml(game.ToGame(), true));
             _opponentsHub.Clients.All.InvokeAsync("Update", ((Player)game.CurrentPlayer).ToString(), Status.InProgress.ToString());
+
+            if (game.Turns.Count == 1 && game.Turns.ElementAt(0).Moves.Count == 1)
+            {
+                _controlHub.Clients.All.InvokeAsync("SetAttribute", "undo", "disabled", "");
+            }
+            else
+            {
+                _controlHub.Clients.All.InvokeAsync("RemoveAttribute", "undo", "disabled");
+            }
+
+            return Content("");
+        }
+
+        public ActionResult Resign(Guid id, Player player)
+        {
+            var game = _context.Games.FirstOrDefault(f => f.ID == id);
+            if (game == null)
+            {
+                Response.StatusCode = 403;
+                return Content("");
+            }
+
+            switch (player)
+            {
+                case Player.Black:
+                    game.GameStatus = (int)Status.WhiteWin;
+                    break;
+                case Player.White:
+                    game.GameStatus = (int)Status.BlackWin;
+                    break;
+            }
+
+            _context.SaveChanges();
+
+            _opponentsHub.Clients.All.InvokeAsync("Update", ((Player)game.CurrentPlayer).ToString(), game.GameStatus.ToString());
+            _controlHub.Clients.All.InvokeAsync("RemoveClass", "new-game", "hide");
+            _controlHub.Clients.All.InvokeAsync("AddClass", "resign", "hide");
 
             return Content("");
         }

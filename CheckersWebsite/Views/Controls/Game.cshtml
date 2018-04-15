@@ -16,11 +16,11 @@
                 <span class="glyphicon glyphicon-undo"></span>
                 <span class="sr-only">Undo</span>
             </button>
-            <a id="new-game" class="ctrl-button btn btn-default" href="/Home/NewGame" title="Create Game">
+            <a id="new-game" class="ctrl-button btn btn-default @(Model.ID == Guid.Empty ? "" : "hide")" href="/Home/NewGame" title="Create Game">
                 <span class="glyphicon glyphicon-create"></span>
                 <span class="sr-only">Create Game</span>
             </a>
-            <button id="resign" class="ctrl-button hide btn btn-default" title="Resign">
+            <button id="resign" class="ctrl-button btn btn-default @(Model.ID == Guid.Empty ? "hide" : "")" onclick="resign()" title="Resign">
                 <span class="glyphicon glyphicon-abort"></span>
                 <span class="sr-only">Resign</span>
             </button>
