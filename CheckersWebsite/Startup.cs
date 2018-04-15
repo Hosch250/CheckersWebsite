@@ -19,10 +19,13 @@ namespace CheckersWebsite
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            string conString = ConfigurationExtensions
+                  .GetConnectionString(Configuration, "Database");
+
             // entity framework
             services.AddEntityFrameworkSqlServer()
                 .AddDbContext<Context>(options =>
-                    options.UseSqlServer("Server=LAPTOP-JPMC7HKV\\SQLEXPRESS;Database=CheckersDatabase;Trusted_Connection=True;")
+                    options.UseSqlServer(conString)
                 );
 
             // Add MVC services to the services container.
