@@ -25,4 +25,26 @@ namespace CheckersWebsite.SignalR
             return Clients.All.InvokeAsync("Update", id, html);
         }
     }
+    public class ControlHub : Hub
+    {
+        public Task SetAttribute(string controlID, string attribute, string value)
+        {
+            return Clients.All.InvokeAsync("SetAttribute", controlID, attribute, value);
+        }
+
+        public Task RemoveAttribute(string controlID, string attribute)
+        {
+            return Clients.All.InvokeAsync("RemoveAttribute", controlID, attribute);
+        }
+
+        public Task AddClass(string controlID, string value)
+        {
+            return Clients.All.InvokeAsync("AddClass", controlID, value);
+        }
+
+        public Task RemoveClass(string controlID, string value)
+        {
+            return Clients.All.InvokeAsync("RemoveClass", controlID, value);
+        }
+    }
 }

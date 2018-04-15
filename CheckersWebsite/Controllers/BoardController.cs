@@ -16,16 +16,19 @@ namespace CheckersWebsite.Controllers
         private readonly IHubContext<MovesHub> _movesHub;
         private readonly IHubContext<BoardHub> _boardHub;
         private readonly IHubContext<OpponentsHub> _opponentsHub;
+        private readonly IHubContext<ControlHub> _controlHub;
 
         public BoardController(Database.Context context,
             IHubContext<MovesHub> movesHub,
             IHubContext<BoardHub> boardHub,
-            IHubContext<OpponentsHub> opponentsHub)
+            IHubContext<OpponentsHub> opponentsHub,
+            IHubContext<ControlHub> controlHub)
         {
             _context = context;
             _movesHub = movesHub;
             _boardHub = boardHub;
             _opponentsHub = opponentsHub;
+            _controlHub = controlHub;
         }
 
         public ActionResult MovePiece(Guid id, Coord start, Coord end)
@@ -104,6 +107,26 @@ namespace CheckersWebsite.Controllers
             _boardHub.Clients.All.InvokeAsync("Update", id, BuildBoard.GetHtml(move, true));
             _opponentsHub.Clients.All.InvokeAsync("Update", ((Player)game.CurrentPlayer).ToString(), move.GameStatus().ToString());
 
+            if (game.Turns.Count == 1 && game.Turns.ElementAt(0).Moves.Count == 1)
+            {
+                _controlHub.Clients.All.InvokeAsync("SetAttribute", "undo", "disabled", "");
+            }
+            else
+            {
+                _controlHub.Clients.All.InvokeAsync("RemoveAttribute", "undo", "disabled");
+            }
+
+            if (move.IsDrawn() || move.IsWon())
+            {
+                _controlHub.Clients.All.InvokeAsync("RemoveClass", "new-game", "hide");
+                _controlHub.Clients.All.InvokeAsync("AddClass", "resign", "hide");
+            }
+            else
+            {
+                _controlHub.Clients.All.InvokeAsync("AddClass", "new-game", "hide");
+                _controlHub.Clients.All.InvokeAsync("RemoveClass", "resign", "hide");
+            }
+
             return Content("");
         }
 
@@ -174,9 +197,6 @@ namespace CheckersWebsite.Controllers
             }
 
             var controller = GameController.FromPosition((Variant)game.Variant, move.ResultingFen);
-
-            _opponentsHub.Clients.Client(Request.HttpContext.Connection.Id).InvokeAsync("Update", ((Player)game.CurrentPlayer).ToString(), Status.BlackWin.ToString());
-
             return Content(BuildBoard.GetHtml(controller, isLastTurn()));
         }
     }

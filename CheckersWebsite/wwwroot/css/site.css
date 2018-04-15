@@ -149,7 +149,3 @@ input[type="radio"].toggle:checked + label {
 #game-list td {
     padding: 0 30px;
 }
-
-.scrollable {
-    overflow: auto;
-}

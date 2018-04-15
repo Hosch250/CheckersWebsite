@@ -102,7 +102,25 @@ function connectToOpponents() {
     });
     connection.start();
 }
+function connectToControl() {
+    var httpConnection = new signalR.HttpConnection('/controlHub');
+    var connection = new signalR.HubConnection(httpConnection);
+    connection.on('SetAttribute', function (controlID, attribute, value) {
+        $("#" + controlID).attr(attribute, value);
+    });
+    connection.on('RemoveAttribute', function (controlID, attribute) {
+        $("#" + controlID).removeAttr(attribute);
+    });
+    connection.on('AddClass', function (controlID, value) {
+        $("#" + controlID).addClass(value);
+    });
+    connection.on('RemoveClass', function (controlID, value) {
+        $("#" + controlID).removeClass(value);
+    });
+    connection.start();
+}
 connectToBoard();
 connectToMoveControl();
 connectToOpponents();
+connectToControl();
 //# sourceMappingURL=site.js.map

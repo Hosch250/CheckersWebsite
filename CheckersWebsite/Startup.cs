@@ -57,6 +57,7 @@ namespace CheckersWebsite
                 routes.MapHub<SignalR.MovesHub>("movesHub");
                 routes.MapHub<SignalR.OpponentsHub>("opponentsHub");
                 routes.MapHub<SignalR.BoardHub>("boardHub");
+                routes.MapHub<SignalR.ControlHub>("controlHub");
             });
 
             app.UseStaticFiles();
