@@ -47,4 +47,53 @@ function undo() {
         }
     });
 }
+function connectToBoard() {
+    var httpConnection = new signalR.HttpConnection('/boardHub');
+    var connection = new signalR.HubConnection(httpConnection);
+    connection.on('Update', function (id, html) {
+        if ($('.board').attr('id').toLowerCase() === id.toLowerCase()) {
+            $('.board')[0].outerHTML = html;
+        }
+    });
+    connection.start();
+}
+function connectToMoveControl() {
+    var httpConnection = new signalR.HttpConnection('/movesHub');
+    var connection = new signalR.HubConnection(httpConnection);
+    connection.on('Update', function (data) {
+        $('.moves')[0].outerHTML = data;
+    });
+    connection.start();
+}
+function connectToOpponents() {
+    var httpConnection = new signalR.HttpConnection('/opponentsHub');
+    var connection = new signalR.HubConnection(httpConnection);
+    connection.on('Update', function (player, winStatus) {
+        var players = ['black', 'white'];
+        var otherPlayer = players.filter(function (item) { return item != player.toLowerCase(); })[0];
+        $("#" + otherPlayer.toLowerCase() + "-player-text").removeClass('bold');
+        switch (winStatus) {
+            case "WhiteWin":
+                $('.player-to-move').html('White Won');
+                $('.win-status').html('1 - 0');
+                break;
+            case "BlackWin":
+                $('.player-to-move').html('Black Won');
+                $('.win-status').html('0 - 1');
+                break;
+            case "Drawn":
+                $('.win-status').html('½ - ½');
+                break;
+            case "InProgress":
+                $('.player-to-move').html(player + "'s Turn");
+                $('.win-status').html('*');
+                $("#" + player.toLowerCase() + "-player-text").addClass('bold');
+                break;
+        }
+    });
+    connection.start();
+}
+connectToBoard();
+connectToMoveControl();
+connectToOpponents();
 //# sourceMappingURL=site.js.map

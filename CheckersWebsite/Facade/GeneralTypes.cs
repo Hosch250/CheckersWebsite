@@ -21,6 +21,14 @@ namespace CheckersWebsite.Facade
         PoolCheckers
     }
 
+    public enum Status
+    {
+        InProgress,
+        Drawn,
+        BlackWin,
+        WhiteWin
+    }
+
     public static class Extensions
     {
         public static Player Convert(this Generic.Player value) =>

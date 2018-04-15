@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.SignalR;
+﻿using CheckersWebsite.Facade;
+using Microsoft.AspNetCore.SignalR;
 using System.Threading.Tasks;
 
 namespace CheckersWebsite.SignalR
@@ -12,9 +13,9 @@ namespace CheckersWebsite.SignalR
     }
     public class OpponentsHub : Hub
     {
-        public Task Update(string player, bool isWon)
+        public Task Update(string player, string status)
         {
-            return Clients.All.InvokeAsync("Update", player);
+            return Clients.All.InvokeAsync("Update", player, status);
         }
     }
     public class BoardHub : Hub

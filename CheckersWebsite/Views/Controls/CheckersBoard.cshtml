@@ -31,19 +31,3 @@
         }
     </svg>
 </div>
-
-<script>
-    $(function () {
-        let httpConnection = new signalR.HttpConnection('/boardHub');
-        let connection = new signalR.HubConnection(httpConnection);
-
-        connection.on('Update', function (id, html) {
-            console.log(id);
-            if ($('.board').attr('id').toLowerCase() === id.toLowerCase()) {
-                $('.board')[0].outerHTML = html;
-            }
-        });
-
-        connection.start();
-    });
-</script>

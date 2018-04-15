@@ -92,10 +92,21 @@ namespace CheckersWebsite.Controllers
             }
 
             _context.SaveChanges();
+
+            var gameStatus = Status.InProgress;
+            if (move.IsDrawn())
+            {
+                gameStatus = Status.Drawn;
+            }
+            if (move.IsWon())
+            {
+                gameStatus = move.GetWinningPlayer() == Player.Black ? Status.BlackWin : Status.WhiteWin;
+            }
+
             
             _movesHub.Clients.All.InvokeAsync("Update", BuildMoveHistory.GetHtml(game.Turns.Select(s => s.ToPdnTurn()).ToList()));
             _boardHub.Clients.All.InvokeAsync("Update", id, BuildBoard.GetHtml(move));
-            _opponentsHub.Clients.All.InvokeAsync("Update", ((Player)game.CurrentPlayer).ToString(), move.IsWon());
+            _opponentsHub.Clients.All.InvokeAsync("Update", ((Player)game.CurrentPlayer).ToString(), gameStatus.ToString());
 
             return Content("");
         }
@@ -147,7 +158,7 @@ namespace CheckersWebsite.Controllers
 
             _movesHub.Clients.All.InvokeAsync("Update", BuildMoveHistory.GetHtml(game.Turns.Select(s => s.ToPdnTurn()).ToList()));
             _boardHub.Clients.All.InvokeAsync("Update", id, BuildBoard.GetHtml(controller));
-            _opponentsHub.Clients.All.InvokeAsync("Update", ((Player)game.CurrentPlayer).ToString(), false);
+            _opponentsHub.Clients.All.InvokeAsync("Update", ((Player)game.CurrentPlayer).ToString(), Status.InProgress.ToString());
 
             return Content("");
         }
