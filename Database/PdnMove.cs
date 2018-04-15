@@ -17,6 +17,9 @@ namespace Database
         public int Player { get; set; }
         public bool? IsJump { get; set; }
 
+        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+        public DateTime CreatedOn { get; set; }
+
         public Guid TurnID { get; set; }
 
         [ForeignKey(nameof(TurnID))]

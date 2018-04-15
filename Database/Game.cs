@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Database
 {
@@ -15,6 +16,9 @@ namespace Database
         public int CurrentPosition { get; set; }
         public string Fen { get; set; }
         public int GameStatus { get; set; }
+
+        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+        public DateTime CreatedOn { get; set; }
 
         public virtual ICollection<PdnTurn> Turns { get; set; }
     }

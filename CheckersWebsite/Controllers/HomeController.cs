@@ -20,8 +20,9 @@ namespace CheckersWebsite.Controllers
         public IActionResult Index()
         {
             var games = _context.Games
-               .Include("Turns")
-               .ToList();
+                .OrderByDescending(g => g.CreatedOn)
+                .Include("Turns")
+                .ToList();
             
             return View(games.Select(g =>
                 (
