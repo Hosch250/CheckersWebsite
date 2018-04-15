@@ -35,11 +35,8 @@ namespace CheckersWebsite.Controllers
         {
             if (id == Guid.Empty)
             {
-                var newGame = GameController.FromVariant(Variant.AmericanCheckers).ToGame();
-                _context.Games.Add(newGame);
-                _context.SaveChanges();
-
-                return Redirect($"/Home/Game/{newGame.ID}");
+                Response.StatusCode = 404;
+                return Content("");
             }
 
             var game = _context.Games
@@ -58,7 +55,11 @@ namespace CheckersWebsite.Controllers
 
         public ActionResult NewGame()
         {
-            return View("~/Views/Controls/Game.cshtml", GameController.FromVariant(Variant.AmericanCheckers));
+            var newGame = GameController.FromVariant(Variant.AmericanCheckers).ToGame();
+            _context.Games.Add(newGame);
+            _context.SaveChanges();
+
+            return Redirect($"/Home/Game/{newGame.ID}");
         }
 
         public IActionResult Error()
