@@ -14,15 +14,15 @@
     <div class="col-sm-3 column move-history match-height-game-control">
         @Html.Partial("~/Views/Controls/MoveControl.cshtml", new List<PdnTurn>())
         <div class="controls">
-            <button class="ctrl-button undo" onclick="undo()">
+            <button class="ctrl-button undo" onclick="undo()" title="Undo">
                 <span class="glyphicon glyphicon-undo"></span>
                 <span class="sr-only">Undo</span>
             </button>
-            <button class="ctrl-button">
+            <button class="ctrl-button" title="New Game">
                 <span class="glyphicon glyphicon-create"></span>
                 <span class="sr-only">New Game</span>
             </button>
-            <button class="ctrl-button hide">
+            <button class="ctrl-button hide" title="Resign">
                 <span class="glyphicon glyphicon-abort"></span>
                 <span class="sr-only">Resign</span>
             </button>
