@@ -38,7 +38,7 @@ namespace CheckersWebsite.Controllers
                     .Include("Turns.Moves")
                     .FirstOrDefault(f => f.ID == id);
 
-            if (game == null)
+            if (game == null || game.GameStatus != (int)Status.InProgress)
             {
                 Response.StatusCode = 403;
                 return Content("");
@@ -143,7 +143,7 @@ namespace CheckersWebsite.Controllers
                     .Include("Turns.Moves")
                     .FirstOrDefault(f => f.ID == id);
 
-            if (game == null)
+            if (game == null || game.GameStatus != (int)Status.InProgress)
             {
                 Response.StatusCode = 403;
                 return Content("");
@@ -204,7 +204,7 @@ namespace CheckersWebsite.Controllers
         public ActionResult Resign(Guid id, Player player)
         {
             var game = _context.Games.FirstOrDefault(f => f.ID == id);
-            if (game == null)
+            if (game == null || game.GameStatus != (int) Status.InProgress)
             {
                 Response.StatusCode = 403;
                 return Content("");
