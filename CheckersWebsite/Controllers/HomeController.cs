@@ -28,12 +28,32 @@ namespace CheckersWebsite.Controllers
 
         public IActionResult Game(Guid id)
         {
+            if (id == Guid.Empty)
+            {
+                var newGame = GameController.FromVariant(Variant.AmericanCheckers).ToGame();
+                _context.Games.Add(newGame);
+                _context.SaveChanges();
+
+                return Redirect($"/Home/Game/{newGame.ID}");
+            }
+
             var game = _context.Games
                     .Include("Turns")
                     .Include("Turns.Moves")
                     .FirstOrDefault(f => f.ID == id);
 
+            if (game == null)
+            {
+                Response.StatusCode = 403;
+                return Content("");
+            }
+
             return View("~/Views/Controls/Game.cshtml", game.ToGame());
+        }
+
+        public ActionResult NewGame()
+        {
+            return View("~/Views/Controls/Game.cshtml", GameController.FromVariant(Variant.AmericanCheckers));
         }
 
         public IActionResult Error()

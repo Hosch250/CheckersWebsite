@@ -32,6 +32,21 @@ button.btn-link {
     content: "\E10A";
 }
 
+.home-page-create {
+    padding-left: 0;
+    width: 100%;
+}
+
+.glyphicon-create {
+    top: 0;
+    bottom: 0;
+    padding: 14.25px 0;
+}
+
+.home-page-create .glyphicon-create {
+    padding: 10px;
+}
+
 .ctrl-button {
     width: 60px;
     height: 60px;

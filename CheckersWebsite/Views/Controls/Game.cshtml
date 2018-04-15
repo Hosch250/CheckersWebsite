@@ -12,15 +12,15 @@
     <div class="col-sm-3 column move-history match-height-game-control">
         @Html.Partial("~/Views/Controls/MoveControl.cshtml", Model.MoveHistory)
         <div class="controls">
-            <button class="ctrl-button undo" onclick="undo()" title="Undo">
+            <button class="ctrl-button undo btn btn-default" onclick="undo()" title="Undo">
                 <span class="glyphicon glyphicon-undo"></span>
                 <span class="sr-only">Undo</span>
             </button>
-            <button class="ctrl-button" title="New Game">
+            <a class="ctrl-button btn btn-default" href="/Home/NewGame" title="Create Game">
                 <span class="glyphicon glyphicon-create"></span>
-                <span class="sr-only">New Game</span>
-            </button>
-            <button class="ctrl-button hide" title="Resign">
+                <span class="sr-only">Create Game</span>
+            </a>
+            <button class="ctrl-button hide btn btn-default" title="Resign">
                 <span class="glyphicon glyphicon-abort"></span>
                 <span class="sr-only">Resign</span>
             </button>
