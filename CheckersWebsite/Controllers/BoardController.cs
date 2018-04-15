@@ -41,7 +41,7 @@ namespace CheckersWebsite.Controllers
             if (!controller.IsValidMove(start, end))
             {
                 Response.StatusCode = 403;
-                return null;
+                return Content("");
             }
 
             var move = controller.Move(start, end);
@@ -153,14 +153,26 @@ namespace CheckersWebsite.Controllers
             }
 
             _context.SaveChanges();
-            var controller = game.ToGame();
-            controller.ID = id;
 
             _movesHub.Clients.All.InvokeAsync("Update", BuildMoveHistory.GetHtml(game.Turns.Select(s => s.ToPdnTurn()).ToList()));
-            _boardHub.Clients.All.InvokeAsync("Update", id, BuildBoard.GetHtml(controller));
+            _boardHub.Clients.All.InvokeAsync("Update", id, BuildBoard.GetHtml(game.ToGame()));
             _opponentsHub.Clients.All.InvokeAsync("Update", ((Player)game.CurrentPlayer).ToString(), Status.InProgress.ToString());
 
             return Content("");
+        }
+
+        public ActionResult DisplayGame(Guid moveID)
+        {
+            var game = _context.Games
+                    .Include("Turns")
+                    .Include("Turns.Moves")
+                    .FirstOrDefault(f => f.Turns.Any(a => a.Moves.Any(m => m.ID == moveID)));
+
+            var move = game.Turns.SelectMany(t => t.Moves).First(f => f.ID == moveID);
+
+            var controller = GameController.FromPosition((Variant)game.Variant, move.ResultingFen);
+
+            return PartialView("~/Views/Controls/CheckersBoard.cshtml", controller);
         }
     }
 
@@ -176,11 +188,14 @@ namespace CheckersWebsite.Controllers
             foreach (var turn in turns)
             {
                 write("<li>");
-                write($@"<input id=""{turn.MoveNumber}-black-move"" class=""toggle"" name=""move"" type=""radio"" value=""{turn.BlackMove.DisplayString}"" /> <label for=""{turn.MoveNumber}-black-move"">{turn.BlackMove.DisplayString}</label>");
 
+                write($@"<input id=""{turn.BlackMove.ID}"" class=""toggle"" name=""move"" type=""radio"" value=""{turn.BlackMove.DisplayString}"" />");
+                write($@"<label for=""{turn.BlackMove.ID}"" onclick=""displayGame('{turn.BlackMove.ID}')"">{turn.BlackMove.DisplayString}</label>");
+                
                 if (turn.WhiteMove != null)
                 {
-                    write($@"<input id=""{turn.MoveNumber}-white-move"" class=""toggle"" name=""move"" type=""radio"" value=""{turn.WhiteMove.DisplayString}"" /> <label for=""{turn.MoveNumber}-white-move"">{turn.WhiteMove.DisplayString}</label>");
+                    write($@"<input id=""{turn.WhiteMove.ID}"" class=""toggle"" name=""move"" type=""radio"" value=""{turn.WhiteMove.DisplayString}"" />");
+                    write($@"<label for=""{turn.WhiteMove.ID}"" onclick=""displayGame('{turn.WhiteMove.ID}')"">{turn.WhiteMove.DisplayString}</label>");
                 }
                 write("</li>");
             }

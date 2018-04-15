@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Checkers;
 using Microsoft.FSharp.Core;
@@ -7,7 +8,7 @@ namespace CheckersWebsite.Facade
 {
     public class PdnMove
     {
-        public PdnMove(List<int> move, string resultingFen, string displayString, PieceType? pieceTypeMoved, Player? player, bool? isJump)
+        public PdnMove(List<int> move, string resultingFen, string displayString, PieceType? pieceTypeMoved, Player? player, bool? isJump, Guid? id = null)
         {
             Move = move;
             ResultingFen = resultingFen;
@@ -15,6 +16,7 @@ namespace CheckersWebsite.Facade
             PieceTypeMoved = pieceTypeMoved;
             Player = player;
             IsJump = isJump;
+            ID = id;
         }
 
         public List<int> Move { get; }
@@ -23,6 +25,7 @@ namespace CheckersWebsite.Facade
         public PieceType? PieceTypeMoved { get; }
         public Player? Player { get; }
         public bool? IsJump { get; }
+        public Guid? ID { get; }
 
         public static implicit operator PdnMove(Generic.PdnMove value)
         {
@@ -53,7 +56,7 @@ namespace CheckersWebsite.Facade
     {
         public static PdnMove ToPdnMove(this Database.PdnMove move)
         {
-            var pdnMove = new PdnMove(move.Move.Split(',').Select(int.Parse).ToList(), move.ResultingFen, move.DisplayString, (PieceType) move.PieceTypeMoved, (Player?) move.Player, move.IsJump);
+            var pdnMove = new PdnMove(move.Move.Split(',').Select(int.Parse).ToList(), move.ResultingFen, move.DisplayString, (PieceType) move.PieceTypeMoved, (Player?) move.Player, move.IsJump, move.ID);
 
             return pdnMove;
         }

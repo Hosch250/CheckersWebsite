@@ -41,9 +41,18 @@ function undo() {
             id: $('.board').attr('id')
         },
         dataType: 'html',
+        method: 'POST'
+    });
+}
+function displayGame(moveID) {
+    $.ajax("Board/DisplayGame", {
+        data: {
+            moveID: moveID
+        },
+        dataType: 'html',
         method: 'POST',
         success: function (data) {
-            $('.board').parent().html(data);
+            $('.board')[0].outerHTML = data;
         }
     });
 }

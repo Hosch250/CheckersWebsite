@@ -226,6 +226,8 @@ namespace CheckersWebsite.Facade
 
                 controller.CurrentCoord = Checkers.PublicAPI.pdnBoardCoords(pdnMembers)[game.CurrentPosition];
             }
+
+            controller.ID = game.ID;
             
             return controller;
         }
