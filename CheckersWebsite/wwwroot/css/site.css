@@ -121,10 +121,16 @@ input[type="radio"].toggle:checked + label {
     background-color: seashell;
 }
 
+#game-list th {
+    background-color: #595959;
+    color: white;
+}
+
 #game-list tr:nth-child(even) {
     background: white;
 }
 
+#game-list th,
 #game-list td {
     padding: 0 30px;
 }
