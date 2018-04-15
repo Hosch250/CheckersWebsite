@@ -1,24 +1,26 @@
-﻿@model List<(Guid ID, int TurnsCount)>
+﻿@model List<(Guid ID, int TurnsCount, string Status)>
 
 <div class="row">
-    <div class="col-sm-2 column">
+    <div class="col-md-2 column">
     </div>
-    <div class="col-sm-6 column game-list-col">
-        <table id="game-list">
+    <div class="col-md-6 column game-list-col">
+        <table id="game-list" class="scrollable">
             <tr>
                 <th>Game ID</th>
                 <th>Turn Count</th>
+                <th>Game Status</th>
             </tr>
             @foreach (var game in Model)
             {
                 <tr>
                     <td><a href="~/Home/Game/@game.ID">@game.ID</a></td>
                     <td>@game.TurnsCount</td>
+                    <td>@game.Status</td>
                 </tr>
             }
         </table>
     </div>
-    <div class="col-sm-3 column">
+    <div class="col-md-3 column">
         <a class="btn btn-default home-page-create" href="/Home/NewGame"><span class="glyphicon glyphicon-create"></span>Create Game</a>
     </div>
 </div>

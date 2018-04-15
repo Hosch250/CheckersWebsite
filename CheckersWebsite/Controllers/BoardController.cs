@@ -38,6 +38,12 @@ namespace CheckersWebsite.Controllers
             var controller = game?.ToGame()
                 ?? GameController.FromVariant(Variant.AmericanCheckers);
 
+            if (controller.IsDrawn() || controller.IsWon())
+            {
+                Response.StatusCode = 403;
+                return Content("");
+            }
+
             if (!controller.IsValidMove(start, end))
             {
                 Response.StatusCode = 403;

@@ -2,14 +2,14 @@
 @model GameController
 
 <div class="row">
-    <div class="col-sm-2 column" style="border: 1px solid black">
+    <div class="col-md-2 column" style="border: 1px solid black">
         @Html.Partial("~/Views/Controls/Opponents.cshtml")
     </div>
-    <div class="col-sm-6 column board-col match-height-game-control">
+    <div class="col-md-6 column board-col match-height-game-control">
         <h2 class="player-to-move h3">Black's Turn</h2>
         @Html.Partial("~/Views/Controls/CheckersBoard.cshtml", Model)
     </div>
-    <div class="col-sm-3 column move-history match-height-game-control">
+    <div class="col-md-3 column move-history match-height-game-control">
         @Html.Partial("~/Views/Controls/MoveControl.cshtml", Model.MoveHistory)
         <div class="controls">
             <button class="ctrl-button undo btn btn-default" onclick="undo()" title="Undo">
