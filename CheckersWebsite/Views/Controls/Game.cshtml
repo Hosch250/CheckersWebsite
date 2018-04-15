@@ -3,10 +3,26 @@
 
 <div class="row">
     <div class="col-md-2 column" style="border: 1px solid black">
-        @Html.Partial("~/Views/Controls/Opponents.cshtml")
+        @Html.Partial("~/Views/Controls/Opponents.cshtml", Model)
     </div>
     <div class="col-md-6 column board-col match-height-game-control">
-        <h2 class="player-to-move h3">Black's Turn</h2>
+        <h2 class="player-to-move h3">
+            @switch (Model.GameStatus)
+            {
+                case Status.InProgress:
+                    @: @Model.CurrentPlayer's Turn
+                    break;
+                case Status.Drawn:
+                    @: Game Drawn
+                    break;
+                case Status.BlackWin:
+                    @: Black Won
+                    break;
+                case Status.WhiteWin:
+                    @: White Won
+                    break;
+            }
+        </h2>
         @Html.Partial("~/Views/Controls/CheckersBoard.cshtml", Model)
     </div>
     <div class="col-md-3 column move-history match-height-game-control">
@@ -16,11 +32,11 @@
                 <span class="glyphicon glyphicon-undo"></span>
                 <span class="sr-only">Undo</span>
             </button>
-            <a id="new-game" class="ctrl-button btn btn-default @(Model.ID == Guid.Empty ? "" : "hide")" href="/Home/NewGame" title="Create Game">
+            <a id="new-game" class="ctrl-button btn btn-default @(Model.ID == Guid.Empty || Model.GameStatus != Status.InProgress ? "" : "hide")" href="/Home/NewGame" title="Create Game">
                 <span class="glyphicon glyphicon-create"></span>
                 <span class="sr-only">Create Game</span>
             </a>
-            <button id="resign" class="ctrl-button btn btn-default @(Model.ID == Guid.Empty ? "hide" : "")" onclick="resign()" title="Resign">
+            <button id="resign" class="ctrl-button btn btn-default @(Model.ID == Guid.Empty || Model.GameStatus != Status.InProgress ? "hide" : "")" onclick="resign()" title="Resign">
                 <span class="glyphicon glyphicon-abort"></span>
                 <span class="sr-only">Resign</span>
             </button>

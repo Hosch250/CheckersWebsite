@@ -61,7 +61,7 @@ namespace CheckersWebsite.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Black Win.
+        ///   Looks up a localized string similar to Black Won.
         /// </summary>
         public static string BlackWin {
             get {
@@ -88,7 +88,7 @@ namespace CheckersWebsite.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to White Win.
+        ///   Looks up a localized string similar to White Won.
         /// </summary>
         public static string WhiteWin {
             get {

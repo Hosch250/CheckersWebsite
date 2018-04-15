@@ -127,6 +127,7 @@ function connectToOpponents() {
                 $('.win-status').html('0 - 1');
                 break;
             case "Drawn":
+                $('.player-to-move').html('Game Drawn');
                 $('.win-status').html('½ - ½');
                 break;
             case "InProgress":

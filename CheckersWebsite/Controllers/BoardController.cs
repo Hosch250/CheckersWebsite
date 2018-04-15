@@ -47,12 +47,6 @@ namespace CheckersWebsite.Controllers
             var controller = game?.ToGame()
                 ?? GameController.FromVariant(Variant.AmericanCheckers);
 
-            if (controller.IsDrawn() || controller.IsWon())
-            {
-                Response.StatusCode = 403;
-                return Content("");
-            }
-
             if (!controller.IsValidMove(start, end))
             {
                 Response.StatusCode = 403;
@@ -104,14 +98,14 @@ namespace CheckersWebsite.Controllers
 
                 game.CurrentPosition = move.GetCurrentPosition();
                 game.CurrentPlayer = (int)move.CurrentPlayer;
-                game.GameStatus = (int)move.GameStatus();
+                game.GameStatus = (int)move.GetGameStatus();
             }
 
             _context.SaveChanges();
             
             _movesHub.Clients.All.InvokeAsync("Update", BuildMoveHistory.GetHtml(game.Turns.Select(s => s.ToPdnTurn()).ToList()));
             _boardHub.Clients.All.InvokeAsync("Update", id, BuildBoard.GetHtml(move, true));
-            _opponentsHub.Clients.All.InvokeAsync("Update", ((Player)game.CurrentPlayer).ToString(), move.GameStatus().ToString());
+            _opponentsHub.Clients.All.InvokeAsync("Update", ((Player)game.CurrentPlayer).ToString(), move.GetGameStatus().ToString());
 
             if (game.Turns.Count == 1 && game.Turns.ElementAt(0).Moves.Count == 1)
             {

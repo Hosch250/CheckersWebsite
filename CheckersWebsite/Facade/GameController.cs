@@ -114,7 +114,7 @@ namespace CheckersWebsite.Facade
             return moves.Select(i => i.Select(c => (Coord)c).ToList()).ToList();
         }
 
-        public Status GameStatus()
+        public Status GetGameStatus()
         {
             var gameStatus = Status.InProgress;
             if (IsDrawn())
@@ -128,6 +128,8 @@ namespace CheckersWebsite.Facade
 
             return gameStatus;
         }
+
+        public Status GameStatus { get; set; }
 
         public bool IsValidMove(Coord startCoord, Coord endCoord) =>
             Checkers.PublicAPI.isValidMove(startCoord, endCoord, this);
@@ -208,7 +210,7 @@ namespace CheckersWebsite.Facade
             {
                 ID = controller.ID == Guid.Empty ? Guid.NewGuid() : controller.ID,
                 CurrentPlayer = (int)controller.CurrentPlayer,
-                GameStatus = (int) controller.GameStatus(),
+                GameStatus = (int) (controller.GameStatus == Status.InProgress ? controller.GetGameStatus() : controller.GameStatus),
                 Fen = controller.Fen,
                 InitialPosition = controller.InitialPosition,
                 CurrentPosition = controller.GetCurrentPosition(),
@@ -243,6 +245,7 @@ namespace CheckersWebsite.Facade
             }
 
             controller.ID = game.ID;
+            controller.GameStatus = (Status) game.GameStatus;
             
             return controller;
         }

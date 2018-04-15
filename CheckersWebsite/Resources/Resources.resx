@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="BlackWin" xml:space="preserve">
-    <value>Black Win</value>
+    <value>Black Won</value>
   </data>
   <data name="Drawn" xml:space="preserve">
     <value>Drawn</value>
@@ -127,6 +127,6 @@
     <value>In Progress</value>
   </data>
   <data name="WhiteWin" xml:space="preserve">
-    <value>White Win</value>
+    <value>White Won</value>
   </data>
 </root>

@@ -1,14 +1,33 @@
-﻿<div><b>American Checkers</b></div>
+﻿@using CheckersWebsite.Facade
+@model GameController
+
+<div><b>American Checkers</b></div>
 <div>
     <svg width="20" height="20" style="background-color: white" version="1.1" xmlns="http://www.w3.org/2000/svg">
         <circle cx="10" cy="15" r="4" stroke="black" fill="white" stroke-width="2"></circle>
     </svg>
-    <span id="white-player-text">Human</span>
+    <span id="white-player-text" class="@(Model.GameStatus == Status.InProgress && Model.CurrentPlayer == Player.White ? "bold" : "")">Human</span>
 </div>
 <div>
     <svg width="20" height="20" style="background-color: white" version="1.1" xmlns="http://www.w3.org/2000/svg">
         <circle cx="10" cy="15" r="4" stroke="black" fill="black" stroke-width="2"></circle>
     </svg>
-    <span id="black-player-text" class="bold">Human</span>
+    <span id="black-player-text" class="@(Model.GameStatus == Status.InProgress && Model.CurrentPlayer == Player.Black ? "bold" : "")">Human</span>
 </div>
-<div class="win-status" style="text-align: center">*</div>
+<div class="win-status" style="text-align: center">
+    @switch (Model.GameStatus)
+    {
+        case Status.InProgress:
+            @: *
+            break;
+        case Status.Drawn:
+            @: ½ - ½
+            break;
+        case Status.BlackWin:
+            @: 0 - 1
+            break;
+        case Status.WhiteWin:
+            @: 1 - 0
+            break;
+    }
+</div>
