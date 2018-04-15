@@ -14,14 +14,17 @@ namespace CheckersWebsite.Controllers
     {
         private readonly Database.Context _context;
         private readonly IHubContext<MovesHub> _movesHub;
+        private readonly IHubContext<BoardHub> _boardHub;
         private readonly IHubContext<OpponentsHub> _opponentsHub;
 
         public BoardController(Database.Context context,
             IHubContext<MovesHub> movesHub,
+            IHubContext<BoardHub> boardHub,
             IHubContext<OpponentsHub> opponentsHub)
         {
             _context = context;
             _movesHub = movesHub;
+            _boardHub = boardHub;
             _opponentsHub = opponentsHub;
         }
 
@@ -91,9 +94,10 @@ namespace CheckersWebsite.Controllers
             _context.SaveChanges();
             
             _movesHub.Clients.All.InvokeAsync("Update", BuildMoveHistory.GetHtml(game.Turns.Select(s => s.ToPdnTurn()).ToList()));
+            _boardHub.Clients.All.InvokeAsync("Update", id, BuildBoard.GetHtml(move));
             _opponentsHub.Clients.All.InvokeAsync("Update", ((Player)game.CurrentPlayer).ToString());
 
-            return PartialView("~/Views/Controls/CheckersBoard.cshtml", move);
+            return Content("");
         }
 
         public ActionResult Undo(Guid id)
@@ -138,13 +142,14 @@ namespace CheckersWebsite.Controllers
             }
 
             _context.SaveChanges();
-
-            _movesHub.Clients.All.InvokeAsync("Update", BuildMoveHistory.GetHtml(game.Turns.Select(s => s.ToPdnTurn()).ToList()));
-            _opponentsHub.Clients.All.InvokeAsync("Update", ((Player)game.CurrentPlayer).ToString());
-
             var controller = game.ToGame();
             controller.ID = id;
-            return PartialView("~/Views/Controls/CheckersBoard.cshtml", controller);
+
+            _movesHub.Clients.All.InvokeAsync("Update", BuildMoveHistory.GetHtml(game.Turns.Select(s => s.ToPdnTurn()).ToList()));
+            _boardHub.Clients.All.InvokeAsync("Update", id, BuildBoard.GetHtml(controller));
+            _opponentsHub.Clients.All.InvokeAsync("Update", ((Player)game.CurrentPlayer).ToString());
+
+            return Content("");
         }
     }
 
@@ -169,6 +174,48 @@ namespace CheckersWebsite.Controllers
                 write("</li>");
             }
             write("</ol>");
+
+            return stringWriter.ToString();
+        }
+    }
+
+    public class BuildBoard
+    {
+        public static string GetHtml(GameController game)
+        {
+            var stringWriter = new StringWriter();
+            Action<string> write = stringWriter.Write;
+            
+            int getAdjustedIndex(int value)
+            {
+                return game.CurrentPlayer == Player.Black ? 7 - value : value;
+            }
+
+            write($@"<div class=""board"" id=""{game.ID}"" player=""{game.CurrentPlayer}"">");
+            write(@"<svg width=""100%"" height=""100%"" style=""background-color: #cccccc"" version=""1.1"" xmlns=""http://www.w3.org/2000/svg"" viewBox=""0 0 50 50"">");
+
+            for (var row = 0; row < 8; row++)
+            {
+                for (var col = 0; col < 8; col++)
+                {
+                    write($@"<image onclick=""$boardClick({getAdjustedIndex(row)}, {getAdjustedIndex(col)})"" y=""{getAdjustedIndex(row) * 12.5m}%"" x=""{getAdjustedIndex(col) * 12.5m}%"" width=""12.5%"" height=""12.5%"" xlink:href=""/images/SteelTheme/{(getAdjustedIndex(col) % 2 == getAdjustedIndex(row) % 2 ? "Light" : "Dark")}Steel.png"" />");
+
+                    var piece = game.Board[row, col];
+
+                    if (piece != null)
+                    {
+                        write($@"<svg onclick=""$pieceClick({getAdjustedIndex(row)}, {getAdjustedIndex(col)})"" y=""{getAdjustedIndex(row) * 12.5m}%"" x=""{getAdjustedIndex(col) * 12.5m}%"" width=""12.5%"" height=""12.5%"">");
+
+                        write($@"<image id=""piece{getAdjustedIndex(row)}{getAdjustedIndex(col)}"" height=""100%"" width=""100%"" xlink:href=""/images/SteelTheme/{piece.Player}{piece.PieceType}.png"" />");
+                        write(@"<rect class=""selected-piece-highlight"" height=""100%"" width=""100%"" style=""fill: none; stroke: goldenrod""></rect>");
+
+                        write("</svg>");
+                    }
+                }
+            }
+
+            write("</svg>");
+            write("</div>");
 
             return stringWriter.ToString();
         }

@@ -17,4 +17,11 @@ namespace CheckersWebsite.SignalR
             return Clients.All.InvokeAsync("Update", player);
         }
     }
+    public class BoardHub : Hub
+    {
+        public Task Update(string id, string html)
+        {
+            return Clients.All.InvokeAsync("Update", id, html);
+        }
+    }
 }

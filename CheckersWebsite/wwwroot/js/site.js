@@ -32,13 +32,7 @@ function $boardClick(row, col) {
             }
         },
         dataType: 'html',
-        method: 'POST',
-        success: function (data) {
-            $('.board').parent().html(data);
-        },
-        error: function (err) {
-            console.log(err);
-        }
+        method: 'POST'
     });
 }
 function $undo() {
@@ -50,9 +44,6 @@ function $undo() {
         method: 'POST',
         success: function (data) {
             $('.board').parent().html(data);
-        },
-        error: function (err) {
-            console.log(err);
         }
     });
 }

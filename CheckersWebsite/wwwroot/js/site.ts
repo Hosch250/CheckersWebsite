@@ -41,13 +41,7 @@ function $boardClick(row, col) {
                 }
             },
             dataType: 'html',
-            method: 'POST',
-            success(data) {
-                $('.board').parent().html(data);
-            },
-            error(err) {
-                console.log(err);
-            }
+            method: 'POST'
         });
 }
 
@@ -61,9 +55,6 @@ function $undo() {
             method: 'POST',
             success(data) {
                 $('.board').parent().html(data);
-            },
-            error(err) {
-                console.log(err);
             }
         });
 }

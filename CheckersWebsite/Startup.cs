@@ -20,7 +20,8 @@ namespace CheckersWebsite
         public void ConfigureServices(IServiceCollection services)
         {
             string conString = ConfigurationExtensions
-                  .GetConnectionString(Configuration, "Database");
+                  .GetConnectionString(Configuration, "Database") ??
+                  "Server=LAPTOP-JPMC7HKV\\SQLEXPRESS;Database=CheckersDatabase;Trusted_Connection=True;";
 
             // entity framework
             services.AddEntityFrameworkSqlServer()
@@ -57,6 +58,7 @@ namespace CheckersWebsite
             {
                 routes.MapHub<SignalR.MovesHub>("movesHub");
                 routes.MapHub<SignalR.OpponentsHub>("opponentsHub");
+                routes.MapHub<SignalR.BoardHub>("boardHub");
             });
 
             app.UseStaticFiles();
