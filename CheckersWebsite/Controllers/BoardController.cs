@@ -105,7 +105,7 @@ namespace CheckersWebsite.Controllers
 
             
             _movesHub.Clients.All.InvokeAsync("Update", BuildMoveHistory.GetHtml(game.Turns.Select(s => s.ToPdnTurn()).ToList()));
-            _boardHub.Clients.All.InvokeAsync("Update", id, BuildBoard.GetHtml(move));
+            _boardHub.Clients.All.InvokeAsync("Update", id, BuildBoard.GetHtml(move, true));
             _opponentsHub.Clients.All.InvokeAsync("Update", ((Player)game.CurrentPlayer).ToString(), gameStatus.ToString());
 
             return Content("");
@@ -155,7 +155,7 @@ namespace CheckersWebsite.Controllers
             _context.SaveChanges();
 
             _movesHub.Clients.All.InvokeAsync("Update", BuildMoveHistory.GetHtml(game.Turns.Select(s => s.ToPdnTurn()).ToList()));
-            _boardHub.Clients.All.InvokeAsync("Update", id, BuildBoard.GetHtml(game.ToGame()));
+            _boardHub.Clients.All.InvokeAsync("Update", id, BuildBoard.GetHtml(game.ToGame(), true));
             _opponentsHub.Clients.All.InvokeAsync("Update", ((Player)game.CurrentPlayer).ToString(), Status.InProgress.ToString());
 
             return Content("");
@@ -169,10 +169,17 @@ namespace CheckersWebsite.Controllers
                     .FirstOrDefault(f => f.Turns.Any(a => a.Moves.Any(m => m.ID == moveID)));
 
             var move = game.Turns.SelectMany(t => t.Moves).First(f => f.ID == moveID);
+            var turn = game.Turns.First(f => f.ID == move.TurnID);
+
+            bool isLastTurn()
+            {
+                return game.Turns.OrderBy(a => a.MoveNumber).Last().MoveNumber == turn.MoveNumber &&
+                    (turn.Moves.Count == 1 || move.Player == (int) Player.White);
+            }
 
             var controller = GameController.FromPosition((Variant)game.Variant, move.ResultingFen);
 
-            return PartialView("~/Views/Controls/CheckersBoard.cshtml", controller);
+            return Content(BuildBoard.GetHtml(controller, isLastTurn()));
         }
     }
 
@@ -207,7 +214,7 @@ namespace CheckersWebsite.Controllers
 
     public class BuildBoard
     {
-        public static string GetHtml(GameController game)
+        public static string GetHtml(GameController game, bool allowMove)
         {
             var stringWriter = new StringWriter();
             Action<string> write = stringWriter.Write;
@@ -224,13 +231,13 @@ namespace CheckersWebsite.Controllers
             {
                 for (var col = 0; col < 8; col++)
                 {
-                    write($@"<image onclick=""boardClick({getAdjustedIndex(row)}, {getAdjustedIndex(col)})"" y=""{getAdjustedIndex(row) * 12.5m}%"" x=""{getAdjustedIndex(col) * 12.5m}%"" width=""12.5%"" height=""12.5%"" xlink:href=""/images/SteelTheme/{(getAdjustedIndex(col) % 2 == getAdjustedIndex(row) % 2 ? "Light" : "Dark")}Steel.png"" />");
+                    write($@"<image {(allowMove ? $@"onclick=""boardClick({getAdjustedIndex(row)}, {getAdjustedIndex(col)})""" : "")} y=""{getAdjustedIndex(row) * 12.5m}%"" x=""{getAdjustedIndex(col) * 12.5m}%"" width=""12.5%"" height=""12.5%"" xlink:href=""/images/SteelTheme/{(getAdjustedIndex(col) % 2 == getAdjustedIndex(row) % 2 ? "Light" : "Dark")}Steel.png"" />");
 
                     var piece = game.Board[row, col];
 
                     if (piece != null)
                     {
-                        write($@"<svg onclick=""pieceClick({getAdjustedIndex(row)}, {getAdjustedIndex(col)})"" y=""{getAdjustedIndex(row) * 12.5m}%"" x=""{getAdjustedIndex(col) * 12.5m}%"" width=""12.5%"" height=""12.5%"">");
+                        write($@"<svg {(allowMove ? $@"onclick=""pieceClick({getAdjustedIndex(row)}, {getAdjustedIndex(col)})""" : "")} y=""{getAdjustedIndex(row) * 12.5m}%"" x=""{getAdjustedIndex(col) * 12.5m}%"" width=""12.5%"" height=""12.5%"">");
 
                         write($@"<image id=""piece{getAdjustedIndex(row)}{getAdjustedIndex(col)}"" height=""100%"" width=""100%"" xlink:href=""/images/SteelTheme/{piece.Player}{piece.PieceType}.png"" />");
                         write(@"<rect class=""selected-piece-highlight"" height=""100%"" width=""100%"" style=""fill: none; stroke: goldenrod""></rect>");
