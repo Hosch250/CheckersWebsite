@@ -12,7 +12,7 @@ namespace CheckersWebsite.SignalR
     }
     public class OpponentsHub : Hub
     {
-        public Task Update(string player)
+        public Task Update(string player, bool isWon)
         {
             return Clients.All.InvokeAsync("Update", player);
         }

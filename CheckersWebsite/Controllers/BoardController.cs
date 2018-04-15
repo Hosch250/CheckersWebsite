@@ -95,7 +95,7 @@ namespace CheckersWebsite.Controllers
             
             _movesHub.Clients.All.InvokeAsync("Update", BuildMoveHistory.GetHtml(game.Turns.Select(s => s.ToPdnTurn()).ToList()));
             _boardHub.Clients.All.InvokeAsync("Update", id, BuildBoard.GetHtml(move));
-            _opponentsHub.Clients.All.InvokeAsync("Update", ((Player)game.CurrentPlayer).ToString());
+            _opponentsHub.Clients.All.InvokeAsync("Update", ((Player)game.CurrentPlayer).ToString(), move.IsWon());
 
             return Content("");
         }
@@ -147,7 +147,7 @@ namespace CheckersWebsite.Controllers
 
             _movesHub.Clients.All.InvokeAsync("Update", BuildMoveHistory.GetHtml(game.Turns.Select(s => s.ToPdnTurn()).ToList()));
             _boardHub.Clients.All.InvokeAsync("Update", id, BuildBoard.GetHtml(controller));
-            _opponentsHub.Clients.All.InvokeAsync("Update", ((Player)game.CurrentPlayer).ToString());
+            _opponentsHub.Clients.All.InvokeAsync("Update", ((Player)game.CurrentPlayer).ToString(), false);
 
             return Content("");
         }
@@ -198,13 +198,13 @@ namespace CheckersWebsite.Controllers
             {
                 for (var col = 0; col < 8; col++)
                 {
-                    write($@"<image onclick=""$boardClick({getAdjustedIndex(row)}, {getAdjustedIndex(col)})"" y=""{getAdjustedIndex(row) * 12.5m}%"" x=""{getAdjustedIndex(col) * 12.5m}%"" width=""12.5%"" height=""12.5%"" xlink:href=""/images/SteelTheme/{(getAdjustedIndex(col) % 2 == getAdjustedIndex(row) % 2 ? "Light" : "Dark")}Steel.png"" />");
+                    write($@"<image onclick=""boardClick({getAdjustedIndex(row)}, {getAdjustedIndex(col)})"" y=""{getAdjustedIndex(row) * 12.5m}%"" x=""{getAdjustedIndex(col) * 12.5m}%"" width=""12.5%"" height=""12.5%"" xlink:href=""/images/SteelTheme/{(getAdjustedIndex(col) % 2 == getAdjustedIndex(row) % 2 ? "Light" : "Dark")}Steel.png"" />");
 
                     var piece = game.Board[row, col];
 
                     if (piece != null)
                     {
-                        write($@"<svg onclick=""$pieceClick({getAdjustedIndex(row)}, {getAdjustedIndex(col)})"" y=""{getAdjustedIndex(row) * 12.5m}%"" x=""{getAdjustedIndex(col) * 12.5m}%"" width=""12.5%"" height=""12.5%"">");
+                        write($@"<svg onclick=""pieceClick({getAdjustedIndex(row)}, {getAdjustedIndex(col)})"" y=""{getAdjustedIndex(row) * 12.5m}%"" x=""{getAdjustedIndex(col) * 12.5m}%"" width=""12.5%"" height=""12.5%"">");
 
                         write($@"<image id=""piece{getAdjustedIndex(row)}{getAdjustedIndex(col)}"" height=""100%"" width=""100%"" xlink:href=""/images/SteelTheme/{piece.Player}{piece.PieceType}.png"" />");
                         write(@"<rect class=""selected-piece-highlight"" height=""100%"" width=""100%"" style=""fill: none; stroke: goldenrod""></rect>");

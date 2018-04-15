@@ -18,16 +18,30 @@
         let httpConnection = new signalR.HttpConnection('/opponentsHub');
         let connection = new signalR.HubConnection(httpConnection);
 
-        connection.on('Update', function (data) {
-            switch (data.toLowerCase()) {
-                case "black":
-                    $('#white-player-text').removeClass('bold');
-                    $('#black-player-text').addClass('bold');
-                    break;
-                case "white":
-                    $('#black-player-text').removeClass('bold');
-                    $('#white-player-text').addClass('bold');
-                    break;
+        connection.on('Update', function (player, isWon) {
+            player = player.toLowerCase();
+
+            if (player === "black" && isWon === false) {
+                $('#white-player-text').removeClass('bold');
+                $('#black-player-text').addClass('bold');
+
+                $('.player-to-move').html('Black\'s Turn');
+
+            } else if (player === "white" && isWon === false) {
+                $('#black-player-text').removeClass('bold');
+                $('#white-player-text').addClass('bold');
+
+                $('.player-to-move').html('White\'s Turn');
+
+            } else if (player === "black" && isWon === true) {
+                $('#white-player-text').removeClass('bold');
+
+                $('.player-to-move').html('White Won');
+
+            } else if (player === "white" && isWon === true) {
+                $('#black-player-text').removeClass('bold');
+
+                $('.player-to-move').html('Black Won');
             }
         });
 

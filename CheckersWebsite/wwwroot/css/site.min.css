@@ -100,3 +100,8 @@ input[type="radio"].toggle {
 .selected + .selected-piece-highlight {
     stroke-width: .75;
 }
+
+.player-to-move {
+    margin-top: 0;
+    text-align: center;
+}

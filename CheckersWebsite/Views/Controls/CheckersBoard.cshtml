@@ -17,12 +17,12 @@
         {
             for (var col = 0; col < 8; col++)
             {
-                <image onclick="$boardClick(@GetAdjustedIndex(row), @GetAdjustedIndex(col))" y="@(GetAdjustedIndex(row) * 12.5m)%" x="@(GetAdjustedIndex(col) * 12.5m)%" width="12.5%" height="12.5%" xlink:href="@Url.Content($"~/images/SteelTheme/{(GetAdjustedIndex(col) % 2 == GetAdjustedIndex(row) % 2 ? "Light" : "Dark")}Steel.png")" />
+                <image onclick="boardClick(@GetAdjustedIndex(row), @GetAdjustedIndex(col))" y="@(GetAdjustedIndex(row) * 12.5m)%" x="@(GetAdjustedIndex(col) * 12.5m)%" width="12.5%" height="12.5%" xlink:href="@Url.Content($"~/images/SteelTheme/{(GetAdjustedIndex(col) % 2 == GetAdjustedIndex(row) % 2 ? "Light" : "Dark")}Steel.png")" />
 
                 var piece = Model.Board[row, col];
                 if (piece != null)
                 {
-                    <svg onclick="$pieceClick(@GetAdjustedIndex(row), @GetAdjustedIndex(col))" y="@(GetAdjustedIndex(row) * 12.5m)%" x="@(GetAdjustedIndex(col) * 12.5m)%" width="12.5%" height="12.5%">
+                    <svg onclick="pieceClick(@GetAdjustedIndex(row), @GetAdjustedIndex(col))" y="@(GetAdjustedIndex(row) * 12.5m)%" x="@(GetAdjustedIndex(col) * 12.5m)%" width="12.5%" height="12.5%">
                         <image id="piece@(GetAdjustedIndex(row))@(GetAdjustedIndex(col))" height="100%" width="100%" xlink:href="@Url.Content($"~/images/SteelTheme/{piece.Player}{piece.PieceType}.png")" />
                         <rect class="selected-piece-highlight" height="100%" width="100%" style="fill: none; stroke: goldenrod"></rect>
                     </svg>
@@ -40,7 +40,7 @@
         connection.on('Update', function (id, html) {
             console.log(id);
             if ($('.board').attr('id').toLowerCase() === id.toLowerCase()) {
-                $('.board').parent().html(html);
+                $('.board')[0].outerHTML = html;
             }
         });
 

@@ -11,14 +11,14 @@ function getAdjustedIndex(value) {
     }
 }
 
-function $pieceClick(row, col) {
+function pieceClick(row, col) {
     $('.selected').removeClass('selected');
     $(`#piece${row}${col}`).addClass('selected');
 
     $('.selected').closest('rect').css('stroke-width', '1');
 }
 
-function $boardClick(row, col) {
+function boardClick(row, col) {
     if ($('.selected').length === 0) {
         return;
     }
@@ -45,7 +45,7 @@ function $boardClick(row, col) {
         });
 }
 
-function $undo() {
+function undo() {
     $.ajax("Board/Undo",
         {
             data: {
