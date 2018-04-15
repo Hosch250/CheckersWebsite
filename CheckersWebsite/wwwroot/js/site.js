@@ -19,7 +19,7 @@ function boardClick(row, col) {
     var rowCol = $('.selected').attr('id').replace('piece', '');
     var startRow = getAdjustedIndex(parseInt(rowCol[0]));
     var startCol = getAdjustedIndex(parseInt(rowCol[1]));
-    $.ajax("Board/MovePiece", {
+    $.ajax("/Board/MovePiece", {
         data: {
             id: $('.board').attr('id'),
             start: {
@@ -36,7 +36,7 @@ function boardClick(row, col) {
     });
 }
 function undo() {
-    $.ajax("Board/Undo", {
+    $.ajax("/Board/Undo", {
         data: {
             id: $('.board').attr('id')
         },
@@ -45,7 +45,7 @@ function undo() {
     });
 }
 function displayGame(moveID) {
-    $.ajax("Board/DisplayGame", {
+    $.ajax("/Board/DisplayGame", {
         data: {
             moveID: moveID
         },
