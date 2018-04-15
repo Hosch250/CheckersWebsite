@@ -14,6 +14,7 @@ namespace Database
         public string InitialPosition { get; set; }
         public int CurrentPosition { get; set; }
         public string Fen { get; set; }
+        public int GameStatus { get; set; }
 
         public virtual ICollection<PdnTurn> Turns { get; set; }
     }

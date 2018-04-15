@@ -114,6 +114,21 @@ namespace CheckersWebsite.Facade
             return moves.Select(i => i.Select(c => (Coord)c).ToList()).ToList();
         }
 
+        public Status GameStatus()
+        {
+            var gameStatus = Status.InProgress;
+            if (IsDrawn())
+            {
+                gameStatus = Status.Drawn;
+            }
+            if (IsWon())
+            {
+                gameStatus = GetWinningPlayer() == Player.Black ? Status.BlackWin : Status.WhiteWin;
+            }
+
+            return gameStatus;
+        }
+
         public bool IsValidMove(Coord startCoord, Coord endCoord) =>
             Checkers.PublicAPI.isValidMove(startCoord, endCoord, this);
 
@@ -189,11 +204,11 @@ namespace CheckersWebsite.Facade
 
         public static Database.Game ToGame(this GameController controller)
         {
-
             var game = new Database.Game()
             {
                 ID = controller.ID == Guid.Empty ? Guid.NewGuid() : controller.ID,
                 CurrentPlayer = (int)controller.CurrentPlayer,
+                GameStatus = (int) controller.GameStatus(),
                 Fen = controller.Fen,
                 InitialPosition = controller.InitialPosition,
                 CurrentPosition = controller.GetCurrentPosition(),

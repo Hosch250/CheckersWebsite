@@ -89,24 +89,14 @@ namespace CheckersWebsite.Controllers
 
                 game.CurrentPosition = move.GetCurrentPosition();
                 game.CurrentPlayer = (int)move.CurrentPlayer;
+                game.GameStatus = (int)move.GameStatus();
             }
 
             _context.SaveChanges();
-
-            var gameStatus = Status.InProgress;
-            if (move.IsDrawn())
-            {
-                gameStatus = Status.Drawn;
-            }
-            if (move.IsWon())
-            {
-                gameStatus = move.GetWinningPlayer() == Player.Black ? Status.BlackWin : Status.WhiteWin;
-            }
-
             
             _movesHub.Clients.All.InvokeAsync("Update", BuildMoveHistory.GetHtml(game.Turns.Select(s => s.ToPdnTurn()).ToList()));
             _boardHub.Clients.All.InvokeAsync("Update", id, BuildBoard.GetHtml(move, true));
-            _opponentsHub.Clients.All.InvokeAsync("Update", ((Player)game.CurrentPlayer).ToString(), gameStatus.ToString());
+            _opponentsHub.Clients.All.InvokeAsync("Update", ((Player)game.CurrentPlayer).ToString(), move.GameStatus().ToString());
 
             return Content("");
         }
