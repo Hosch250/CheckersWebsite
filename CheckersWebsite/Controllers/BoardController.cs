@@ -179,6 +179,8 @@ namespace CheckersWebsite.Controllers
 
             var controller = GameController.FromPosition((Variant)game.Variant, move.ResultingFen);
 
+            _opponentsHub.Clients.Client(Request.HttpContext.Connection.Id).InvokeAsync("Update", ((Player)game.CurrentPlayer).ToString(), Status.BlackWin.ToString());
+
             return Content(BuildBoard.GetHtml(controller, isLastTurn()));
         }
     }

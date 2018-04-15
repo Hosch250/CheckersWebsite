@@ -1,0 +1,39 @@
+﻿@using CheckersWebsite.Facade
+@model GameController
+
+<div class="row">
+    <div class="col-sm-2 column" style="border: 1px solid black">
+        @Html.Partial("~/Views/Controls/Opponents.cshtml")
+    </div>
+    <div class="col-sm-6 column board-col match-height-game-control">
+        <h2 class="player-to-move h3">Black's Turn</h2>
+        @Html.Partial("~/Views/Controls/CheckersBoard.cshtml", Model)
+    </div>
+    <div class="col-sm-3 column move-history match-height-game-control">
+        @Html.Partial("~/Views/Controls/MoveControl.cshtml", Model.MoveHistory)
+        <div class="controls">
+            <button class="ctrl-button undo" onclick="undo()" title="Undo">
+                <span class="glyphicon glyphicon-undo"></span>
+                <span class="sr-only">Undo</span>
+            </button>
+            <button class="ctrl-button" title="New Game">
+                <span class="glyphicon glyphicon-create"></span>
+                <span class="sr-only">New Game</span>
+            </button>
+            <button class="ctrl-button hide" title="Resign">
+                <span class="glyphicon glyphicon-abort"></span>
+                <span class="sr-only">Resign</span>
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        $('.match-height-game-control').matchHeight({ target: $('.board-col') });
+    });
+
+    $(function () {
+        $('ol.moves').matchHeight({ target: $('.board'), subtractFromTarget: 61 });
+    });
+</script>

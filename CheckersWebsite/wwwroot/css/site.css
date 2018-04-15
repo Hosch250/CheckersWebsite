@@ -105,3 +105,26 @@ input[type="radio"].toggle:checked + label {
     margin-top: 0;
     text-align: center;
 }
+
+.game-list-col {
+    padding: 0;
+}
+
+#game-list {
+    width: 100%;
+    border: 1px solid darkgray;
+    padding: 0;
+}
+
+#game-list tr {
+    height: 30px;
+    background-color: seashell;
+}
+
+#game-list tr:nth-child(even) {
+    background: white;
+}
+
+#game-list td {
+    padding: 0 30px;
+}

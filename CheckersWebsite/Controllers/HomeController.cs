@@ -1,32 +1,39 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using CheckersWebsite.Models;
+using Microsoft.EntityFrameworkCore;
+using CheckersWebsite.Facade;
+using System;
 
 namespace CheckersWebsite.Controllers
 {
     public class HomeController : Controller
     {
+        private readonly Database.Context _context;
+
+        public HomeController(Database.Context context)
+        {
+            _context = context;
+        }
+
         public IActionResult Index()
         {
-            return View();
+            var games = _context.Games
+               .Include("Turns")
+               .ToList();
+
+            return View(games.Select(g => (ID: g.ID, Turns: g.Turns.Count)).ToList());
         }
 
-        public IActionResult About()
+        public IActionResult Game(Guid id)
         {
-            ViewData["Message"] = "Your application description page.";
+            var game = _context.Games
+                    .Include("Turns")
+                    .Include("Turns.Moves")
+                    .FirstOrDefault(f => f.ID == id);
 
-            return View();
-        }
-
-        public IActionResult Contact()
-        {
-            ViewData["Message"] = "Your contact page.";
-
-            return View();
+            return View("~/Views/Controls/Game.cshtml", game.ToGame());
         }
 
         public IActionResult Error()

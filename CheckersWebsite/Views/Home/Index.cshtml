@@ -1,41 +1,17 @@
-﻿@using CheckersWebsite.Facade
-@{
-    ViewData["Title"] = "Home Page";
-}
+﻿@model List<(Guid ID, int TurnsCount)>
 
 <div class="row">
-    <div class="col-sm-2 column" style="border: 1px solid black">
-        @Html.Partial("~/Views/Controls/Opponents.cshtml")
+    <div class="col-sm-2 column">
     </div>
-    <div class="col-sm-6 column board-col match-height-game-control">
-        <h2 class="player-to-move h3">Black's Turn</h2>
-        @Html.Partial("~/Views/Controls/CheckersBoard.cshtml", GameController.FromVariant(Variant.AmericanCheckers))
-    </div>
-    <div class="col-sm-3 column move-history match-height-game-control">
-        @Html.Partial("~/Views/Controls/MoveControl.cshtml", new List<PdnTurn>())
-        <div class="controls">
-            <button class="ctrl-button undo" onclick="undo()" title="Undo">
-                <span class="glyphicon glyphicon-undo"></span>
-                <span class="sr-only">Undo</span>
-            </button>
-            <button class="ctrl-button" title="New Game">
-                <span class="glyphicon glyphicon-create"></span>
-                <span class="sr-only">New Game</span>
-            </button>
-            <button class="ctrl-button hide" title="Resign">
-                <span class="glyphicon glyphicon-abort"></span>
-                <span class="sr-only">Resign</span>
-            </button>
-        </div>
+    <div class="col-sm-6 column game-list-col">
+        <table id="game-list">
+            @foreach (var game in Model)
+            {
+                <tr>
+                    <td><a href="~/Home/Game/@game.ID">@game.ID</a></td>
+                    <td>@game.TurnsCount</td>
+                </tr>
+            }
+        </table>
     </div>
 </div>
-
-<script>
-    $(function() {
-        $('.match-height-game-control').matchHeight({ target: $('.board-col')});
-    });
-
-    $(function () {
-        $('ol.moves').matchHeight({ target: $('.board'), subtractFromTarget: 61 });
-    });
-</script>
