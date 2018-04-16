@@ -3,7 +3,7 @@
 declare var signalR: any;
 
 function getAdjustedIndex(value) {
-    switch ($('.board').attr('player').toLowerCase()) {
+    switch ($('.board').attr('orientation').toLowerCase()) {
         case "black":
             return 7 - value;
         case "white":
