@@ -61,6 +61,15 @@ namespace CheckersWebsite.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to American Checkers.
+        /// </summary>
+        public static string AmericanCheckers {
+            get {
+                return ResourceManager.GetString("AmericanCheckers", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Black Won.
         /// </summary>
         public static string BlackWin {
@@ -84,6 +93,15 @@ namespace CheckersWebsite.Resources {
         public static string InProgress {
             get {
                 return ResourceManager.GetString("InProgress", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pool Checkers.
+        /// </summary>
+        public static string PoolCheckers {
+            get {
+                return ResourceManager.GetString("PoolCheckers", resourceCulture);
             }
         }
         

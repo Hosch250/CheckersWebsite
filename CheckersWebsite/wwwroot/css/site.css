@@ -34,7 +34,7 @@ button.btn-link {
 
 .glyphicon-flip:before {
     font-family: 'Segoe UI Symbol';
-    content: "\21C5;";
+    content: "\21C5";
 }
 
 .home-page-create {
@@ -130,28 +130,28 @@ input[type="radio"].toggle:checked + label {
     padding: 0;
 }
 
-#game-list {
+.game-list {
     width: 100%;
     border: 1px solid darkgray;
     padding: 0;
 }
 
-#game-list tr {
+.game-list tr {
     height: 30px;
     background-color: seashell;
 }
 
-#game-list th {
+.game-list th {
     background-color: #595959;
     color: white;
 }
 
-#game-list tr:nth-child(even) {
+.game-list tr:nth-child(even) {
     background: white;
 }
 
-#game-list th,
-#game-list td {
+.game-list th,
+.game-list td {
     padding: 0 30px;
 }
 

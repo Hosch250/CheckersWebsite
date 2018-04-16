@@ -46,15 +46,9 @@ namespace CheckersWebsite.Controllers
 
             var games = _context.Games
                 .OrderByDescending(g => g.CreatedOn)
-                .Include("Turns")
                 .ToList();
             
-            return View(games.Select(g =>
-                (
-                    ID: g.ID,
-                    Turns: g.Turns.Count,
-                    Status: Resources.Resources.ResourceManager.GetString(((Status)g.GameStatus).ToString())
-                )).ToList());
+            return View(games);
         }
 
         public IActionResult Game(Guid id)
