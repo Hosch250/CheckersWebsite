@@ -5,6 +5,7 @@ using CheckersWebsite.Models;
 using Microsoft.EntityFrameworkCore;
 using CheckersWebsite.Facade;
 using System;
+using System.Collections.Generic;
 
 namespace CheckersWebsite.Controllers
 {
@@ -17,13 +18,37 @@ namespace CheckersWebsite.Controllers
             _context = context;
         }
 
+        private Guid CreateCookieIfNotExists()
+        {
+            if (Request.Cookies.Keys.All(a => a != "playerID"))
+            {
+                var guid = Guid.NewGuid();
+                Response.Cookies.Append(
+                    "playerID",
+                    guid.ToString(),
+                    new Microsoft.AspNetCore.Http.CookieOptions()
+                    {
+                        Path = "/",
+                        Expires = DateTime.Now.AddYears(1)
+                    }
+                );
+
+                return guid;
+            }
+
+            return Guid.Parse(Request.Cookies["playerID"]);
+        }
+
         public IActionResult Index()
         {
+            var playerID = CreateCookieIfNotExists();
+
             var games = _context.Games
                 .OrderByDescending(g => g.CreatedOn)
                 .Include("Turns")
                 .ToList();
-            
+
+            ViewData.Add(new KeyValuePair<string, object>("playerID", playerID));
             return View(games.Select(g =>
                 (
                     ID: g.ID,
@@ -34,6 +59,8 @@ namespace CheckersWebsite.Controllers
 
         public IActionResult Game(Guid id)
         {
+            var playerID = CreateCookieIfNotExists();
+
             if (id == Guid.Empty)
             {
                 Response.StatusCode = 404;
@@ -51,15 +78,30 @@ namespace CheckersWebsite.Controllers
                 return Content("");
             }
 
+            ViewData.Add(new KeyValuePair<string, object>("playerID", playerID));
             return View("~/Views/Controls/Game.cshtml", game.ToGame());
         }
 
         public ActionResult NewGame()
         {
+            var playerID = CreateCookieIfNotExists();
+
+            var player = new Random().Next(0, 2);
             var newGame = GameController.FromVariant(Variant.AmericanCheckers).ToGame();
+
+            if (player == (int)Player.Black)
+            {
+                newGame.BlackPlayerID = playerID;
+            }
+            else
+            {
+                newGame.WhitePlayerID = playerID;
+            }
+
             _context.Games.Add(newGame);
             _context.SaveChanges();
 
+            ViewData.Add(new KeyValuePair<string, object>("playerID", playerID));
             return Redirect($"/Home/Game/{newGame.ID}");
         }
 

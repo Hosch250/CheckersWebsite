@@ -17,6 +17,9 @@ namespace Database
         public string Fen { get; set; }
         public int GameStatus { get; set; }
 
+        public Guid BlackPlayerID { get; set; }
+        public Guid WhitePlayerID { get; set; }
+
         [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         public DateTime CreatedOn { get; set; }
 

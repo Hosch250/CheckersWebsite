@@ -31,14 +31,34 @@ namespace CheckersWebsite.Controllers
             _controlHub = controlHub;
         }
 
+        private Guid? GetPlayerID()
+        {
+            if (Request.Cookies.TryGetValue("playerID", out var id))
+            {
+                return Guid.Parse(id);
+            }
+
+            return null;
+        }
+
         public ActionResult MovePiece(Guid id, Coord start, Coord end)
         {
+            var playerID = GetPlayerID();
+            if (!playerID.HasValue)
+            {
+                Response.StatusCode = 403;
+                return Content("");
+            }
+
             var game = _context.Games
                     .Include("Turns")
                     .Include("Turns.Moves")
                     .FirstOrDefault(f => f.ID == id);
 
-            if (game == null || game.GameStatus != (int)Status.InProgress)
+            if (game == null ||
+                game.GameStatus != (int)Status.InProgress ||
+                (game.BlackPlayerID != playerID && game.CurrentPlayer == (int)Player.Black) ||
+                (game.WhitePlayerID != playerID && game.CurrentPlayer == (int)Player.White))
             {
                 Response.StatusCode = 403;
                 return Content("");
@@ -54,52 +74,43 @@ namespace CheckersWebsite.Controllers
             }
 
             var move = controller.Move(start, end);
-            if (game == null || id == Guid.Empty)
+            move.ID = game.ID;
+
+            var turn = move.MoveHistory.Last().ToPdnTurn();
+            if (game.Turns.Any(t => t.MoveNumber == turn.MoveNumber))
             {
-                move.ID = Guid.NewGuid();
-                game = move.ToGame();
-                _context.Games.Add(game);
+                var recordedTurn = game.Turns.Single(s => s.MoveNumber == turn.MoveNumber);
+                Database.PdnMove newMove;
+                switch (controller.CurrentPlayer)
+                {
+                    case Player.White:
+                        newMove = move.MoveHistory.Last().WhiteMove.ToPdnMove();
+                        break;
+                    case Player.Black:
+                        newMove = move.MoveHistory.Last().BlackMove.ToPdnMove();
+                        break;
+                    default:
+                        throw new ArgumentException();
+                }
+
+                var existingMove = recordedTurn.Moves.FirstOrDefault(a => a.Player == (int)controller.CurrentPlayer);
+                if (existingMove != null)
+                {
+                    recordedTurn.Moves.Remove(existingMove);
+                }
+                recordedTurn.Moves.Add(newMove);
+
+                game.Fen = newMove.ResultingFen;
             }
             else
             {
-                move.ID = game.ID;
-
-                var turn = move.MoveHistory.Last().ToPdnTurn();
-                if (game.Turns.Any(t => t.MoveNumber == turn.MoveNumber))
-                {
-                    var recordedTurn = game.Turns.Single(s => s.MoveNumber == turn.MoveNumber);
-                    Database.PdnMove newMove;
-                    switch (controller.CurrentPlayer)
-                    {
-                        case Player.White:
-                            newMove = move.MoveHistory.Last().WhiteMove.ToPdnMove();
-                            break;
-                        case Player.Black:
-                            newMove = move.MoveHistory.Last().BlackMove.ToPdnMove();
-                            break;
-                        default:
-                            throw new ArgumentException();
-                    }
-
-                    var existingMove = recordedTurn.Moves.FirstOrDefault(a => a.Player == (int)controller.CurrentPlayer);
-                    if (existingMove != null)
-                    {
-                        recordedTurn.Moves.Remove(existingMove);
-                    }
-                    recordedTurn.Moves.Add(newMove);
-
-                    game.Fen = newMove.ResultingFen;
-                }
-                else
-                {
-                    game.Turns.Add(move.MoveHistory.Last().ToPdnTurn());
-                    game.Fen = turn.Moves.Single().ResultingFen;
-                }
-
-                game.CurrentPosition = move.GetCurrentPosition();
-                game.CurrentPlayer = (int)move.CurrentPlayer;
-                game.GameStatus = (int)move.GetGameStatus();
+                game.Turns.Add(move.MoveHistory.Last().ToPdnTurn());
+                game.Fen = turn.Moves.Single().ResultingFen;
             }
+
+            game.CurrentPosition = move.GetCurrentPosition();
+            game.CurrentPlayer = (int)move.CurrentPlayer;
+            game.GameStatus = (int)move.GetGameStatus();
 
             _context.SaveChanges();
             
@@ -132,12 +143,21 @@ namespace CheckersWebsite.Controllers
 
         public ActionResult Undo(Guid id)
         {
+            var playerID = GetPlayerID();
+            if (!playerID.HasValue)
+            {
+                Response.StatusCode = 403;
+                return Content("");
+            }
+
             var game = _context.Games
                     .Include("Turns")
                     .Include("Turns.Moves")
                     .FirstOrDefault(f => f.ID == id);
 
-            if (game == null || game.GameStatus != (int)Status.InProgress)
+            if (game == null ||
+                game.GameStatus != (int)Status.InProgress ||
+                game.BlackPlayerID != playerID && game.WhitePlayerID != playerID)
             {
                 Response.StatusCode = 403;
                 return Content("");
@@ -197,8 +217,17 @@ namespace CheckersWebsite.Controllers
 
         public ActionResult Resign(Guid id, Player player)
         {
+            var playerID = GetPlayerID();
+            if (!playerID.HasValue)
+            {
+                Response.StatusCode = 403;
+                return Content("");
+            }
+
             var game = _context.Games.FirstOrDefault(f => f.ID == id);
-            if (game == null || game.GameStatus != (int) Status.InProgress)
+            if (game == null ||
+                game.GameStatus != (int) Status.InProgress ||
+                game.BlackPlayerID != playerID && game.WhitePlayerID != playerID)
             {
                 Response.StatusCode = 403;
                 return Content("");
