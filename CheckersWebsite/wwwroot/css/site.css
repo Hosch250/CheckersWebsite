@@ -32,6 +32,11 @@ button.btn-link {
     content: "\E10A";
 }
 
+.glyphicon-flip:before {
+    font-family: 'Segoe UI Symbol';
+    content: "\21C5;";
+}
+
 .home-page-create {
     padding-left: 0;
     width: 100%;

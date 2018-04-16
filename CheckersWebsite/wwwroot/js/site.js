@@ -75,6 +75,32 @@ function displayGame(moveID) {
         }
     });
 }
+function flip() {
+    switch ($('.board').attr('orientation').toLowerCase()) {
+        case "black":
+            $('.board').attr('orientation', 'White');
+            break;
+        case "white":
+            $('.board').attr('orientation', 'Black');
+            break;
+    }
+    var move = $('.moves li input:selected');
+    if (move.length === 0) {
+        move = $('.moves li input:last');
+    }
+    $.ajax("/Board/Orientate", {
+        data: {
+            id: $('.board').attr('id'),
+            moveID: move.length === 0 ? '' : move.attr('id'),
+            orientation: $('.board').attr('orientation')
+        },
+        dataType: 'html',
+        method: 'POST',
+        success: function (data) {
+            $('.board')[0].outerHTML = data;
+        }
+    });
+}
 function connectToBoard() {
     var httpConnection = new signalR.HttpConnection('/boardHub');
     var connection = new signalR.HubConnection(httpConnection);

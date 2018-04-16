@@ -257,6 +257,12 @@ namespace CheckersWebsite.Controllers
                     .Include("Turns.Moves")
                     .FirstOrDefault(f => f.Turns.Any(a => a.Moves.Any(m => m.ID == moveID)));
 
+            if (game == null)
+            {
+                Response.StatusCode = 403;
+                return Content("");
+            }
+
             var move = game.Turns.SelectMany(t => t.Moves).First(f => f.ID == moveID);
             var turn = game.Turns.First(f => f.ID == move.TurnID);
 
@@ -267,6 +273,7 @@ namespace CheckersWebsite.Controllers
             }
 
             var controller = GameController.FromPosition((Variant)game.Variant, move.ResultingFen);
+            controller.ID = game.ID;
             return Content(BuildBoard.GetHtml(controller, player, isLastTurn()));
         }
 
@@ -301,6 +308,31 @@ namespace CheckersWebsite.Controllers
 
             _controlHub.Clients.All.InvokeAsync("AddClass", "join", "hide");
             return Content("");
+        }
+
+        public ActionResult Orientate(Guid id, Guid? moveID, Player orientation)
+        {
+            var game = _context.Games
+                    .Include("Turns")
+                    .Include("Turns.Moves")
+                    .FirstOrDefault(f => f.ID == id);
+
+            if (game == null)
+            {
+                Response.StatusCode = 403;
+                return Content("");
+            }
+
+            var move = game.Turns.SelectMany(t => t.Moves).FirstOrDefault(f => f.ID == moveID) ??
+                game.Turns.OrderBy(o => o.MoveNumber).LastOrDefault()?.Moves.OrderBy(a => a.CreatedOn).LastOrDefault();
+
+            var fen = move?.ResultingFen ?? game.Fen;
+
+            var playerID = GetPlayerID();
+
+            var controller = GameController.FromPosition((Variant)game.Variant, fen);
+            controller.ID = game.ID;
+            return Content(BuildBoard.GetHtml(controller, orientation, playerID.HasValue && (playerID.Value == game.BlackPlayerID || playerID.Value == game.WhitePlayerID) && fen == game.Fen));
         }
     }
 
