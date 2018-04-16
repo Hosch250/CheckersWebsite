@@ -271,6 +271,39 @@ namespace CheckersWebsite.Controllers
             var controller = GameController.FromPosition((Variant)game.Variant, move.ResultingFen);
             return Content(BuildBoard.GetHtml(controller, isLastTurn()));
         }
+
+        public ActionResult Join(Guid id)
+        {
+            var playerID = GetPlayerID();
+            if (!playerID.HasValue)
+            {
+                Response.StatusCode = 403;
+                return Content("");
+            }
+
+            var game = _context.Games.FirstOrDefault(f => f.ID == id);
+            if (game.BlackPlayerID != Guid.Empty && game.WhitePlayerID != Guid.Empty ||
+                game.BlackPlayerID == playerID ||
+                game.WhitePlayerID == playerID)
+            {
+                Response.StatusCode = 403;
+                return Content("");
+            }
+
+            if (game.BlackPlayerID == Guid.Empty)
+            {
+                game.BlackPlayerID = playerID.Value;
+            }
+            else if (game.WhitePlayerID == Guid.Empty)
+            {
+                game.WhitePlayerID = playerID.Value;
+            }
+
+            _context.SaveChanges();
+
+            _controlHub.Clients.All.InvokeAsync("AddClass", "join", "hide");
+            return Content("");
+        }
     }
 
     public class BuildMoveHistory

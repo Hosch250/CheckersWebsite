@@ -149,3 +149,28 @@ input[type="radio"].toggle:checked + label {
 #game-list td {
     padding: 0 30px;
 }
+
+#join {
+    width: 100%;
+    margin-bottom: 5px;
+    font-weight: bold;
+    font-size: larger;
+}
+
+.btn-primary,
+.btn-primary:visited {
+    background-color: goldenrod;
+    color: darkslategrey;
+    border-color: darkslategrey;
+}
+
+.btn-primary:active,
+.btn-primary:focus,
+.btn-primary:hover,
+.btn-primary.active,
+.btn-primary.focus,
+.btn-primary.hover {
+    background-color: darkgoldenrod;
+    color: darkslategrey;
+    border-color: darkslategrey;
+}

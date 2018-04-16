@@ -54,6 +54,15 @@ function resign() {
         method: 'POST'
     });
 }
+function joinGame() {
+    $.ajax("/Board/Join", {
+        data: {
+            id: $('.board').attr('id')
+        },
+        dataType: 'html',
+        method: 'POST'
+    });
+}
 function displayGame(moveID) {
     $.ajax("/Board/DisplayGame", {
         data: {

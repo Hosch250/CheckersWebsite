@@ -42,13 +42,13 @@ namespace CheckersWebsite.Controllers
         public IActionResult Index()
         {
             var playerID = CreateCookieIfNotExists();
+            ViewData.Add(new KeyValuePair<string, object>("playerID", playerID));
 
             var games = _context.Games
                 .OrderByDescending(g => g.CreatedOn)
                 .Include("Turns")
                 .ToList();
-
-            ViewData.Add(new KeyValuePair<string, object>("playerID", playerID));
+            
             return View(games.Select(g =>
                 (
                     ID: g.ID,
@@ -60,6 +60,7 @@ namespace CheckersWebsite.Controllers
         public IActionResult Game(Guid id)
         {
             var playerID = CreateCookieIfNotExists();
+            ViewData.Add(new KeyValuePair<string, object>("playerID", playerID));
 
             if (id == Guid.Empty)
             {
@@ -78,13 +79,16 @@ namespace CheckersWebsite.Controllers
                 return Content("");
             }
 
-            ViewData.Add(new KeyValuePair<string, object>("playerID", playerID));
+            ViewData.Add(new KeyValuePair<string, object>("blackPlayerID", game.BlackPlayerID));
+            ViewData.Add(new KeyValuePair<string, object>("whitePlayerID", game.WhitePlayerID));
+
             return View("~/Views/Controls/Game.cshtml", game.ToGame());
         }
 
         public ActionResult NewGame()
         {
             var playerID = CreateCookieIfNotExists();
+            ViewData.Add(new KeyValuePair<string, object>("playerID", playerID));
 
             var player = new Random().Next(0, 2);
             var newGame = GameController.FromVariant(Variant.AmericanCheckers).ToGame();
@@ -100,8 +104,7 @@ namespace CheckersWebsite.Controllers
 
             _context.Games.Add(newGame);
             _context.SaveChanges();
-
-            ViewData.Add(new KeyValuePair<string, object>("playerID", playerID));
+            
             return Redirect($"/Home/Game/{newGame.ID}");
         }
 
