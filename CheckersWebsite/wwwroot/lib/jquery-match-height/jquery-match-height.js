@@ -280,6 +280,9 @@
                 }
 
                 // set the height (accounting for padding and border)
+                console.log(targetHeight);
+                console.log(verticalPadding);
+                console.log(opts.subtractFromTarget);
                 $that.css(opts.property, (targetHeight - verticalPadding - opts.subtractFromTarget) + 'px');
             });
         });

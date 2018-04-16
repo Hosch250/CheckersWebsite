@@ -6795,6 +6795,10 @@ button.btn-link {
     content: "\21C5";
 }
 
+.controls {
+    margin: 10px;
+}
+
 .home-page-create {
     padding-left: 0;
     width: 100%;
@@ -6838,7 +6842,7 @@ nav .column {
 .move-history {
     border: 1px solid black;
     display: grid;
-    grid-template-rows: auto 60px;
+    grid-template-rows: auto 80px;
     padding: 0;
 }
 

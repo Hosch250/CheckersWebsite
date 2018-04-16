@@ -56,10 +56,10 @@
 
 <script>
     $(function () {
-        $('.match-height-game-control').matchHeight({ target: $('.board-col') });
+        $('.match-height-game-control').matchHeight({ target: $('.board-col'), subtractFromTarget: 5 });
     });
 
     $(function () {
-        $('ol.moves').matchHeight({ target: $('.board'), subtractFromTarget: 61 });
+        $('ol.moves').matchHeight({ target: $('.board'), subtractFromTarget: 81 });
     });
 </script>
