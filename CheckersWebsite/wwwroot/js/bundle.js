@@ -474,7 +474,7 @@ function flip() {
             $('.board').attr('orientation', 'Black');
             break;
     }
-    var move = $('.moves li input:selected');
+    var move = $('.moves li input:checked');
     if (move.length === 0) {
         move = $('.moves li input:last');
     }
