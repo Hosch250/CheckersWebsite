@@ -65,7 +65,8 @@ function joinGame() {
 function displayGame(moveID) {
     $.ajax("/Board/DisplayGame", {
         data: {
-            moveID: moveID
+            moveID: moveID,
+            orientation: $('.board').attr('orientation')
         },
         dataType: 'html',
         method: 'POST',
@@ -77,9 +78,17 @@ function displayGame(moveID) {
 function connectToBoard() {
     var httpConnection = new signalR.HttpConnection('/boardHub');
     var connection = new signalR.HubConnection(httpConnection);
-    connection.on('Update', function (id, html) {
+    connection.on('Update', function (id, blackBoard, whiteBoard) {
         if ($('.board').attr('id').toLowerCase() === id.toLowerCase()) {
-            $('.board')[0].outerHTML = html;
+            console.log($('.board').attr('orientation').toLowerCase());
+            switch ($('.board').attr('orientation').toLowerCase()) {
+                case "black":
+                    $('.board')[0].outerHTML = blackBoard;
+                    break;
+                case "white":
+                    $('.board')[0].outerHTML = whiteBoard;
+                    break;
+            }
         }
     });
     connection.start();

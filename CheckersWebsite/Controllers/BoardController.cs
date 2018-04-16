@@ -113,9 +113,12 @@ namespace CheckersWebsite.Controllers
             game.GameStatus = (int)move.GetGameStatus();
 
             _context.SaveChanges();
-            
+
+            var blackBoard = BuildBoard.GetHtml(move, Player.Black, true);
+            var whiteBoard = BuildBoard.GetHtml(move, Player.White, true);
+
             _movesHub.Clients.All.InvokeAsync("Update", BuildMoveHistory.GetHtml(game.Turns.Select(s => s.ToPdnTurn()).ToList()));
-            _boardHub.Clients.All.InvokeAsync("Update", id, BuildBoard.GetHtml(move, true));
+            _boardHub.Clients.All.InvokeAsync("Update", id, blackBoard, whiteBoard);
             _opponentsHub.Clients.All.InvokeAsync("Update", ((Player)game.CurrentPlayer).ToString(), move.GetGameStatus().ToString());
 
             if (game.Turns.Count == 1 && game.Turns.ElementAt(0).Moves.Count == 1)
@@ -199,8 +202,12 @@ namespace CheckersWebsite.Controllers
 
             _context.SaveChanges();
 
+            var controller = game.ToGame();
+            var blackBoard = BuildBoard.GetHtml(controller, Player.Black, true);
+            var whiteBoard = BuildBoard.GetHtml(controller, Player.White, true);
+            
             _movesHub.Clients.All.InvokeAsync("Update", BuildMoveHistory.GetHtml(game.Turns.Select(s => s.ToPdnTurn()).ToList()));
-            _boardHub.Clients.All.InvokeAsync("Update", id, BuildBoard.GetHtml(game.ToGame(), true));
+            _boardHub.Clients.All.InvokeAsync("Update", id, blackBoard, whiteBoard);
             _opponentsHub.Clients.All.InvokeAsync("Update", ((Player)game.CurrentPlayer).ToString(), Status.InProgress.ToString());
 
             if (game.Turns.Count == 1 && game.Turns.ElementAt(0).Moves.Count == 1)
@@ -243,7 +250,7 @@ namespace CheckersWebsite.Controllers
             return Content("");
         }
 
-        public ActionResult DisplayGame(Guid moveID)
+        public ActionResult DisplayGame(Guid moveID, Player player)
         {
             var game = _context.Games
                     .Include("Turns")
@@ -260,7 +267,7 @@ namespace CheckersWebsite.Controllers
             }
 
             var controller = GameController.FromPosition((Variant)game.Variant, move.ResultingFen);
-            return Content(BuildBoard.GetHtml(controller, isLastTurn()));
+            return Content(BuildBoard.GetHtml(controller, player, isLastTurn()));
         }
 
         public ActionResult Join(Guid id)
@@ -328,17 +335,17 @@ namespace CheckersWebsite.Controllers
 
     public class BuildBoard
     {
-        public static string GetHtml(GameController game, bool allowMove)
+        public static string GetHtml(GameController game, Player player, bool allowMove)
         {
             var stringWriter = new StringWriter();
             Action<string> write = stringWriter.Write;
             
             int getAdjustedIndex(int value)
             {
-                return game.CurrentPlayer == Player.Black ? 7 - value : value;
+                return player == Player.Black ? 7 - value : value;
             }
 
-            write($@"<div class=""board"" id=""{game.ID}"" player=""{game.CurrentPlayer}"">");
+            write($@"<div class=""board"" id=""{game.ID}"" orientation=""{player}"">");
             write(@"<svg width=""100%"" height=""100%"" style=""background-color: #cccccc"" version=""1.1"" xmlns=""http://www.w3.org/2000/svg"" viewBox=""0 0 50 50"">");
 
             for (var row = 0; row < 8; row++)

@@ -20,9 +20,9 @@ namespace CheckersWebsite.SignalR
     }
     public class BoardHub : Hub
     {
-        public Task Update(string id, string html)
+        public Task Update(string id, string blackBoard, string whiteBoard)
         {
-            return Clients.All.InvokeAsync("Update", id, html);
+            return Clients.All.InvokeAsync("Update", id, blackBoard, whiteBoard);
         }
     }
     public class ControlHub : Hub
