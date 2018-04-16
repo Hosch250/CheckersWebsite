@@ -215,7 +215,7 @@ namespace CheckersWebsite.Controllers
             return Content("");
         }
 
-        public ActionResult Resign(Guid id, Player player)
+        public ActionResult Resign(Guid id)
         {
             var playerID = GetPlayerID();
             if (!playerID.HasValue)
@@ -233,16 +233,7 @@ namespace CheckersWebsite.Controllers
                 return Content("");
             }
 
-            switch (player)
-            {
-                case Player.Black:
-                    game.GameStatus = (int)Status.WhiteWin;
-                    break;
-                case Player.White:
-                    game.GameStatus = (int)Status.BlackWin;
-                    break;
-            }
-
+            game.GameStatus = playerID == game.BlackPlayerID ? (int)Status.WhiteWin : (int)Status.BlackWin;
             _context.SaveChanges();
 
             _opponentsHub.Clients.All.InvokeAsync("Update", ((Player)game.CurrentPlayer).ToString(), game.GameStatus.ToString());

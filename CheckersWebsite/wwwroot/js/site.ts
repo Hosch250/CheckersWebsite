@@ -60,8 +60,7 @@ function resign() {
     $.ajax("/Board/Resign",
         {
             data: {
-                id: $('.board').attr('id'),
-                player: $('.board').attr('player')
+                id: $('.board').attr('id')
             },
             dataType: 'html',
             method: 'POST'

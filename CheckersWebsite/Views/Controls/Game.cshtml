@@ -6,7 +6,7 @@
         @Html.Partial("~/Views/Controls/Opponents.cshtml", Model)
     </div>
     <div class="col-md-6 column board-col match-height-game-control">
-        @{ 
+        @{
             var playerID = (Guid)ViewData["playerID"];
             var blackPlayerID = (Guid)ViewData["blackPlayerID"];
             var whitePlayerID = (Guid)ViewData["whitePlayerID"];
