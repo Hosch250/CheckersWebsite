@@ -173,13 +173,15 @@ input[type="radio"].toggle:checked + label {
     border-color: darkslategrey;
 }
 
-.btn-primary:active,
-.btn-primary:focus,
-.btn-primary:hover,
-.btn-primary.active,
-.btn-primary.focus,
-.btn-primary.hover {
-    background-color: darkgoldenrod;
-    color: darkslategrey;
-    border-color: darkslategrey;
-}
+
+    .btn-primary:active:focus,
+    .btn-primary:active,
+    .btn-primary:focus,
+    .btn-primary:hover,
+    .btn-primary.active,
+    .btn-primary.focus,
+    .btn-primary.hover {
+        background-color: darkgoldenrod;
+        color: darkslategrey;
+        border-color: darkslategrey;
+    }
