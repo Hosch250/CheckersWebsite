@@ -11,7 +11,7 @@
             var blackPlayerID = (Guid)ViewData["blackPlayerID"];
             var whitePlayerID = (Guid)ViewData["whitePlayerID"];
         }
-        <button id="join" class="btn btn-primary @(blackPlayerID == playerID || whitePlayerID == playerID ? "hide" : "")" onclick="joinGame()" title="Join">Join</button>
+        <button id="join" class="btn btn-primary @(blackPlayerID == playerID || whitePlayerID == playerID || blackPlayerID != Guid.Empty && whitePlayerID != Guid.Empty ? "hide" : "")" onclick="joinGame()" title="Join">Join</button>
         <h2 class="player-to-move h3">
             @switch (Model.GameStatus)
             {
