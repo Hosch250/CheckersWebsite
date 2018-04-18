@@ -59,7 +59,10 @@ function joinGame() {
             id: $('.board').attr('id')
         },
         dataType: 'html',
-        method: 'POST'
+        method: 'POST',
+        success: function (data) {
+            $('.board')[0].outerHTML = data;
+        }
     });
 }
 function displayGame(moveID) {
@@ -167,6 +170,9 @@ function connectToControl() {
     });
     connection.on('AddClass', function (controlID, value) {
         $("#" + controlID).addClass(value);
+        if (controlID === 'join' && value === 'hide') {
+            $('ol.moves').matchHeight({ target: $('.board'), subtractFromTarget: 81 });
+        }
     });
     connection.on('RemoveClass', function (controlID, value) {
         $("#" + controlID).removeClass(value);

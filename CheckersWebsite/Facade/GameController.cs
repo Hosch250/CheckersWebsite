@@ -224,7 +224,7 @@ namespace CheckersWebsite.Facade
         public static GameController ToGame(this Database.Game game)
         {
             var controller = GameController.FromPosition((Variant)game.Variant, game.Fen);
-            controller.MoveHistory = game.Turns.Select(s => s.ToPdnTurn()).ToList();
+            controller.MoveHistory = game.Turns?.Select(s => s.ToPdnTurn()).ToList() ?? new List<PdnTurn>();
 
             if (game.CurrentPosition != -1)
             {

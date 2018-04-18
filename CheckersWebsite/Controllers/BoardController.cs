@@ -307,7 +307,7 @@ namespace CheckersWebsite.Controllers
             _context.SaveChanges();
 
             _controlHub.Clients.All.InvokeAsync("AddClass", "join", "hide");
-            return Content("");
+            return Content(BuildBoard.GetHtml(game.ToGame(), game.BlackPlayerID == playerID.Value ? Player.Black : Player.White, true));
         }
 
         public ActionResult Orientate(Guid id, Guid? moveID, Player orientation)
