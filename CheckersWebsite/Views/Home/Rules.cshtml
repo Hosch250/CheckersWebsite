@@ -1,0 +1,19 @@
+﻿<div id="rules" class="row">
+    <nav class="col-md-4">
+        <ul>
+            <li><a href="#american-checkers">American Checkers</a></li>
+            <li><a href="#pool-checkers">Pool Checkers</a></li>
+        </ul>
+    </nav>
+    <div>
+        @Html.Partial("~/Views/Rules/AmericanCheckers.cshtml")
+        <hr />
+        @Html.Partial("~/Views/Rules/PoolCheckers.cshtml")
+    </div>
+</div>
+
+<script>
+    $(function() {
+        $('#rules nav').matchHeight({ target: $('#rules div') });
+    });
+</script>

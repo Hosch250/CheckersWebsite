@@ -102,6 +102,11 @@ namespace CheckersWebsite.Controllers
             return Redirect($"/Home/Game/{newGame.ID}");
         }
 
+        public ActionResult Rules()
+        {
+            return View();
+        }
+
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
