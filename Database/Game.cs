@@ -23,6 +23,9 @@ namespace Database
         [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         public DateTime CreatedOn { get; set; }
 
+        [ConcurrencyCheck]
+        public byte[] RowVersion { get; set; }
+
         public virtual ICollection<PdnTurn> Turns { get; set; }
     }
 }
