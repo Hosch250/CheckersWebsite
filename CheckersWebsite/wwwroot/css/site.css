@@ -185,36 +185,6 @@ input[type="radio"].toggle:checked + label {
     border-color: darkslategrey;
 }
 
-#rules nav {
-    margin-right: 20px;
-}
-
-#rules ul {
-    margin: 20px 0 20px 20px;
-    font-size: 125%;
-}
-
-#rules li {
-    width: 100%;
-    border-bottom: 1px solid darkslategrey;
-    border-collapse: collapse;
-    list-style: none;
-    padding: 5px;
-    display: flex;
-}
-
-#rules li:first-child {
-    border-top: 1px solid darkslategrey;
-}
-
-#rules li a {
-    width: 100%;
-}
-
-#rules li a span {
-    width: 100%;
-}
-
-#rules li:after {
-    content: '\2bc8';
+#rules div {
+    padding: 0;
 }
