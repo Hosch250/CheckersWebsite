@@ -56,7 +56,8 @@ function resign() {
 function joinGame() {
     $.ajax("/Board/Join", {
         data: {
-            id: $('.board').attr('id')
+            id: $('.board').attr('id'),
+            connectionID: signalRConnection.connection.connectionId
         },
         dataType: 'html',
         method: 'POST',
@@ -104,10 +105,11 @@ function flip() {
         }
     });
 }
-function connectToBoard() {
-    var httpConnection = new signalR.HttpConnection('/boardHub');
-    var connection = new signalR.HubConnection(httpConnection);
-    connection.on('Update', function (id, blackBoard, whiteBoard) {
+var signalRConnection;
+function connectToSignalR() {
+    var httpConnection = new signalR.HttpConnection('/signalRHub');
+    signalRConnection = new signalR.HubConnection(httpConnection);
+    signalRConnection.on('UpdateBoard', function (id, blackBoard, whiteBoard) {
         if ($('.board').attr('id').toLowerCase() === id.toLowerCase()) {
             console.log($('.board').attr('orientation').toLowerCase());
             switch ($('.board').attr('orientation').toLowerCase()) {
@@ -120,23 +122,10 @@ function connectToBoard() {
             }
         }
     });
-    connection.start();
-}
-function connectToMoveControl() {
-    var httpConnection = new signalR.HttpConnection('/movesHub');
-    var connection = new signalR.HubConnection(httpConnection);
-    connection.on('Update', function (data) {
+    signalRConnection.on('UpdateMoves', function (data) {
         $('.moves')[0].outerHTML = data;
     });
-    connection.start();
-}
-function connectToOpponents() {
-    var httpConnection = new signalR.HttpConnection('/opponentsHub');
-    var connection = new signalR.HubConnection(httpConnection);
-    connection.on('Update', function (player, winStatus) {
-        var players = ['black', 'white'];
-        var otherPlayer = players.filter(function (item) { return item != player.toLowerCase(); })[0];
-        $("#" + otherPlayer.toLowerCase() + "-player-text").removeClass('bold');
+    signalRConnection.on('UpdateOpponentState', function (player, winStatus) {
         switch (winStatus) {
             case "WhiteWin":
                 $('.player-to-move').html('White Won');
@@ -153,34 +142,22 @@ function connectToOpponents() {
             case "InProgress":
                 $('.player-to-move').html(player + "'s Turn");
                 $('.win-status').html('*');
-                $("#" + player.toLowerCase() + "-player-text").addClass('bold');
                 break;
         }
     });
-    connection.start();
-}
-function connectToControl() {
-    var httpConnection = new signalR.HttpConnection('/controlHub');
-    var connection = new signalR.HubConnection(httpConnection);
-    connection.on('SetAttribute', function (controlID, attribute, value) {
+    signalRConnection.on('SetAttribute', function (controlID, attribute, value) {
         $("#" + controlID).attr(attribute, value);
     });
-    connection.on('RemoveAttribute', function (controlID, attribute) {
+    signalRConnection.on('RemoveAttribute', function (controlID, attribute) {
         $("#" + controlID).removeAttr(attribute);
     });
-    connection.on('AddClass', function (controlID, value) {
+    signalRConnection.on('AddClass', function (controlID, value) {
         $("#" + controlID).addClass(value);
-        if (controlID === 'join' && value === 'hide') {
-            $('ol.moves').matchHeight({ target: $('.board'), subtractFromTarget: 81 });
-        }
     });
-    connection.on('RemoveClass', function (controlID, value) {
+    signalRConnection.on('RemoveClass', function (controlID, value) {
         $("#" + controlID).removeClass(value);
     });
-    connection.start();
+    signalRConnection.start();
 }
-connectToBoard();
-connectToMoveControl();
-connectToOpponents();
-connectToControl();
+connectToSignalR();
 //# sourceMappingURL=site.js.map

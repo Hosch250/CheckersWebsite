@@ -13,22 +13,12 @@ namespace CheckersWebsite.Controllers
     public class BoardController : Controller
     {
         private readonly Database.Context _context;
-        private readonly IHubContext<MovesHub> _movesHub;
-        private readonly IHubContext<BoardHub> _boardHub;
-        private readonly IHubContext<OpponentsHub> _opponentsHub;
-        private readonly IHubContext<ControlHub> _controlHub;
+        private readonly IHubContext<SignalRHub> _signalRHub;
 
-        public BoardController(Database.Context context,
-            IHubContext<MovesHub> movesHub,
-            IHubContext<BoardHub> boardHub,
-            IHubContext<OpponentsHub> opponentsHub,
-            IHubContext<ControlHub> controlHub)
+        public BoardController(Database.Context context, IHubContext<SignalRHub> signalRHub)
         {
             _context = context;
-            _movesHub = movesHub;
-            _boardHub = boardHub;
-            _opponentsHub = opponentsHub;
-            _controlHub = controlHub;
+            _signalRHub = signalRHub;
         }
 
         private Guid? GetPlayerID()
@@ -117,29 +107,21 @@ namespace CheckersWebsite.Controllers
             var blackBoard = BuildBoard.GetHtml(move, Player.Black, true);
             var whiteBoard = BuildBoard.GetHtml(move, Player.White, true);
 
-            _movesHub.Clients.All.InvokeAsync("Update", BuildMoveHistory.GetHtml(game.Turns.Select(s => s.ToPdnTurn()).ToList()));
-            _boardHub.Clients.All.InvokeAsync("Update", id, blackBoard, whiteBoard);
-            _opponentsHub.Clients.All.InvokeAsync("Update", ((Player)game.CurrentPlayer).ToString(), move.GetGameStatus().ToString());
+            _signalRHub.Clients.All.InvokeAsync("UpdateMoves", BuildMoveHistory.GetHtml(game.Turns.Select(s => s.ToPdnTurn()).ToList()));
+            _signalRHub.Clients.All.InvokeAsync("UpdateBoard", id, blackBoard, whiteBoard);
+            _signalRHub.Clients.All.InvokeAsync("UpdateOpponentState", ((Player)game.CurrentPlayer).ToString(), move.GetGameStatus().ToString());
 
             if (game.Turns.Count == 1 && game.Turns.ElementAt(0).Moves.Count == 1)
             {
-                _controlHub.Clients.All.InvokeAsync("SetAttribute", "undo", "disabled", "");
+                _signalRHub.Clients.All.InvokeAsync("SetAttribute", "undo", "disabled", "");
             }
             else
             {
-                _controlHub.Clients.All.InvokeAsync("RemoveAttribute", "undo", "disabled");
+                _signalRHub.Clients.All.InvokeAsync("RemoveAttribute", "undo", "disabled");
             }
 
-            if (move.IsDrawn() || move.IsWon())
-            {
-                _controlHub.Clients.All.InvokeAsync("RemoveClass", "new-game", "hide");
-                _controlHub.Clients.All.InvokeAsync("AddClass", "resign", "hide");
-            }
-            else
-            {
-                _controlHub.Clients.All.InvokeAsync("AddClass", "new-game", "hide");
-                _controlHub.Clients.All.InvokeAsync("RemoveClass", "resign", "hide");
-            }
+            _signalRHub.Clients.All.InvokeAsync(move.IsDrawn() || move.IsWon() ? "RemoveClass" : "AddClass", "new-game", "hide");
+            _signalRHub.Clients.All.InvokeAsync(move.IsDrawn() || move.IsWon() ? "AddClass" : "RemoveClass", "resign", "hide");
 
             return Content("");
         }
@@ -206,17 +188,17 @@ namespace CheckersWebsite.Controllers
             var blackBoard = BuildBoard.GetHtml(controller, Player.Black, true);
             var whiteBoard = BuildBoard.GetHtml(controller, Player.White, true);
             
-            _movesHub.Clients.All.InvokeAsync("Update", BuildMoveHistory.GetHtml(game.Turns.Select(s => s.ToPdnTurn()).ToList()));
-            _boardHub.Clients.All.InvokeAsync("Update", id, blackBoard, whiteBoard);
-            _opponentsHub.Clients.All.InvokeAsync("Update", ((Player)game.CurrentPlayer).ToString(), Status.InProgress.ToString());
+            _signalRHub.Clients.All.InvokeAsync("UpdateMoves", BuildMoveHistory.GetHtml(game.Turns.Select(s => s.ToPdnTurn()).ToList()));
+            _signalRHub.Clients.All.InvokeAsync("UpdateBoard", id, blackBoard, whiteBoard);
+            _signalRHub.Clients.All.InvokeAsync("UpdateOpponentState", ((Player)game.CurrentPlayer).ToString(), Status.InProgress.ToString());
 
             if (game.Turns.Count == 1 && game.Turns.ElementAt(0).Moves.Count == 1)
             {
-                _controlHub.Clients.All.InvokeAsync("SetAttribute", "undo", "disabled", "");
+                _signalRHub.Clients.All.InvokeAsync("SetAttribute", "undo", "disabled", "");
             }
             else
             {
-                _controlHub.Clients.All.InvokeAsync("RemoveAttribute", "undo", "disabled");
+                _signalRHub.Clients.All.InvokeAsync("RemoveAttribute", "undo", "disabled");
             }
 
             return Content("");
@@ -243,9 +225,9 @@ namespace CheckersWebsite.Controllers
             game.GameStatus = playerID == game.BlackPlayerID ? (int)Status.WhiteWin : (int)Status.BlackWin;
             _context.SaveChanges();
 
-            _opponentsHub.Clients.All.InvokeAsync("Update", ((Player)game.CurrentPlayer).ToString(), game.GameStatus.ToString());
-            _controlHub.Clients.All.InvokeAsync("RemoveClass", "new-game", "hide");
-            _controlHub.Clients.All.InvokeAsync("AddClass", "resign", "hide");
+            _signalRHub.Clients.All.InvokeAsync("UpdateOpponentState", ((Player)game.CurrentPlayer).ToString(), game.GameStatus.ToString());
+            _signalRHub.Clients.All.InvokeAsync("RemoveClass", "new-game", "hide");
+            _signalRHub.Clients.All.InvokeAsync("AddClass", "resign", "hide");
 
             return Content("");
         }
@@ -277,7 +259,7 @@ namespace CheckersWebsite.Controllers
             return Content(BuildBoard.GetHtml(controller, player, isLastTurn()));
         }
 
-        public ActionResult Join(Guid id)
+        public ActionResult Join(Guid id, string connectionID)
         {
             var playerID = GetPlayerID();
             if (!playerID.HasValue)
@@ -306,7 +288,9 @@ namespace CheckersWebsite.Controllers
 
             _context.SaveChanges();
 
-            _controlHub.Clients.All.InvokeAsync("AddClass", "join", "hide");
+            _signalRHub.Clients.All.InvokeAsync("AddClass", "join", "hide");
+            _signalRHub.Clients.Client(connectionID).InvokeAsync("AddClass", game.BlackPlayerID == playerID ? "black-player-text" : "white-player-text", "bold");
+
             return Content(BuildBoard.GetHtml(game.ToGame(), game.BlackPlayerID == playerID.Value ? Player.Black : Player.White, true));
         }
 

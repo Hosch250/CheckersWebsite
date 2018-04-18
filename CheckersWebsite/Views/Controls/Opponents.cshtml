@@ -1,18 +1,23 @@
 ﻿@using CheckersWebsite.Facade
 @model GameController
 
+@{
+    var playerID = (Guid)ViewData["playerID"];
+    var blackPlayerID = (Guid)ViewData["blackPlayerID"];
+    var whitePlayerID = (Guid)ViewData["whitePlayerID"];
+}
 <div><b>American Checkers</b></div>
 <div>
     <svg width="20" height="20" style="background-color: white" version="1.1" xmlns="http://www.w3.org/2000/svg">
         <circle cx="10" cy="15" r="4" stroke="black" fill="white" stroke-width="2"></circle>
     </svg>
-    <span id="white-player-text" class="@(Model.GameStatus == Status.InProgress && Model.CurrentPlayer == Player.White ? "bold" : "")">Human</span>
+    <span id="white-player-text" class="@(playerID == whitePlayerID ? "bold" : "")">Human</span>
 </div>
 <div>
     <svg width="20" height="20" style="background-color: white" version="1.1" xmlns="http://www.w3.org/2000/svg">
         <circle cx="10" cy="15" r="4" stroke="black" fill="black" stroke-width="2"></circle>
     </svg>
-    <span id="black-player-text" class="@(Model.GameStatus == Status.InProgress && Model.CurrentPlayer == Player.Black ? "bold" : "")">Human</span>
+    <span id="black-player-text" class="@(playerID == blackPlayerID ? "bold" : "")">Human</span>
 </div>
 <div class="win-status" style="text-align: center">
     @switch (Model.GameStatus)

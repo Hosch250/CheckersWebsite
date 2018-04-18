@@ -54,10 +54,7 @@ namespace CheckersWebsite
             app.UseWebSockets();
             app.UseSignalR(routes =>
             {
-                routes.MapHub<SignalR.MovesHub>("movesHub");
-                routes.MapHub<SignalR.OpponentsHub>("opponentsHub");
-                routes.MapHub<SignalR.BoardHub>("boardHub");
-                routes.MapHub<SignalR.ControlHub>("controlHub");
+                routes.MapHub<SignalR.SignalRHub>("signalRHub");
             });
 
             app.UseStaticFiles();
