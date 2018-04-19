@@ -10,37 +10,43 @@
             var playerID = (Guid)ViewData["playerID"];
         }
         <h2>Lobby</h2>
-        <table id="lobby" class="game-list">
-            @foreach (var game in Model.Where(w => w.BlackPlayerID == Guid.Empty || w.WhitePlayerID == Guid.Empty))
-            {
-                <tr>
-                    <td><a href="~/Home/Game/@game.ID">@Resources.ResourceManager.GetString(((Variant)game.Variant).ToString())</a></td>
-                    <td>@Resources.ResourceManager.GetString(((Status)game.GameStatus).ToString())</td>
-                </tr>
-            }
-        </table>
+        <div>
+            <table id="lobby" class="game-list">
+                @foreach (var game in Model.Where(w => w.BlackPlayerID == Guid.Empty || w.WhitePlayerID == Guid.Empty))
+                {
+                    <tr>
+                        <td><a href="~/Home/Game/@game.ID">@Resources.ResourceManager.GetString(((Variant)game.Variant).ToString())</a></td>
+                        <td>@Resources.ResourceManager.GetString(((Status)game.GameStatus).ToString())</td>
+                    </tr>
+                }
+            </table>
+        </div>
         <hr />
         <h2>Your Games</h2>
-        <table id="user-game-list" class="game-list">
-            @foreach (var game in Model.Where(w => w.BlackPlayerID == playerID || w.WhitePlayerID == playerID))
-            {
-                <tr>
-                    <td><a href="~/Home/Game/@game.ID">@Resources.ResourceManager.GetString(((Variant)game.Variant).ToString())</a></td>
-                    <td>@Resources.ResourceManager.GetString(((Status)game.GameStatus).ToString())</td>
-                </tr>
-            }
-        </table>
+        <div>
+            <table id="user-game-list" class="game-list">
+                @foreach (var game in Model.Where(w => w.BlackPlayerID == playerID || w.WhitePlayerID == playerID))
+                {
+                    <tr>
+                        <td><a href="~/Home/Game/@game.ID">@Resources.ResourceManager.GetString(((Variant)game.Variant).ToString())</a></td>
+                        <td>@Resources.ResourceManager.GetString(((Status)game.GameStatus).ToString())</td>
+                    </tr>
+                }
+            </table>
+        </div>
         <hr />
         <h2>All Games</h2>
-        <table id="game-list" class="game-list">
-            @foreach (var game in Model)
-            {
-                <tr>
-                    <td><a href="~/Home/Game/@game.ID">@Resources.ResourceManager.GetString(((Variant)game.Variant).ToString())</a></td>
-                    <td>@Resources.ResourceManager.GetString(((Status)game.GameStatus).ToString())</td>
-                </tr>
-            }
-        </table>
+        <div>
+            <table id="game-list" class="game-list">
+                @foreach (var game in Model)
+                {
+                    <tr>
+                        <td><a href="~/Home/Game/@game.ID">@Resources.ResourceManager.GetString(((Variant)game.Variant).ToString())</a></td>
+                        <td>@Resources.ResourceManager.GetString(((Status)game.GameStatus).ToString())</td>
+                    </tr>
+                }
+            </table>
+        </div>
     </div>
     <div class="col-md-3 column">
         <a class="btn btn-default home-page-create" href="/Home/NewGame"><span class="glyphicon glyphicon-create"></span>Create Game</a>

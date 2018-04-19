@@ -6892,6 +6892,11 @@ input[type="radio"].toggle:checked + label {
     padding: 0;
 }
 
+.game-list-col div {
+    max-height: 181px;
+    overflow-y: auto;
+}
+
 .game-list {
     width: 100%;
     border: 1px solid darkgray;
