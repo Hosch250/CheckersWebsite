@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Aborted" xml:space="preserve">
+    <value>Aborted</value>
+  </data>
   <data name="AmericanCheckers" xml:space="preserve">
     <value>American Checkers</value>
   </data>

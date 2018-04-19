@@ -61,6 +61,15 @@ namespace CheckersWebsite.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Aborted.
+        /// </summary>
+        public static string Aborted {
+            get {
+                return ResourceManager.GetString("Aborted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to American Checkers.
         /// </summary>
         public static string AmericanCheckers {

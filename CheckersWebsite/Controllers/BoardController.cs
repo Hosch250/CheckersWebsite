@@ -222,7 +222,14 @@ namespace CheckersWebsite.Controllers
                 return Content("");
             }
 
-            game.GameStatus = playerID == game.BlackPlayerID ? (int)Status.WhiteWin : (int)Status.BlackWin;
+            if (game.BlackPlayerID == Guid.Empty || game.WhitePlayerID == Guid.Empty)
+            {
+                game.GameStatus = (int)Status.Aborted;
+            }
+            else
+            {
+                game.GameStatus = playerID == game.BlackPlayerID ? (int)Status.WhiteWin : (int)Status.BlackWin;
+            }
             _context.SaveChanges();
 
             _signalRHub.Clients.All.InvokeAsync("UpdateOpponentState", ((Player)game.CurrentPlayer).ToString(), game.GameStatus.ToString());
@@ -290,6 +297,9 @@ namespace CheckersWebsite.Controllers
 
             _signalRHub.Clients.All.InvokeAsync("AddClass", "join", "hide");
             _signalRHub.Clients.Client(connectionID).InvokeAsync("AddClass", game.BlackPlayerID == playerID ? "black-player-text" : "white-player-text", "bold");
+
+            _signalRHub.Clients.Client(connectionID).InvokeAsync("AddClass", "new-game", "hide");
+            _signalRHub.Clients.Client(connectionID).InvokeAsync("RemoveClass", "resign", "hide");
 
             return Content(BuildBoard.GetHtml(game.ToGame(), game.BlackPlayerID == playerID.Value ? Player.Black : Player.White, true));
         }

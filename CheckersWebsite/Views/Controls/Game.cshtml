@@ -27,7 +27,10 @@
                 case Status.WhiteWin:
                     @: White Won
                     break;
-            }
+                case Status.Aborted:
+                    @: Aborted
+                    break;
+                }
         </h2>
         @Html.Partial("~/Views/Controls/CheckersBoard.cshtml", Model)
     </div>
@@ -42,9 +45,9 @@
                 <span class="glyphicon glyphicon-create"></span>
                 <span class="sr-only">Create Game</span>
             </a>
-            <button id="resign" class="ctrl-button btn btn-default @(Model.ID == Guid.Empty || Model.GameStatus != Status.InProgress || (blackPlayerID != playerID && whitePlayerID != playerID) ? "hide" : "")" onclick="resign()" title="Resign">
+            <button id="resign" class="ctrl-button btn btn-default @(Model.ID == Guid.Empty || Model.GameStatus != Status.InProgress || (blackPlayerID != playerID && whitePlayerID != playerID) ? "hide" : "")" onclick="resign()" title="@(blackPlayerID == Guid.Empty || whitePlayerID == Guid.Empty ? "Abort" : "Resign")">
                 <span class="glyphicon glyphicon-abort"></span>
-                <span class="sr-only">Resign</span>
+                <span class="sr-only">@(blackPlayerID == Guid.Empty || whitePlayerID == Guid.Empty ? "Abort" : "Resign")</span>
             </button>
             <button id="flip-orientation" class="ctrl-button btn btn-default" onclick="flip()" title="Flip Orientation">
                 <span class="glyphicon glyphicon-flip"></span>

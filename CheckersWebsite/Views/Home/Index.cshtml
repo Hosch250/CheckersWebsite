@@ -12,7 +12,7 @@
         <h2>Lobby</h2>
         <div>
             <table id="lobby" class="game-list">
-                @foreach (var game in Model.Where(w => w.BlackPlayerID == Guid.Empty || w.WhitePlayerID == Guid.Empty))
+                @foreach (var game in Model.Where(w => w.GameStatus == (int)Status.InProgress && (w.BlackPlayerID == Guid.Empty || w.WhitePlayerID == Guid.Empty)))
                 {
                     <tr>
                         <td><a href="~/Home/Game/@game.ID">@Resources.ResourceManager.GetString(((Variant)game.Variant).ToString())</a></td>

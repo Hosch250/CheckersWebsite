@@ -26,7 +26,8 @@ namespace CheckersWebsite.Facade
         InProgress,
         Drawn,
         BlackWin,
-        WhiteWin
+        WhiteWin,
+        Aborted
     }
 
     public static class Extensions
