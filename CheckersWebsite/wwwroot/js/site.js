@@ -157,6 +157,10 @@ function connectToSignalR() {
     signalRConnection.on('RemoveClass', function (controlID, value) {
         $("#" + controlID).removeClass(value);
     });
+    signalRConnection.on('SetHtml', function (selector, value) {
+        console.log(value);
+        $("" + selector).html(value);
+    });
     signalRConnection.start();
 }
 connectToSignalR();

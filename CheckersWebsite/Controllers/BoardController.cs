@@ -301,6 +301,9 @@ namespace CheckersWebsite.Controllers
             _signalRHub.Clients.Client(connectionID).InvokeAsync("AddClass", "new-game", "hide");
             _signalRHub.Clients.Client(connectionID).InvokeAsync("RemoveClass", "resign", "hide");
 
+            _signalRHub.Clients.All.InvokeAsync("SetAttribute", "resign", "title", "Resign");
+            _signalRHub.Clients.All.InvokeAsync("SetHtml", "#resign .sr-only", "Resign");
+
             return Content(BuildBoard.GetHtml(game.ToGame(), game.BlackPlayerID == playerID.Value ? Player.Black : Player.White, true));
         }
 

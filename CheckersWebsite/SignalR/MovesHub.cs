@@ -44,5 +44,10 @@ namespace CheckersWebsite.SignalR
         //{
         //    return Clients.All.InvokeAsync("RemoveClass", controlID, value);
         //}
+
+        //public Task SetHtml(string selector, string value)
+        //{
+        //    return Clients.All.InvokeAsync("SetHtml", selector, value);
+        //}
     }
 }
