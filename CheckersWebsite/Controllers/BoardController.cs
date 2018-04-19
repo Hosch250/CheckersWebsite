@@ -53,9 +53,8 @@ namespace CheckersWebsite.Controllers
                 Response.StatusCode = 403;
                 return Content("");
             }
-            
-            var controller = game?.ToGame()
-                ?? GameController.FromVariant(Variant.AmericanCheckers);
+
+            var controller = game.ToGame();
 
             if (!controller.IsValidMove(start, end))
             {
