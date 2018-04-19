@@ -126,8 +126,14 @@
   <data name="BlackWin" xml:space="preserve">
     <value>Black Won</value>
   </data>
+  <data name="Default" xml:space="preserve">
+    <value>Default</value>
+  </data>
   <data name="Drawn" xml:space="preserve">
     <value>Drawn</value>
+  </data>
+  <data name="FromPosition" xml:space="preserve">
+    <value>From Position</value>
   </data>
   <data name="InProgress" xml:space="preserve">
     <value>In Progress</value>

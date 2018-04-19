@@ -13,15 +13,26 @@
                 </div>
                 <div class="modal-body">
                     <div class="form-group">
-                        <label for="Variant">Variant</label>
-                        @Html.DropDownList("Variant", Enum.GetNames(typeof(Variant)).Select(s =>
+                        <label for="variant">Variant</label>
+                        @Html.DropDownList("variant", Enum.GetNames(typeof(Variant)).Select(s =>
                                  new SelectListItem
                                  {
                                      Text = Resources.ResourceManager.GetString(s),
                                      Value = s
                                  }
                              ),
-                             new { @class = "select form-control" })
+                             new { @class = "select form-control", id = "variant" })
+                    </div>
+                    <div class="form-group">
+                        <label for="setup">Setup</label>
+                        <select id="setup" class="selected form-control">
+                            <option value="default" selected>Default</option>
+                            <option value="from-position">From Position</option>
+                        </select>
+                    </div>
+                    <div id="position" class="form-group hide">
+                        <label id="fen-label" for="fen">FEN</label>
+                        <input id="fen" name="fen" class="input form-control" />
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -31,3 +42,24 @@
         </div>
     </div>
 </div>
+
+<script>
+    $(function () {
+        $('#setup').change(function () {
+            if ($('#setup option:selected').val() === 'from-position') {
+                $('#position').removeClass('hide');
+            }
+            else {
+                $('#position').addClass('hide');
+            }
+        });
+
+        $('#create-game-modal').on('hidden.bs.modal', function (e) {
+            $('#variant').val('AmericanCheckers');
+            $('#setup').val('default');
+
+            $('#fen').val('');
+            $('#position').addClass('hide');
+        });
+    });
+</script>

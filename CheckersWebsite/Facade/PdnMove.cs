@@ -56,7 +56,14 @@ namespace CheckersWebsite.Facade
     {
         public static PdnMove ToPdnMove(this Database.PdnMove move)
         {
-            var pdnMove = new PdnMove(move.Move.Split(',').Select(int.Parse).ToList(), move.ResultingFen, move.DisplayString, (PieceType) move.PieceTypeMoved, (Player?) move.Player, move.IsJump, move.ID);
+            var pdnMove = new PdnMove(
+                move.Move.Split(',').Select(int.Parse).ToList(),
+                move.ResultingFen,
+                move.DisplayString,
+                move.PieceTypeMoved == -1 ? null : (PieceType?)move.PieceTypeMoved,
+                move.Player == -1 ? null : (Player?)move.Player,
+                move.IsJump,
+                move.ID);
 
             return pdnMove;
         }
@@ -68,9 +75,9 @@ namespace CheckersWebsite.Facade
                 DisplayString = move.DisplayString,
                 IsJump = move.IsJump,
                 Move = string.Join(',', move.Move),
-                PieceTypeMoved = (int) move.PieceTypeMoved.Value,
+                PieceTypeMoved = move.PieceTypeMoved.HasValue ? (int) move.PieceTypeMoved.Value : -1,
                 ResultingFen = move.ResultingFen,
-                Player = (int) move.Player.Value
+                Player = move.Player.HasValue ? (int) move.Player.Value : -1
             };
 
             return pdnMove;

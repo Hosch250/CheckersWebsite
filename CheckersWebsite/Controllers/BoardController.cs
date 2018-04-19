@@ -345,13 +345,13 @@ namespace CheckersWebsite.Controllers
             {
                 write("<li>");
 
-                write($@"<input id=""{turn.BlackMove.ID}"" class=""toggle"" name=""move"" type=""radio"" value=""{turn.BlackMove.DisplayString}"" />");
-                write($@"<label for=""{turn.BlackMove.ID}"" onclick=""displayGame('{turn.BlackMove.ID}')"">{turn.BlackMove.DisplayString}</label>");
+                write($@"<input id=""{turn.BlackMove?.ID}"" class=""toggle"" name=""move"" type=""radio"" value=""{turn.BlackMove?.DisplayString}"" />");
+                write($@"<label for=""{turn.BlackMove?.ID}"" onclick=""displayGame('{turn.BlackMove?.ID}')"">{turn.BlackMove?.DisplayString}</label>");
                 
                 if (turn.WhiteMove != null)
                 {
-                    write($@"<input id=""{turn.WhiteMove.ID}"" class=""toggle"" name=""move"" type=""radio"" value=""{turn.WhiteMove.DisplayString}"" />");
-                    write($@"<label for=""{turn.WhiteMove.ID}"" onclick=""displayGame('{turn.WhiteMove.ID}')"">{turn.WhiteMove.DisplayString}</label>");
+                    write($@"<input id=""{turn.WhiteMove?.ID}"" class=""toggle"" name=""move"" type=""radio"" value=""{turn.WhiteMove?.DisplayString}"" />");
+                    write($@"<label for=""{turn.WhiteMove?.ID}"" onclick=""displayGame('{turn.WhiteMove?.ID}')"">{turn.WhiteMove?.DisplayString}</label>");
                 }
                 write("</li>");
             }

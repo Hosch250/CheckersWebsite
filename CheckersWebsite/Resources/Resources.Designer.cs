@@ -88,11 +88,29 @@ namespace CheckersWebsite.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Default.
+        /// </summary>
+        public static string Default {
+            get {
+                return ResourceManager.GetString("Default", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Drawn.
         /// </summary>
         public static string Drawn {
             get {
                 return ResourceManager.GetString("Drawn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to From Position.
+        /// </summary>
+        public static string FromPosition {
+            get {
+                return ResourceManager.GetString("FromPosition", resourceCulture);
             }
         }
         

@@ -79,13 +79,30 @@ namespace CheckersWebsite.Controllers
             return View("~/Views/Controls/Game.cshtml", game.ToGame());
         }
 
-        public ActionResult NewGame(Variant variant)
+        public ActionResult NewGame(Variant variant, string fen)
         {
             var playerID = CreateCookieIfNotExists();
             ViewData.Add(new KeyValuePair<string, object>("playerID", playerID));
 
             var player = new Random().Next(0, 2);
-            var newGame = GameController.FromVariant(variant).ToGame();
+
+            Database.Game newGame;
+            if (!string.IsNullOrEmpty(fen))
+            {
+                if (!GameController.TryFromPosition(variant, fen, out var game))
+                {
+                    Response.StatusCode = 403;
+                    return Redirect("/");
+                }
+                else
+                {
+                    newGame = game.ToGame();
+                }
+            }
+            else
+            {
+                newGame = GameController.FromVariant(variant).ToGame();
+            }
 
             if (player == (int)Player.Black)
             {

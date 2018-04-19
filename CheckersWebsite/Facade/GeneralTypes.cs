@@ -21,6 +21,12 @@ namespace CheckersWebsite.Facade
         PoolCheckers
     }
 
+    public enum Setup
+    {
+        Default,
+        FromPosition
+    }
+
     public enum Status
     {
         InProgress,

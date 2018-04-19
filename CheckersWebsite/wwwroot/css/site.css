@@ -193,3 +193,12 @@ input[type="radio"].toggle:checked + label {
 #rules div {
     padding: 0;
 }
+
+#position {
+    grid-template-columns: 50px auto;
+    display: grid;
+}
+
+#fen-label {
+    line-height: 34px;
+}
