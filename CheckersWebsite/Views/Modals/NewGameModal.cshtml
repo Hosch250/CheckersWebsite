@@ -1,4 +1,5 @@
 ﻿@using CheckersWebsite.Facade
+@using CheckersWebsite.Resources
 @using System
 @using System.Linq
 
@@ -14,13 +15,13 @@
                     <div class="form-group">
                         <label for="Variant">Variant</label>
                         @Html.DropDownList("Variant", Enum.GetNames(typeof(Variant)).Select(s =>
-                            new SelectListItem
-                            {
-                                Text = s,
-                                Value = s
-                            }
-                        ),
-                        new { @class="select form-control" })
+                                 new SelectListItem
+                                 {
+                                     Text = Resources.ResourceManager.GetString(s),
+                                     Value = s
+                                 }
+                             ),
+                             new { @class = "select form-control" })
                     </div>
                 </div>
                 <div class="modal-footer">
