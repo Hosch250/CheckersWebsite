@@ -135,7 +135,7 @@ input[type="radio"].toggle:checked + label {
 }
 
 .game-list-col div {
-    max-height: 181px;
+    height: 181px;
     overflow-y: auto;
     border: 1px solid darkgray;
 }
