@@ -6776,22 +6776,22 @@ button.btn-link {
 }
 
 .glyphicon-undo:before {
-    font-family: 'Segoe UI Symbol';
+    font-family: 'Segoe UI Symbol, Symbol';
     content: "\E10E";
 }
 
 .glyphicon-create:before {
-    font-family: 'Segoe UI Symbol';
+    font-family: 'Segoe UI Symbol, Symbol';
     content: "\E109";
 }
 
 .glyphicon-abort:before {
-    font-family: 'Segoe UI Symbol';
+    font-family: 'Segoe UI Symbol, Symbol';
     content: "\E10A";
 }
 
 .glyphicon-flip:before {
-    font-family: 'Segoe UI Symbol';
+    font-family: 'Segoe UI Symbol, Symbol';
     content: "\21C5";
 }
 
