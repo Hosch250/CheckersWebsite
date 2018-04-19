@@ -1,17 +1,23 @@
 ﻿@using CheckersWebsite.Facade
 @model GameController
 
+@{
+    var playerID = (Guid)ViewData["playerID"];
+    var blackPlayerID = (Guid)ViewData["blackPlayerID"];
+    var whitePlayerID = (Guid)ViewData["whitePlayerID"];
+}
+
+<div class="row">
+    <div class="col-md-2"></div>
+    <div class="col-md-6">
+        <button id="join" class="btn btn-alert @(blackPlayerID == playerID || whitePlayerID == playerID || blackPlayerID != Guid.Empty && whitePlayerID != Guid.Empty ? "hide" : "")" onclick="joinGame()" title="Join">Join</button>
+    </div>
+</div>
 <div class="row">
     <div class="col-md-2 column" style="border: 1px solid black">
         @Html.Partial("~/Views/Controls/Opponents.cshtml", Model)
     </div>
     <div class="col-md-6 column board-col match-height-game-control">
-        @{
-            var playerID = (Guid)ViewData["playerID"];
-            var blackPlayerID = (Guid)ViewData["blackPlayerID"];
-            var whitePlayerID = (Guid)ViewData["whitePlayerID"];
-        }
-        <button id="join" class="btn btn-primary @(blackPlayerID == playerID || whitePlayerID == playerID || blackPlayerID != Guid.Empty && whitePlayerID != Guid.Empty ? "hide" : "")" onclick="joinGame()" title="Join">Join</button>
         <h2 class="player-to-move h3">
             @switch (Model.GameStatus)
             {
@@ -28,9 +34,9 @@
                     @: White Won
                     break;
                 case Status.Aborted:
-                    @: Aborted
+                    @: Game Aborted
                     break;
-                }
+            }
         </h2>
         @Html.Partial("~/Views/Controls/CheckersBoard.cshtml", Model)
     </div>
@@ -41,7 +47,7 @@
                 <span class="glyphicon glyphicon-undo"></span>
                 <span class="sr-only">Undo</span>
             </button>
-            <a id="new-game" class="ctrl-button btn btn-default @(Model.ID == Guid.Empty || Model.GameStatus != Status.InProgress || (blackPlayerID != playerID && whitePlayerID != playerID) ? "" : "hide")" href="/Home/NewGame" title="Create Game">
+            <a id="new-game" class="ctrl-button btn btn-default @(Model.ID == Guid.Empty || Model.GameStatus != Status.InProgress || (blackPlayerID != playerID && whitePlayerID != playerID) ? "" : "hide")" data-toggle="modal" data-target="#create-game-modal" title="Create Game">
                 <span class="glyphicon glyphicon-create"></span>
                 <span class="sr-only">Create Game</span>
             </a>

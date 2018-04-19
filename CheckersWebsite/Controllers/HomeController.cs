@@ -79,13 +79,13 @@ namespace CheckersWebsite.Controllers
             return View("~/Views/Controls/Game.cshtml", game.ToGame());
         }
 
-        public ActionResult NewGame()
+        public ActionResult NewGame(Variant variant)
         {
             var playerID = CreateCookieIfNotExists();
             ViewData.Add(new KeyValuePair<string, object>("playerID", playerID));
 
             var player = new Random().Next(0, 2);
-            var newGame = GameController.FromVariant(Variant.AmericanCheckers).ToGame();
+            var newGame = GameController.FromVariant(variant).ToGame();
 
             if (player == (int)Player.Black)
             {

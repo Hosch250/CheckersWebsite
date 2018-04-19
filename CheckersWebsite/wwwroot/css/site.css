@@ -171,20 +171,20 @@ input[type="radio"].toggle:checked + label {
     font-size: larger;
 }
 
-.btn-primary,
-.btn-primary:visited {
+.btn-alert,
+.btn-alert:visited {
     background-color: goldenrod;
     color: darkslategrey;
     border-color: darkslategrey;
 }
 
-.btn-primary:active:focus,
-.btn-primary:active,
-.btn-primary:focus,
-.btn-primary:hover,
-.btn-primary.active,
-.btn-primary.focus,
-.btn-primary.hover {
+.btn-alert:active:focus,
+.btn-alert:active,
+.btn-alert:focus,
+.btn-alert:hover,
+.btn-alert.active,
+.btn-alert.focus,
+.btn-alert.hover {
     background-color: darkgoldenrod;
     color: darkslategrey;
     border-color: darkslategrey;

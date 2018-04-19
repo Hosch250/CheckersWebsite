@@ -1,4 +1,5 @@
 ﻿@using CheckersWebsite.Facade
+@using CheckersWebsite.Resources
 @model GameController
 
 @{
@@ -6,7 +7,7 @@
     var blackPlayerID = (Guid)ViewData["blackPlayerID"];
     var whitePlayerID = (Guid)ViewData["whitePlayerID"];
 }
-<div><b>American Checkers</b></div>
+<div><b>@Resources.ResourceManager.GetString(((Variant)Model.Variant).ToString())</b></div>
 <div>
     <svg width="20" height="20" style="background-color: white" version="1.1" xmlns="http://www.w3.org/2000/svg">
         <circle cx="10" cy="15" r="4" stroke="black" fill="white" stroke-width="2"></circle>
