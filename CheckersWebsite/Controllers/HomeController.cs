@@ -87,7 +87,7 @@ namespace CheckersWebsite.Controllers
             var player = new Random().Next(0, 2);
 
             Database.Game newGame;
-            if (!string.IsNullOrEmpty(fen))
+            if (!string.IsNullOrWhiteSpace(fen))
             {
                 if (!GameController.TryFromPosition(variant, fen, out var game))
                 {
