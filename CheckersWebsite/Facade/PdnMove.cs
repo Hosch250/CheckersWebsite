@@ -60,8 +60,8 @@ namespace CheckersWebsite.Facade
                 move.Move.Split(',').Select(int.Parse).ToList(),
                 move.ResultingFen,
                 move.DisplayString,
-                move.PieceTypeMoved == -1 ? null : (PieceType?)move.PieceTypeMoved,
-                move.Player == -1 ? null : (Player?)move.Player,
+                (PieceType?)move.PieceTypeMoved,
+                (Player?)move.Player,
                 move.IsJump,
                 move.ID);
 
@@ -75,9 +75,9 @@ namespace CheckersWebsite.Facade
                 DisplayString = move.DisplayString,
                 IsJump = move.IsJump,
                 Move = string.Join(',', move.Move),
-                PieceTypeMoved = move.PieceTypeMoved.HasValue ? (int) move.PieceTypeMoved.Value : -1,
+                PieceTypeMoved = (int?)move.PieceTypeMoved.Value,
                 ResultingFen = move.ResultingFen,
-                Player = move.Player.HasValue ? (int) move.Player.Value : -1
+                Player = (int?)move.Player.Value
             };
 
             return pdnMove;
