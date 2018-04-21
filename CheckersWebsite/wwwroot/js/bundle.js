@@ -395,6 +395,7 @@ var TrueCoords = null;
 var GrabPoint = null;
 var DragTarget = null;
 function Init() {
+    console.log('test');
     SVGRoot = $('.board svg')[0];
     $(SVGRoot).on('dragover', Drag);
     $(SVGRoot).on('mouseout', Drop);
@@ -453,21 +454,16 @@ function Drop(evt) {
         // we are afforded the opportunity to find out the element it's being dropped on
         var targetElement = evt.target;
         if (evt.type === 'mouseout') {
-            console.log(evt);
             GetTrueCoords(evt);
-            console.log(TrueCoords);
             var squares = $('.square');
             for (var i = 0; i < squares.length; i++) {
                 var el = squares[i];
                 var boundingRect = el.getBoundingClientRect();
-                console.log(boundingRect);
                 if (boundingRect.left <= TrueCoords.x &&
                     boundingRect.right >= TrueCoords.x &&
                     boundingRect.top <= TrueCoords.y &&
                     boundingRect.bottom >= TrueCoords.y) {
-                    console.log(boundingRect);
                     var coord = el.id.replace('square', '');
-                    console.log(coord);
                     boardClick(parseInt(coord[0]), parseInt(coord[1]));
                     break;
                 }
@@ -478,16 +474,6 @@ function Drop(evt) {
         // set the global variable to null, so nothing will be dragged until we
         // grab the next element
         DragTarget = null;
-    }
-}
-;
-function DragEnd(evt) {
-    if (DragTarget) {
-        Drop(evt);
-        var e = new jQuery.Event("click");
-        e.pageX = evt.pageX;
-        e.pageY = evt.pageX;
-        $("#elem").trigger(e);
     }
 }
 ;
@@ -580,6 +566,7 @@ function joinGame() {
         method: 'POST',
         success: function (data) {
             $('.board')[0].outerHTML = data;
+            Init();
         }
     });
 }
@@ -593,6 +580,7 @@ function displayGame(moveID) {
         method: 'POST',
         success: function (data) {
             $('.board')[0].outerHTML = data;
+            Init();
         }
     });
 }
@@ -619,6 +607,7 @@ function flip() {
         method: 'POST',
         success: function (data) {
             $('.board')[0].outerHTML = data;
+            Init();
         }
     });
 }

@@ -96,6 +96,7 @@ function joinGame() {
             method: 'POST',
             success(data) {
                 $('.board')[0].outerHTML = data;
+                Init();
             }
         });
 }
@@ -111,6 +112,7 @@ function displayGame(moveID) {
             method: 'POST',
             success(data) {
                 $('.board')[0].outerHTML = data;
+                Init();
             }
         });
 }
@@ -141,6 +143,7 @@ function flip() {
             method: 'POST',
             success(data) {
                 $('.board')[0].outerHTML = data;
+                Init();
             }
         });
 }
