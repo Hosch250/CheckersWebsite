@@ -133,6 +133,7 @@ function connectToSignalR() {
                     $('.board')[0].outerHTML = whiteBoard;
                     break;
             }
+            Init();
         }
     });
     signalRConnection.on('UpdateMoves', function (data) {

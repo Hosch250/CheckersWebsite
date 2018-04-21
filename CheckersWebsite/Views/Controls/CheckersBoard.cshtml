@@ -34,7 +34,7 @@
         {
             for (var col = 0; col < 8; col++)
             {
-                <image id="square@(GetAdjustedIndex(row))@(GetAdjustedIndex(col))" onmouseup="boardClick(@GetAdjustedIndex(row), @GetAdjustedIndex(col))" y="@(GetAdjustedIndex(row) * 12.5m)%" x="@(GetAdjustedIndex(col) * 12.5m)%" width="12.5%" height="12.5%" xlink:href="@Url.Content($"~/images/SteelTheme/{(GetAdjustedIndex(col) % 2 == GetAdjustedIndex(row) % 2 ? "Light" : "Dark")}Steel.png")" />
+                <image class="square" id="square@(GetAdjustedIndex(row))@(GetAdjustedIndex(col))" onmouseup="boardClick(@GetAdjustedIndex(row), @GetAdjustedIndex(col))" y="@(GetAdjustedIndex(row) * 12.5m)%" x="@(GetAdjustedIndex(col) * 12.5m)%" width="12.5%" height="12.5%" xlink:href="@Url.Content($"~/images/SteelTheme/{(GetAdjustedIndex(col) % 2 == GetAdjustedIndex(row) % 2 ? "Light" : "Dark")}Steel.png")" />
 
                 var piece = Model.Board[row, col];
                 if (piece != null)

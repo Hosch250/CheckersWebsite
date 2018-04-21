@@ -6,23 +6,19 @@ var SVGRoot = null;
 
 var TrueCoords = null;
 var GrabPoint = null;
-var BackDrop = null;
 var DragTarget = null;
 
-function Init(evt) {
-    var SVGElement = evt.target;
-    SVGRoot = evt.target;
+function Init() {
+    console.log('test');
+    SVGRoot = $('.board svg')[0];
+
+    $(SVGRoot).on('dragover', Drag);
+    $(SVGRoot).on('mouseout', Drop);
 
     // these svg points hold x and y values...
     // very handy, but they do not display on the screen (just so you know)
     TrueCoords = SVGRoot.createSVGPoint();
     GrabPoint = SVGRoot.createSVGPoint();
-
-    // this will serve as the canvas over which items are dragged.
-    // having the drag events occur on the mousemove over a backdrop
-    // (instead of the dragged element) prevents the dragged element
-    // from being inadvertantly dropped when the mouse is moved rapidly
-    BackDrop = SVGElement.getElementById('back-drop');
 }
 
 function Grab(evt) {
@@ -42,7 +38,7 @@ function Grab(evt) {
         // always over other elements (exception: in this case, elements that are
         // \"in the folder\" (children of the folder group) with only maintain
         // hierarchy within that group
-        BackDrop.parentNode.appendChild(DragTarget);
+        SVGRoot.appendChild(DragTarget);
 
         // turn off all pointer events to the dragged element, this does 2 things:
         // 1) allows us to drag text elements without selecting the text
@@ -69,13 +65,9 @@ function Drag(evt) {
         var newX = (TrueCoords.x - GrabPoint.x) / SVGRoot.getBoundingClientRect().width * 50;
         var newY = (TrueCoords.y - GrabPoint.y) / SVGRoot.getBoundingClientRect().height * 50;
 
-        console.log(TrueCoords);
-        console.log(GrabPoint);
-        console.log(SVGRoot.getBoundingClientRect());
-
         // apply a new tranform translation to the dragged element, to display
         // it in its new location
-        DragTarget.setAttributeNS(null, 'transform', 'translate(' + newX + ',' + newY + ')');
+        $(DragTarget)[0].setAttribute('transform', 'translate(' + newX + ',' + newY + ')');
     }
 };
 
@@ -85,6 +77,27 @@ function Drop(evt) {
         // since the element currently being dragged has its pointer-events turned off,
         // we are afforded the opportunity to find out the element it's being dropped on
         var targetElement = evt.target;
+
+        if (evt.type === 'mouseout') {
+            GetTrueCoords(evt);
+
+            var squares = $('.square');
+            for (var i = 0; i < squares.length; i++) {
+                var el = squares[i];
+
+                var boundingRect = el.getBoundingClientRect();
+
+                if (boundingRect.left <= TrueCoords.x &&
+                    boundingRect.right >= TrueCoords.x &&
+                    boundingRect.top <= TrueCoords.y &&
+                    boundingRect.bottom >= TrueCoords.y) {
+
+                    var coord = el.id.replace('square', '');
+                    boardClick(parseInt(coord[0]), parseInt(coord[1]));
+                    break;
+                }
+            }
+        }
 
         // turn the pointer-events back on, so we can grab this item later
         $(DragTarget).removeAttr('pointer-events');
