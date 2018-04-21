@@ -6,9 +6,17 @@
     var blackPlayerID = (Guid)ViewData["blackPlayerID"];
     var whitePlayerID = (Guid)ViewData["whitePlayerID"];
 
-    Player GetPlayer()
+    Player? GetPlayer()
     {
-        return playerID == whitePlayerID ? Player.White : Player.Black;
+        if (playerID == whitePlayerID)
+        {
+            return Player.White;
+        }
+        if (playerID == blackPlayerID)
+        {
+            return Player.Black;
+        }
+        return null;
     }
 
     int GetAdjustedIndex(int value)
@@ -29,7 +37,9 @@
                 var piece = Model.Board[row, col];
                 if (piece != null)
                 {
-                    <svg onclick="pieceClick(@GetAdjustedIndex(row), @GetAdjustedIndex(col))" y="@(GetAdjustedIndex(row) * 12.5m)%" x="@(GetAdjustedIndex(col) * 12.5m)%" width="12.5%" height="12.5%">
+                    var onClick = $@"onclick=""pieceClick({GetAdjustedIndex(row)}, {GetAdjustedIndex(col)})""";
+
+                    <svg @(GetPlayer() == piece.Player ? Html.Raw(onClick) : Html.Raw("")) y="@(GetAdjustedIndex(row) * 12.5m)%" x="@(GetAdjustedIndex(col) * 12.5m)%" width="12.5%" height="12.5%">
                         <image id="piece@(GetAdjustedIndex(row))@(GetAdjustedIndex(col))" height="100%" width="100%" xlink:href="@Url.Content($"~/images/SteelTheme/{piece.Player}{piece.PieceType}.png")" />
                         <rect class="selected-piece-highlight" height="100%" width="100%" style="fill: none; stroke: goldenrod"></rect>
                     </svg>
