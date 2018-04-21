@@ -58,7 +58,6 @@ function Grab(evt) {
     }
 };
 
-
 function Drag(evt) {
     // account for zooming and panning
     GetTrueCoords(evt);
@@ -76,7 +75,6 @@ function Drag(evt) {
     }
 };
 
-
 function Drop(evt) {
     // if we aren't currently dragging an element, don't do anything
     if (DragTarget) {
@@ -92,7 +90,6 @@ function Drop(evt) {
         DragTarget = null;
     }
 };
-
 
 function GetTrueCoords(evt) {
     // find the current zoom level and pan setting, and adjust the reported

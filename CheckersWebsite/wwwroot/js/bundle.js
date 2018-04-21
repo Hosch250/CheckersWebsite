@@ -500,6 +500,7 @@ function boardClick(row, col) {
     var endCol = getAdjustedIndex(col);
     if (startRow === endRow || startCol === endCol) {
         $('.selected').closest('svg').removeAttr('transform');
+        $('.selected').removeClass('drag');
         return;
     }
     var transformX = 6.25 * (startCol - endCol);
@@ -521,6 +522,7 @@ function boardClick(row, col) {
         method: 'POST',
         error: function () {
             $('.selected').closest('svg').removeAttr('transform');
+            $('.selected').removeClass('drag');
         }
     });
 }

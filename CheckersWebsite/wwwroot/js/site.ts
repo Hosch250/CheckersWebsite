@@ -32,6 +32,7 @@ function boardClick(row, col) {
 
     if (startRow === endRow || startCol === endCol) {
         $('.selected').closest('svg').removeAttr('transform');
+        $('.selected').removeClass('drag');
         return;
     }
 
@@ -57,6 +58,7 @@ function boardClick(row, col) {
             method: 'POST',
             error() {
                 $('.selected').closest('svg').removeAttr('transform');
+                $('.selected').removeClass('drag');
             }
         });
 }
