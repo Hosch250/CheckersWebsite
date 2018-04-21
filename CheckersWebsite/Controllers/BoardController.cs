@@ -223,6 +223,10 @@ namespace CheckersWebsite.Controllers
             var whiteBoard = await _viewRenderService.RenderToStringAsync("Controls/CheckersBoard", controller, whiteViewData);
 
             var moveHistory = await _viewRenderService.RenderToStringAsync("Controls/MoveControl", controller.MoveHistory, new Dictionary<string, object>());
+            
+            _signalRHub.Clients.All.InvokeAsync("UpdateBoard", id, blackBoard, whiteBoard);
+            _signalRHub.Clients.All.InvokeAsync("UpdateMoves", moveHistory);
+
             _signalRHub.Clients.All.InvokeAsync("UpdateOpponentState", ((Player)game.CurrentPlayer).ToString(), Status.InProgress.ToString());
 
             if (game.Turns.Count == 1 && game.Turns.ElementAt(0).Moves.Count == 1)
@@ -317,7 +321,7 @@ namespace CheckersWebsite.Controllers
                 };
             }
 
-            var board = await _viewRenderService.RenderToStringAsync("Controls/CheckersBoard", move, viewData);
+            var board = await _viewRenderService.RenderToStringAsync("Controls/CheckersBoard", controller, viewData);
             return Content(board);
         }
 
