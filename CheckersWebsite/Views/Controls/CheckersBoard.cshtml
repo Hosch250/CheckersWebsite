@@ -26,22 +26,24 @@
 }
 
 <div class="board" id="@Model.ID" orientation="@GetPlayer()">
-    <svg width="100%" height="100%" style="background-color: #cccccc" version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50">
+    <svg width="100%" height="100%" style="background-color: #cccccc" version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" onload="Init(evt)" onmousedown="Grab(evt)" onmousemove="Drag(evt)" onmouseup="Drop(evt)">
+
+        <rect id="back-drop" x="0" y="0" width="100%" height="100%" fill="none" pointer-events="all"></rect>
 
         @for (var row = 0; row < 8; row++)
         {
             for (var col = 0; col < 8; col++)
             {
-                <image onclick="boardClick(@GetAdjustedIndex(row), @GetAdjustedIndex(col))" y="@(GetAdjustedIndex(row) * 12.5m)%" x="@(GetAdjustedIndex(col) * 12.5m)%" width="12.5%" height="12.5%" xlink:href="@Url.Content($"~/images/SteelTheme/{(GetAdjustedIndex(col) % 2 == GetAdjustedIndex(row) % 2 ? "Light" : "Dark")}Steel.png")" />
+                <image id="square@(GetAdjustedIndex(row))@(GetAdjustedIndex(col))" onmouseup="boardClick(@GetAdjustedIndex(row), @GetAdjustedIndex(col))" y="@(GetAdjustedIndex(row) * 12.5m)%" x="@(GetAdjustedIndex(col) * 12.5m)%" width="12.5%" height="12.5%" xlink:href="@Url.Content($"~/images/SteelTheme/{(GetAdjustedIndex(col) % 2 == GetAdjustedIndex(row) % 2 ? "Light" : "Dark")}Steel.png")" />
 
                 var piece = Model.Board[row, col];
                 if (piece != null)
                 {
                     var onClick = $@"onclick=""pieceClick({GetAdjustedIndex(row)}, {GetAdjustedIndex(col)})""";
 
-                    <svg @(GetPlayer() == piece.Player ? Html.Raw(onClick) : Html.Raw("")) y="@(GetAdjustedIndex(row) * 12.5m)%" x="@(GetAdjustedIndex(col) * 12.5m)%" width="12.5%" height="12.5%">
+                    <svg id="svg@(GetAdjustedIndex(row))@(GetAdjustedIndex(col))" @(GetPlayer() == piece.Player ? Html.Raw(onClick) : Html.Raw("")) y="@(GetAdjustedIndex(row) * 12.5m)%" x="@(GetAdjustedIndex(col) * 12.5m)%" width="12.5%" height="12.5%">
                         <image id="piece@(GetAdjustedIndex(row))@(GetAdjustedIndex(col))" height="100%" width="100%" xlink:href="@Url.Content($"~/images/SteelTheme/{piece.Player}{piece.PieceType}.png")" />
-                        <rect class="selected-piece-highlight" height="100%" width="100%" style="fill: none; stroke: goldenrod"></rect>
+                        <rect id="rect@(GetAdjustedIndex(row))@(GetAdjustedIndex(col))" class="selected-piece-highlight" height="100%" width="100%" style="fill: none; stroke: goldenrod"></rect>
                     </svg>
                 }
             }

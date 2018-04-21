@@ -3,6 +3,7 @@
     "outputFileName": "wwwroot/js/bundle.js",
     "inputFiles": [
       "wwwroot/lib/jquery-match-height/jquery-match-height.js",
+      "wwwroot/js/dragdrop.js",
       "wwwroot/js/site.js"
     ],
     "minify": {

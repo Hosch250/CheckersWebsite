@@ -6879,7 +6879,7 @@ input[type="radio"].toggle:checked + label {
     stroke-width: 0;
 }
 
-.selected + .selected-piece-highlight{
+.selected:not(.drag) + .selected-piece-highlight {
     stroke-width: .75;
 }
 

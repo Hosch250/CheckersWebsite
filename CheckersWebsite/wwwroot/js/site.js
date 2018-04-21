@@ -19,6 +19,15 @@ function boardClick(row, col) {
     var rowCol = $('.selected').attr('id').replace('piece', '');
     var startRow = getAdjustedIndex(parseInt(rowCol[0]));
     var startCol = getAdjustedIndex(parseInt(rowCol[1]));
+    var endRow = getAdjustedIndex(row);
+    var endCol = getAdjustedIndex(col);
+    if (startRow === endRow || startCol === endCol) {
+        $('.selected').closest('svg').removeAttr('transform');
+        return;
+    }
+    var transformX = 6.25 * (startCol - endCol);
+    var transformY = 6.25 * (startRow - endRow);
+    $('.selected').closest('svg')[0].setAttributeNS(null, 'transform', 'translate(' + transformX + ',' + transformY + ')');
     $.ajax("/Board/MovePiece", {
         data: {
             id: $('.board').attr('id'),
@@ -27,12 +36,15 @@ function boardClick(row, col) {
                 column: startCol
             },
             end: {
-                row: getAdjustedIndex(row),
-                column: getAdjustedIndex(col)
+                row: endRow,
+                column: endCol
             }
         },
         dataType: 'html',
-        method: 'POST'
+        method: 'POST',
+        error: function () {
+            $('.selected').closest('svg').removeAttr('transform');
+        }
     });
 }
 function undo() {
@@ -111,7 +123,6 @@ function connectToSignalR() {
     signalRConnection = new signalR.HubConnection(httpConnection);
     signalRConnection.on('UpdateBoard', function (id, blackBoard, whiteBoard) {
         if ($('.board').attr('id').toLowerCase() === id.toLowerCase()) {
-            console.log($('.board').attr('orientation').toLowerCase());
             switch ($('.board').attr('orientation').toLowerCase()) {
                 case "black":
                     $('.board')[0].outerHTML = blackBoard;
@@ -158,7 +169,6 @@ function connectToSignalR() {
         $("#" + controlID).removeClass(value);
     });
     signalRConnection.on('SetHtml', function (selector, value) {
-        console.log(value);
         $("" + selector).html(value);
     });
     signalRConnection.start();
