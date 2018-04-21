@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Project.Utilities;
 
 namespace CheckersWebsite
 {
@@ -34,6 +35,8 @@ namespace CheckersWebsite
             services.AddScoped<Context, Context>();
 
             services.AddSignalR();
+
+            services.AddScoped<IViewRenderService, ViewRenderService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

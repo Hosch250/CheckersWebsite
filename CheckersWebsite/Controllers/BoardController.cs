@@ -1,12 +1,22 @@
 ﻿using CheckersWebsite.Facade;
 using CheckersWebsite.SignalR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc.Abstractions;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.Mvc.Razor;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Routing;
+using Project.Utilities;
 
 namespace CheckersWebsite.Controllers
 {
@@ -14,24 +24,18 @@ namespace CheckersWebsite.Controllers
     {
         private readonly Database.Context _context;
         private readonly IHubContext<SignalRHub> _signalRHub;
+        private readonly IViewRenderService _viewRenderService;
 
-        public BoardController(Database.Context context, IHubContext<SignalRHub> signalRHub)
+        public BoardController(Database.Context context,
+            IHubContext<SignalRHub> signalRHub,
+            IViewRenderService viewRenderService)
         {
             _context = context;
             _signalRHub = signalRHub;
+            _viewRenderService = viewRenderService;
         }
 
-        private Guid? GetPlayerID()
-        {
-            if (Request.Cookies.TryGetValue("playerID", out var id))
-            {
-                return Guid.Parse(id);
-            }
-
-            return null;
-        }
-
-        public ActionResult MovePiece(Guid id, Coord start, Coord end)
+        public async Task<ActionResult> MovePiece(Guid id, Coord start, Coord end)
         {
             var playerID = GetPlayerID();
             if (!playerID.HasValue)
@@ -102,12 +106,28 @@ namespace CheckersWebsite.Controllers
             game.GameStatus = (int)move.GetGameStatus();
 
             _context.SaveChanges();
+            
+            var blackViewData = new Dictionary<string, object>
+            {
+                ["playerID"] = game.BlackPlayerID,
+                ["blackPlayerID"] = game.BlackPlayerID,
+                ["whitePlayerID"] = game.WhitePlayerID
+            };
 
-            var blackBoard = BuildBoard.GetHtml(move, Player.Black, true);
-            var whiteBoard = BuildBoard.GetHtml(move, Player.White, true);
+            var whiteViewData = new Dictionary<string, object>
+            {
+                ["playerID"] = game.WhitePlayerID,
+                ["blackPlayerID"] = game.BlackPlayerID,
+                ["whitePlayerID"] = game.WhitePlayerID
+            };
 
-            _signalRHub.Clients.All.InvokeAsync("UpdateMoves", BuildMoveHistory.GetHtml(game.Turns.Select(s => s.ToPdnTurn()).ToList()));
+            var blackBoard = await _viewRenderService.RenderToStringAsync("Controls/CheckersBoard", move, blackViewData);
+            var whiteBoard = await _viewRenderService.RenderToStringAsync("Controls/CheckersBoard", move, whiteViewData);
+
+            var moveHistory = await _viewRenderService.RenderToStringAsync("Controls/MoveControl", move.MoveHistory, new Dictionary<string, object>());
+
             _signalRHub.Clients.All.InvokeAsync("UpdateBoard", id, blackBoard, whiteBoard);
+            _signalRHub.Clients.All.InvokeAsync("UpdateMoves", moveHistory);
             _signalRHub.Clients.All.InvokeAsync("UpdateOpponentState", ((Player)game.CurrentPlayer).ToString(), move.GetGameStatus().ToString());
 
             if (game.Turns.Count == 1 && game.Turns.ElementAt(0).Moves.Count == 1)
@@ -125,7 +145,7 @@ namespace CheckersWebsite.Controllers
             return Content("");
         }
 
-        public ActionResult Undo(Guid id)
+        public async Task<ActionResult> Undo(Guid id)
         {
             var playerID = GetPlayerID();
             if (!playerID.HasValue)
@@ -184,11 +204,25 @@ namespace CheckersWebsite.Controllers
             _context.SaveChanges();
 
             var controller = game.ToGame();
-            var blackBoard = BuildBoard.GetHtml(controller, Player.Black, true);
-            var whiteBoard = BuildBoard.GetHtml(controller, Player.White, true);
-            
-            _signalRHub.Clients.All.InvokeAsync("UpdateMoves", BuildMoveHistory.GetHtml(game.Turns.Select(s => s.ToPdnTurn()).ToList()));
-            _signalRHub.Clients.All.InvokeAsync("UpdateBoard", id, blackBoard, whiteBoard);
+
+            var blackViewData = new Dictionary<string, object>
+            {
+                ["playerID"] = game.BlackPlayerID,
+                ["blackPlayerID"] = game.BlackPlayerID,
+                ["whitePlayerID"] = game.WhitePlayerID
+            };
+
+            var whiteViewData = new Dictionary<string, object>
+            {
+                ["playerID"] = game.WhitePlayerID,
+                ["blackPlayerID"] = game.BlackPlayerID,
+                ["whitePlayerID"] = game.WhitePlayerID
+            };
+
+            var blackBoard = await _viewRenderService.RenderToStringAsync("Controls/CheckersBoard", controller, blackViewData);
+            var whiteBoard = await _viewRenderService.RenderToStringAsync("Controls/CheckersBoard", controller, whiteViewData);
+
+            var moveHistory = await _viewRenderService.RenderToStringAsync("Controls/MoveControl", controller.MoveHistory, new Dictionary<string, object>());
             _signalRHub.Clients.All.InvokeAsync("UpdateOpponentState", ((Player)game.CurrentPlayer).ToString(), Status.InProgress.ToString());
 
             if (game.Turns.Count == 1 && game.Turns.ElementAt(0).Moves.Count == 1)
@@ -238,7 +272,7 @@ namespace CheckersWebsite.Controllers
             return Content("");
         }
 
-        public ActionResult DisplayGame(Guid moveID, Player player)
+        public async Task<ActionResult> DisplayGame(Guid moveID, Player player)
         {
             var game = _context.Games
                     .Include("Turns")
@@ -262,10 +296,32 @@ namespace CheckersWebsite.Controllers
 
             var controller = GameController.FromPosition((Variant)game.Variant, move.ResultingFen);
             controller.ID = game.ID;
-            return Content(BuildBoard.GetHtml(controller, player, isLastTurn()));
+
+            Dictionary<string, object> viewData;
+            if (player == Player.Black)
+            {
+                viewData = new Dictionary<string, object>
+                {
+                    ["playerID"] = game.BlackPlayerID,
+                    ["blackPlayerID"] = game.BlackPlayerID,
+                    ["whitePlayerID"] = game.WhitePlayerID
+                };
+            }
+            else
+            {
+                viewData = new Dictionary<string, object>
+                {
+                    ["playerID"] = game.WhitePlayerID,
+                    ["blackPlayerID"] = game.BlackPlayerID,
+                    ["whitePlayerID"] = game.WhitePlayerID
+                };
+            }
+
+            var board = await _viewRenderService.RenderToStringAsync("Controls/CheckersBoard", move, viewData);
+            return Content(board);
         }
 
-        public ActionResult Join(Guid id, string connectionID)
+        public async Task<ActionResult> Join(Guid id, string connectionID)
         {
             var playerID = GetPlayerID();
             if (!playerID.HasValue)
@@ -303,10 +359,31 @@ namespace CheckersWebsite.Controllers
             _signalRHub.Clients.All.InvokeAsync("SetAttribute", "resign", "title", "Resign");
             _signalRHub.Clients.All.InvokeAsync("SetHtml", "#resign .sr-only", "Resign");
 
-            return Content(BuildBoard.GetHtml(game.ToGame(), game.BlackPlayerID == playerID.Value ? Player.Black : Player.White, true));
+            Dictionary<string, object> viewData;
+            if (game.BlackPlayerID == playerID.Value)
+            {
+                viewData = new Dictionary<string, object>
+                {
+                    ["playerID"] = game.BlackPlayerID,
+                    ["blackPlayerID"] = game.BlackPlayerID,
+                    ["whitePlayerID"] = game.WhitePlayerID
+                };
+            }
+            else
+            {
+                viewData = new Dictionary<string, object>
+                {
+                    ["playerID"] = game.WhitePlayerID,
+                    ["blackPlayerID"] = game.BlackPlayerID,
+                    ["whitePlayerID"] = game.WhitePlayerID
+                };
+            }
+
+            var board = await _viewRenderService.RenderToStringAsync("Controls/CheckersBoard", game.ToGame(), viewData);
+            return Content(board);
         }
 
-        public ActionResult Orientate(Guid id, Guid? moveID, Player orientation)
+        public async Task<ActionResult> Orientate(Guid id, Guid? moveID, Player orientation)
         {
             var game = _context.Games
                     .Include("Turns")
@@ -328,78 +405,102 @@ namespace CheckersWebsite.Controllers
 
             var controller = GameController.FromPosition((Variant)game.Variant, fen);
             controller.ID = game.ID;
-            return Content(BuildBoard.GetHtml(controller, orientation, playerID.HasValue && (playerID.Value == game.BlackPlayerID || playerID.Value == game.WhitePlayerID) && fen == game.Fen));
+
+            Dictionary<string, object> viewData;
+            if (orientation == Player.Black)
+            {
+                viewData = new Dictionary<string, object>
+                {
+                    ["playerID"] = game.BlackPlayerID,
+                    ["blackPlayerID"] = game.BlackPlayerID,
+                    ["whitePlayerID"] = game.WhitePlayerID
+                };
+            }
+            else
+            {
+                viewData = new Dictionary<string, object>
+                {
+                    ["playerID"] = game.WhitePlayerID,
+                    ["blackPlayerID"] = game.BlackPlayerID,
+                    ["whitePlayerID"] = game.WhitePlayerID
+                };
+            }
+
+            var board = await _viewRenderService.RenderToStringAsync("Controls/CheckersBoard", game.ToGame(), viewData);
+            return Content(board);
+        }
+
+        private Guid? GetPlayerID()
+        {
+            if (Request.Cookies.TryGetValue("playerID", out var id))
+            {
+                return Guid.Parse(id);
+            }
+
+            return null;
         }
     }
+}
 
-    public class BuildMoveHistory
+ 
+namespace Project.Utilities
+{
+    public interface IViewRenderService
     {
-        public static string GetHtml(List<PdnTurn> turns)
-        {
-            var stringWriter = new StringWriter();
-            Action<string> write = stringWriter.Write;
-
-            write(@"<ol class=""moves"">");
-
-            foreach (var turn in turns)
-            {
-                write("<li>");
-
-                write($@"<input id=""{turn.BlackMove?.ID}"" class=""toggle"" name=""move"" type=""radio"" value=""{turn.BlackMove?.DisplayString}"" />");
-                write($@"<label for=""{turn.BlackMove?.ID}"" onclick=""displayGame('{turn.BlackMove?.ID}')"">{turn.BlackMove?.DisplayString}</label>");
-                
-                if (turn.WhiteMove != null)
-                {
-                    write($@"<input id=""{turn.WhiteMove?.ID}"" class=""toggle"" name=""move"" type=""radio"" value=""{turn.WhiteMove?.DisplayString}"" />");
-                    write($@"<label for=""{turn.WhiteMove?.ID}"" onclick=""displayGame('{turn.WhiteMove?.ID}')"">{turn.WhiteMove?.DisplayString}</label>");
-                }
-                write("</li>");
-            }
-            write("</ol>");
-
-            return stringWriter.ToString();
-        }
+        Task<string> RenderToStringAsync(string viewName, object model, IDictionary<string, object> viewDataValues);
     }
 
-    public class BuildBoard
+    public class ViewRenderService : IViewRenderService
     {
-        public static string GetHtml(GameController game, Player player, bool allowMove)
+        private readonly IRazorViewEngine _razorViewEngine;
+        private readonly ITempDataProvider _tempDataProvider;
+        private readonly IServiceProvider _serviceProvider;
+
+        public ViewRenderService(IRazorViewEngine razorViewEngine,
+            ITempDataProvider tempDataProvider,
+            IServiceProvider serviceProvider)
         {
-            var stringWriter = new StringWriter();
-            Action<string> write = stringWriter.Write;
-            
-            int getAdjustedIndex(int value)
-            {
-                return player == Player.Black ? 7 - value : value;
-            }
+            _razorViewEngine = razorViewEngine;
+            _tempDataProvider = tempDataProvider;
+            _serviceProvider = serviceProvider;
+        }
 
-            write($@"<div class=""board"" id=""{game.ID}"" orientation=""{player}"">");
-            write(@"<svg width=""100%"" height=""100%"" style=""background-color: #cccccc"" version=""1.1"" xmlns=""http://www.w3.org/2000/svg"" viewBox=""0 0 50 50"">");
+        public async Task<string> RenderToStringAsync(string viewName, object model, IDictionary<string, object> viewDataValues)
+        {
+            var httpContext = new DefaultHttpContext { RequestServices = _serviceProvider };
+            var actionContext = new ActionContext(httpContext, new RouteData(), new ActionDescriptor());
 
-            for (var row = 0; row < 8; row++)
+            using (var sw = new StringWriter())
             {
-                for (var col = 0; col < 8; col++)
+                var viewResult = _razorViewEngine.FindView(actionContext, viewName, false);
+
+                if (viewResult.View == null)
                 {
-                    write($@"<image {(allowMove ? $@"onclick=""boardClick({getAdjustedIndex(row)}, {getAdjustedIndex(col)})""" : "")} y=""{getAdjustedIndex(row) * 12.5m}%"" x=""{getAdjustedIndex(col) * 12.5m}%"" width=""12.5%"" height=""12.5%"" xlink:href=""/images/SteelTheme/{(getAdjustedIndex(col) % 2 == getAdjustedIndex(row) % 2 ? "Light" : "Dark")}Steel.png"" />");
-
-                    var piece = game.Board[row, col];
-
-                    if (piece != null)
-                    {
-                        write($@"<svg {(allowMove ? $@"onclick=""pieceClick({getAdjustedIndex(row)}, {getAdjustedIndex(col)})""" : "")} y=""{getAdjustedIndex(row) * 12.5m}%"" x=""{getAdjustedIndex(col) * 12.5m}%"" width=""12.5%"" height=""12.5%"">");
-
-                        write($@"<image id=""piece{getAdjustedIndex(row)}{getAdjustedIndex(col)}"" height=""100%"" width=""100%"" xlink:href=""/images/SteelTheme/{piece.Player}{piece.PieceType}.png"" />");
-                        write(@"<rect class=""selected-piece-highlight"" height=""100%"" width=""100%"" style=""fill: none; stroke: goldenrod""></rect>");
-
-                        write("</svg>");
-                    }
+                    throw new ArgumentNullException($"{viewName} does not match any available view");
                 }
+
+                var viewDictionary = new ViewDataDictionary(new EmptyModelMetadataProvider(), new ModelStateDictionary())
+                {
+                    Model = model
+                };
+
+                foreach (var kvp in viewDataValues)
+                {
+                    viewDictionary.Add(kvp);
+                }
+
+                var viewContext = new ViewContext(
+                    actionContext,
+                    viewResult.View,
+                    viewDictionary,
+                    new TempDataDictionary(actionContext.HttpContext, _tempDataProvider),
+                    sw,
+                    new HtmlHelperOptions()
+                );
+
+                await viewResult.View.RenderAsync(viewContext);
+                return sw.ToString();
             }
-
-            write("</svg>");
-            write("</div>");
-
-            return stringWriter.ToString();
         }
     }
 }
