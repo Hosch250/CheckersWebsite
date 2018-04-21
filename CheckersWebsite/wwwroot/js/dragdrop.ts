@@ -30,7 +30,7 @@ function Grab(evt) {
     var targetElement = evt.target;
 
     // you cannot drag the background itself, so ignore any attempts to mouse down on it
-    if (targetElement.id.startsWith('piece')) {
+    if ($('.current-player').length === 1 && $('.current-player').hasClass($(targetElement).attr('player')) && targetElement.id.startsWith('piece')) {
         $('.selected').removeClass('selected');
         $(`#${targetElement.id}`).addClass('selected drag')
 

@@ -25,7 +25,7 @@
     }
 }
 
-<div class="board" id="@Model.ID" orientation="@GetPlayer()">
+<div class="board @(GetPlayer() == Model.CurrentPlayer ? $"current-player {Model.CurrentPlayer.ToString()}" : "")" id="@Model.ID" orientation="@GetPlayer()">
     <svg width="100%" height="100%" style="background-color: #cccccc" version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" onload="Init(evt)" onmousedown="Grab(evt)" onmousemove="Drag(evt)" onmouseup="Drop(evt)">
 
         <rect id="back-drop" x="0" y="0" width="100%" height="100%" fill="none" pointer-events="all"></rect>
@@ -42,7 +42,7 @@
                     var onClick = $@"onclick=""pieceClick({GetAdjustedIndex(row)}, {GetAdjustedIndex(col)})""";
 
                     <svg id="svg@(GetAdjustedIndex(row))@(GetAdjustedIndex(col))" @(GetPlayer() == piece.Player ? Html.Raw(onClick) : Html.Raw("")) y="@(GetAdjustedIndex(row) * 12.5m)%" x="@(GetAdjustedIndex(col) * 12.5m)%" width="12.5%" height="12.5%">
-                        <image id="piece@(GetAdjustedIndex(row))@(GetAdjustedIndex(col))" height="100%" width="100%" xlink:href="@Url.Content($"~/images/SteelTheme/{piece.Player}{piece.PieceType}.png")" />
+                        <image id="piece@(GetAdjustedIndex(row))@(GetAdjustedIndex(col))" player="@piece.Player.ToString()" height="100%" width="100%" xlink:href="@Url.Content($"~/images/SteelTheme/{piece.Player}{piece.PieceType}.png")" />
                         <rect id="rect@(GetAdjustedIndex(row))@(GetAdjustedIndex(col))" class="selected-piece-highlight" height="100%" width="100%" style="fill: none; stroke: goldenrod"></rect>
                     </svg>
                 }
