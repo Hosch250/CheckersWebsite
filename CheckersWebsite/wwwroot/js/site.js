@@ -22,13 +22,13 @@ function boardClick(row, col) {
     var endRow = getAdjustedIndex(row);
     var endCol = getAdjustedIndex(col);
     if (startRow === endRow || startCol === endCol) {
-        $('.selected').closest('svg').removeAttr('transform');
+        $('.selected').closest('g').removeAttr('transform');
         $('.selected').removeClass('drag');
         return;
     }
     var transformX = 6.25 * (startCol - endCol);
     var transformY = 6.25 * (startRow - endRow);
-    $('.selected').closest('svg')[0].setAttributeNS(null, 'transform', 'translate(' + transformX + ',' + transformY + ')');
+    $('.selected').closest('g')[0].setAttributeNS(null, 'transform', 'translate(' + transformX + ',' + transformY + ')');
     $.ajax("/Board/MovePiece", {
         data: {
             id: $('.board').attr('id'),
@@ -44,7 +44,7 @@ function boardClick(row, col) {
         dataType: 'html',
         method: 'POST',
         error: function () {
-            $('.selected').closest('svg').removeAttr('transform');
+            $('.selected').closest('g').removeAttr('transform');
             $('.selected').removeClass('drag');
         }
     });

@@ -41,10 +41,12 @@
                 {
                     var onClick = $@"onclick=""pieceClick({GetAdjustedIndex(row)}, {GetAdjustedIndex(col)})""";
 
-                    <svg id="svg@(GetAdjustedIndex(row))@(GetAdjustedIndex(col))" @(GetPlayer() == piece.Player ? Html.Raw(onClick) : Html.Raw("")) y="@(GetAdjustedIndex(row) * 12.5m)%" x="@(GetAdjustedIndex(col) * 12.5m)%" width="12.5%" height="12.5%">
-                        <image id="piece@(GetAdjustedIndex(row))@(GetAdjustedIndex(col))" player="@piece.Player.ToString()" height="100%" width="100%" xlink:href="@Url.Content($"~/images/SteelTheme/{piece.Player}{piece.PieceType}.png")" />
-                        <rect id="rect@(GetAdjustedIndex(row))@(GetAdjustedIndex(col))" class="selected-piece-highlight" height="100%" width="100%" style="fill: none; stroke: goldenrod"></rect>
-                    </svg>
+                    <g>
+                        <svg id="svg@(GetAdjustedIndex(row))@(GetAdjustedIndex(col))" @(GetPlayer() == piece.Player ? Html.Raw(onClick) : Html.Raw("")) y="@(GetAdjustedIndex(row) * 12.5m)%" x="@(GetAdjustedIndex(col) * 12.5m)%" width="12.5%" height="12.5%" style="fill:none">
+                            <image id="piece@(GetAdjustedIndex(row))@(GetAdjustedIndex(col))" player="@piece.Player.ToString()" height="100%" width="100%" xlink:href="@Url.Content($"~/images/SteelTheme/{piece.Player}{piece.PieceType}.png")" />
+                            <rect id="rect@(GetAdjustedIndex(row))@(GetAdjustedIndex(col))" class="selected-piece-highlight" height="100%" width="100%" style="fill: none; stroke: goldenrod"></rect>
+                        </svg>
+                    </g>
                 }
             }
         }

@@ -5,10 +5,9 @@ var TrueCoords = null;
 var GrabPoint = null;
 var DragTarget = null;
 function Init() {
-    console.log('test');
     SVGRoot = $('.board svg')[0];
     $(SVGRoot).on('dragover', Drag);
-    $(SVGRoot).on('mouseout', Drop);
+    //$(SVGRoot).on('dragend', Drop);
     // these svg points hold x and y values...
     // very handy, but they do not display on the screen (just so you know)
     TrueCoords = SVGRoot.createSVGPoint();
@@ -17,11 +16,12 @@ function Init() {
 function Grab(evt) {
     // find out which element we moused down on
     var targetElement = evt.target;
+    GetTrueCoords(evt);
     // you cannot drag the background itself, so ignore any attempts to mouse down on it
     if ($('.current-player').length === 1 && $('.current-player').hasClass($(targetElement).attr('player')) && targetElement.id.startsWith('piece')) {
         $('.selected').removeClass('selected');
         $("#" + targetElement.id).addClass('selected drag');
-        targetElement = targetElement.closest('svg');
+        targetElement = targetElement.closest('g');
         //set the item moused down on as the element to be dragged
         DragTarget = targetElement;
         // move this element to the \"top\" of the display, so it is (almost)
@@ -43,10 +43,14 @@ function Grab(evt) {
 }
 ;
 function Drag(evt) {
-    // account for zooming and panning
-    GetTrueCoords(evt);
     // if we don't currently have an element in tow, don't do anything
     if (DragTarget) {
+        // account for zooming and panning
+        GetTrueCoords(evt);
+        console.log(evt);
+        console.log(TrueCoords);
+        console.log(GrabPoint);
+        console.log(SVGRoot.getBoundingClientRect());
         // account for the offset between the element's origin and the
         // exact place we grabbed it... this way, the drag will look more natural
         var newX = (TrueCoords.x - GrabPoint.x) / SVGRoot.getBoundingClientRect().width * 50;
