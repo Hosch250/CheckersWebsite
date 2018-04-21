@@ -394,10 +394,13 @@ var SVGRoot = null;
 var TrueCoords = null;
 var GrabPoint = null;
 var DragTarget = null;
+var DragEnded = false;
+var GrabScreenCoords = null;
+var GrabClientCoords = null;
 function Init() {
     SVGRoot = $('.board svg')[0];
     $(SVGRoot).on('dragover', Drag);
-    //$(SVGRoot).on('dragend', Drop);
+    $(SVGRoot).on('dragend', Drop);
     // these svg points hold x and y values...
     // very handy, but they do not display on the screen (just so you know)
     TrueCoords = SVGRoot.createSVGPoint();
@@ -411,6 +414,14 @@ function Grab(evt) {
     if ($('.current-player').length === 1 && $('.current-player').hasClass($(targetElement).attr('player')) && targetElement.id.startsWith('piece')) {
         $('.selected').removeClass('selected');
         $("#" + targetElement.id).addClass('selected drag');
+        GrabScreenCoords = {
+            x: evt.screenX,
+            y: evt.screenY
+        };
+        GrabClientCoords = {
+            x: evt.clientX,
+            y: evt.clientY
+        };
         targetElement = targetElement.closest('g');
         //set the item moused down on as the element to be dragged
         DragTarget = targetElement;
@@ -437,10 +448,9 @@ function Drag(evt) {
     if (DragTarget) {
         // account for zooming and panning
         GetTrueCoords(evt);
-        console.log(evt);
-        console.log(TrueCoords);
-        console.log(GrabPoint);
-        console.log(SVGRoot.getBoundingClientRect());
+        //console.log(TrueCoords);
+        //console.log(GrabPoint);
+        //console.log(SVGRoot.getBoundingClientRect());
         // account for the offset between the element's origin and the
         // exact place we grabbed it... this way, the drag will look more natural
         var newX = (TrueCoords.x - GrabPoint.x) / SVGRoot.getBoundingClientRect().width * 50;
@@ -457,16 +467,23 @@ function Drop(evt) {
         // since the element currently being dragged has its pointer-events turned off,
         // we are afforded the opportunity to find out the element it's being dropped on
         var targetElement = evt.target;
-        if (evt.type === 'mouseout') {
-            GetTrueCoords(evt);
+        if (evt.type === 'dragend') {
+            var dropScreenCoords = {
+                x: evt.screenX,
+                y: evt.screenY
+            };
+            var dropClientCoords = {
+                x: GrabClientCoords.x + (evt.screenX - GrabScreenCoords.x),
+                y: GrabClientCoords.y + (evt.screenY - GrabScreenCoords.y)
+            };
             var squares = $('.square');
             for (var i = 0; i < squares.length; i++) {
                 var el = squares[i];
                 var boundingRect = el.getBoundingClientRect();
-                if (boundingRect.left <= TrueCoords.x &&
-                    boundingRect.right >= TrueCoords.x &&
-                    boundingRect.top <= TrueCoords.y &&
-                    boundingRect.bottom >= TrueCoords.y) {
+                if (boundingRect.left <= dropClientCoords.x &&
+                    boundingRect.right >= dropClientCoords.x &&
+                    boundingRect.top <= dropClientCoords.y &&
+                    boundingRect.bottom >= dropClientCoords.y) {
                     var coord = el.id.replace('square', '');
                     boardClick(parseInt(coord[0]), parseInt(coord[1]));
                     break;
