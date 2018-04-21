@@ -445,6 +445,9 @@ function Drag(evt) {
         // exact place we grabbed it... this way, the drag will look more natural
         var newX = (TrueCoords.x - GrabPoint.x) / SVGRoot.getBoundingClientRect().width * 50;
         var newY = (TrueCoords.y - GrabPoint.y) / SVGRoot.getBoundingClientRect().height * 50;
+        console.log(TrueCoords);
+        console.log(GrabPoint);
+        console.log(SVGRoot.getBoundingClientRect());
         // apply a new tranform translation to the dragged element, to display
         // it in its new location
         DragTarget.setAttributeNS(null, 'transform', 'translate(' + newX + ',' + newY + ')');
@@ -458,7 +461,7 @@ function Drop(evt) {
         // we are afforded the opportunity to find out the element it's being dropped on
         var targetElement = evt.target;
         // turn the pointer-events back on, so we can grab this item later
-        DragTarget.setAttributeNS(null, 'pointer-events', 'all');
+        $(DragTarget).removeAttr('pointer-events');
         // set the global variable to null, so nothing will be dragged until we
         // grab the next element
         DragTarget = null;
