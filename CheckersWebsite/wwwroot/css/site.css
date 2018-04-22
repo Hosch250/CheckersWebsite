@@ -17,24 +17,8 @@ button.btn-link {
     padding-right: 0;
 }
 
-.glyphicon-undo:before {
-    font-family: 'Segoe UI Symbol';
-    content: "\E10E";
-}
-
-.glyphicon-create:before {
-    font-family: 'Segoe UI Symbol';
-    content: "\E109";
-}
-
-.glyphicon-abort:before {
-    font-family: 'Segoe UI Symbol';
-    content: "\E10A";
-}
-
-.glyphicon-flip:before {
-    font-family: 'Segoe UI Symbol';
-    content: "\21C5";
+.glyphicon-share-alt {
+    transform: rotateY(180deg);
 }
 
 .controls {
@@ -46,14 +30,18 @@ button.btn-link {
     width: 100%;
 }
 
-.glyphicon-create {
+.glyphicon-plus {
     top: 0;
     bottom: 0;
-    padding: 14.25px 0;
+    padding: 16px 0 14.25px 0;
 }
 
-.home-page-create .glyphicon-create {
+.home-page-create .glyphicon-plus {
     padding: 10px;
+}
+
+.home-page-create span {
+    vertical-align: middle;
 }
 
 .ctrl-button {
