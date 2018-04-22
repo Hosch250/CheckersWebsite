@@ -410,25 +410,14 @@ namespace CheckersWebsite.Controllers
             var controller = GameController.FromPosition((Variant)game.Variant, fen);
             controller.ID = game.ID;
 
-            Dictionary<string, object> viewData;
-            if (orientation == Player.Black)
-            {
+            Dictionary<string, object>
                 viewData = new Dictionary<string, object>
                 {
-                    ["playerID"] = game.BlackPlayerID,
+                    ["playerID"] = playerID,
                     ["blackPlayerID"] = game.BlackPlayerID,
-                    ["whitePlayerID"] = game.WhitePlayerID
+                    ["whitePlayerID"] = game.WhitePlayerID,
+                    ["orientation"] = orientation
                 };
-            }
-            else
-            {
-                viewData = new Dictionary<string, object>
-                {
-                    ["playerID"] = game.WhitePlayerID,
-                    ["blackPlayerID"] = game.BlackPlayerID,
-                    ["whitePlayerID"] = game.WhitePlayerID
-                };
-            }
 
             var board = await _viewRenderService.RenderToStringAsync("Controls/CheckersBoard", game.ToGame(), viewData);
             return Content(board);
