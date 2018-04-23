@@ -23,11 +23,11 @@ namespace CheckersWebsite.Controllers
             _signalRHub = signalRHub;
         }
 
-        private Guid GetPlayerID()
+        private Guid? GetPlayerID()
         {
             if (Request.Cookies.Keys.All(a => a != "playerID"))
             {
-                return Guid.Empty;
+                return null;
             }
 
             return Guid.Parse(Request.Cookies["playerID"]);
@@ -35,7 +35,7 @@ namespace CheckersWebsite.Controllers
 
         public IActionResult Index()
         {
-            var playerID = GetPlayerID();
+            var playerID = GetPlayerID() ?? Guid.NewGuid();
             ViewData.Add("playerID", playerID);
 
             var games = _context.Games
@@ -47,7 +47,7 @@ namespace CheckersWebsite.Controllers
 
         public IActionResult Game(Guid id)
         {
-            var playerID = GetPlayerID();
+            var playerID = GetPlayerID() ?? Guid.NewGuid();
 
             if (id == Guid.Empty)
             {
@@ -76,7 +76,7 @@ namespace CheckersWebsite.Controllers
 
         public ActionResult NewGame(Variant variant, string fen)
         {
-            var playerID = GetPlayerID();
+            var playerID = GetPlayerID().Value;
             ViewData.Add("playerID", playerID);
 
             var player = Random.Next(0, 2);

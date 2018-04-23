@@ -523,6 +523,8 @@ function pieceClick(row, col) {
     $('.selected').closest('rect').css('stroke-width', '1');
 }
 function boardClick(row, col) {
+    console.log(row);
+    console.log(col);
     if ($('.selected').length === 0) {
         return;
     }
@@ -580,8 +582,7 @@ function resign() {
 function joinGame() {
     $.ajax("/Board/Join", {
         data: {
-            id: $('.board').attr('id'),
-            connectionID: signalRConnection.connection.connectionId
+            id: $('.board').attr('id')
         },
         dataType: 'html',
         method: 'POST',
@@ -631,6 +632,20 @@ function flip() {
             Init();
         }
     });
+}
+function getCookie(name) {
+    var cookies = document.cookie.split(';');
+    for (var index in cookies) {
+        var cookie = cookies[index];
+        if (cookie.indexOf('=') === -1) {
+            continue;
+        }
+        var keyValue = cookie.split('=');
+        if (keyValue[0].trim() === name) {
+            return keyValue[1].trim();
+        }
+    }
+    return '';
 }
 var signalRConnection;
 function connectToSignalR() {
@@ -687,7 +702,18 @@ function connectToSignalR() {
     signalRConnection.on('SetHtml', function (selector, value) {
         $("" + selector).html(value);
     });
-    signalRConnection.start();
+    signalRConnection.start().then(function () {
+        var playerID = getCookie('playerID');
+        if (playerID === '') {
+            signalRConnection.invoke('GetNewPlayerID').then(function (value) {
+                document.cookie += (document.cookie.trim() === '' ? '' : ';') + "playerID=" + value + ";path=/";
+                signalRConnection.invoke('MapPlayerConnection', value);
+            });
+        }
+        else {
+            signalRConnection.invoke('MapPlayerConnection', playerID);
+        }
+    });
 }
 connectToSignalR();
 //# sourceMappingURL=site.js.map

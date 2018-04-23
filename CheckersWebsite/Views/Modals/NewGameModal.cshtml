@@ -34,9 +34,6 @@
                         <label id="fen-label" for="fen">FEN</label>
                         <input id="fen" name="fen" class="input form-control" />
                     </div>
-                    <div>
-                        <input id="connectionID" name="connectionID" type="hidden"  />
-                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-primary">Create Game</button>
@@ -48,10 +45,6 @@
 
 <script>
     $(function () {
-        $('#new-game-form').submit(function () {
-            $('#connectionID').val(signalRConnection.connection.connectionId);
-        });
-
         $('#setup').change(function () {
             if ($('#setup option:selected').val() === 'from-position') {
                 $('#position').removeClass('hide');

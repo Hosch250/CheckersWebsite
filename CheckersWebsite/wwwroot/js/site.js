@@ -13,6 +13,8 @@ function pieceClick(row, col) {
     $('.selected').closest('rect').css('stroke-width', '1');
 }
 function boardClick(row, col) {
+    console.log(row);
+    console.log(col);
     if ($('.selected').length === 0) {
         return;
     }
@@ -70,8 +72,7 @@ function resign() {
 function joinGame() {
     $.ajax("/Board/Join", {
         data: {
-            id: $('.board').attr('id'),
-            connectionID: signalRConnection.connection.connectionId
+            id: $('.board').attr('id')
         },
         dataType: 'html',
         method: 'POST',
