@@ -126,16 +126,16 @@ namespace CheckersWebsite.Controllers
             var moveHistory = await _viewRenderService.RenderToStringAsync("Controls/MoveControl", move.MoveHistory, new Dictionary<string, object>());
 
             _signalRHub.Clients.Client(GetClientConnection(game.BlackPlayerID)).InvokeAsync("UpdateBoard", id,
-                await _viewRenderService.RenderToStringAsync("Controls/CheckersBoard", controller, GetViewData(game.BlackPlayerID, Player.Black)),
-                await _viewRenderService.RenderToStringAsync("Controls/CheckersBoard", controller, GetViewData(game.BlackPlayerID, Player.White)));
+                await _viewRenderService.RenderToStringAsync("Controls/CheckersBoard", move, GetViewData(game.BlackPlayerID, Player.Black)),
+                await _viewRenderService.RenderToStringAsync("Controls/CheckersBoard", move, GetViewData(game.BlackPlayerID, Player.White)));
 
             _signalRHub.Clients.Client(GetClientConnection(game.WhitePlayerID)).InvokeAsync("UpdateBoard", id,
-                await _viewRenderService.RenderToStringAsync("Controls/CheckersBoard", controller, GetViewData(game.WhitePlayerID, Player.Black)),
-                await _viewRenderService.RenderToStringAsync("Controls/CheckersBoard", controller, GetViewData(game.WhitePlayerID, Player.White)));
+                await _viewRenderService.RenderToStringAsync("Controls/CheckersBoard", move, GetViewData(game.WhitePlayerID, Player.Black)),
+                await _viewRenderService.RenderToStringAsync("Controls/CheckersBoard", move, GetViewData(game.WhitePlayerID, Player.White)));
 
             _signalRHub.Clients.AllExcept(new List<string> { GetClientConnection(game.BlackPlayerID), GetClientConnection(game.WhitePlayerID) }).InvokeAsync("UpdateBoard", id,
-                await _viewRenderService.RenderToStringAsync("Controls/CheckersBoard", controller, GetViewData(Guid.Empty, Player.Black)),
-                await _viewRenderService.RenderToStringAsync("Controls/CheckersBoard", controller, GetViewData(Guid.Empty, Player.White)));
+                await _viewRenderService.RenderToStringAsync("Controls/CheckersBoard", move, GetViewData(Guid.Empty, Player.Black)),
+                await _viewRenderService.RenderToStringAsync("Controls/CheckersBoard", move, GetViewData(Guid.Empty, Player.White)));
 
             _signalRHub.Clients.All.InvokeAsync("UpdateMoves", moveHistory);
             _signalRHub.Clients.All.InvokeAsync("UpdateOpponentState", ((Player)game.CurrentPlayer).ToString(), move.GetGameStatus().ToString());

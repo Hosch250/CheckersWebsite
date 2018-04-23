@@ -523,8 +523,6 @@ function pieceClick(row, col) {
     $('.selected').closest('rect').css('stroke-width', '1');
 }
 function boardClick(row, col) {
-    console.log(row);
-    console.log(col);
     if ($('.selected').length === 0) {
         return;
     }

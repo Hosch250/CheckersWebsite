@@ -19,8 +19,6 @@ function pieceClick(row, col) {
 }
 
 function boardClick(row, col) {
-    console.log(row);
-    console.log(col);
     if ($('.selected').length === 0) {
         return;
     }
