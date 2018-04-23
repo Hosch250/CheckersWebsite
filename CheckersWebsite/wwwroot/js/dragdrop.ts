@@ -25,6 +25,7 @@ function Init() {
 }
 
 function Grab(evt) {
+    console.log(evt);
     // find out which element we moused down on
     var targetElement = evt.target;
     GetTrueCoords(evt);
