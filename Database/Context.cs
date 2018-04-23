@@ -8,6 +8,7 @@ namespace Database
         public DbSet<Game> Games { get; set; }
         public DbSet<PdnTurn> Turns { get; set; }
         public DbSet<PdnMove> Moves { get; set; }
+        public DbSet<Player> Players { get; set; }
 
         public Context() : base()
         {

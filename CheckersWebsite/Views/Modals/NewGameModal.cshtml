@@ -6,7 +6,7 @@
 <div id="create-game-modal" class="modal fade" role="dialog">
     <div class="modal-dialog">
         <div class="modal-content">
-            <form action="/Home/NewGame">
+            <form id="new-game-form" method="post" action="/Home/NewGame">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                     <h3 class="modal-title">Create Game</h3>
@@ -34,6 +34,9 @@
                         <label id="fen-label" for="fen">FEN</label>
                         <input id="fen" name="fen" class="input form-control" />
                     </div>
+                    <div>
+                        <input id="connectionID" name="connectionID" type="hidden"  />
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-primary">Create Game</button>
@@ -45,6 +48,10 @@
 
 <script>
     $(function () {
+        $('#new-game-form').submit(function () {
+            $('#connectionID').val(signalRConnection.connection.connectionId);
+        });
+
         $('#setup').change(function () {
             if ($('#setup option:selected').val() === 'from-position') {
                 $('#position').removeClass('hide');

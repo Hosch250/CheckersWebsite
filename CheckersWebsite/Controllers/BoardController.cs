@@ -35,6 +35,11 @@ namespace CheckersWebsite.Controllers
             _viewRenderService = viewRenderService;
         }
 
+        private string GetClientConnection(Guid id)
+        {
+            return _context.Players.Find(id).ConnectionID;
+        }
+
         public async Task<ActionResult> MovePiece(Guid id, Coord start, Coord end)
         {
             var playerID = GetPlayerID();
@@ -106,27 +111,32 @@ namespace CheckersWebsite.Controllers
             game.GameStatus = (int)move.GetGameStatus();
 
             _context.SaveChanges();
-            
-            var blackViewData = new Dictionary<string, object>
-            {
-                ["playerID"] = game.BlackPlayerID,
-                ["blackPlayerID"] = game.BlackPlayerID,
-                ["whitePlayerID"] = game.WhitePlayerID
-            };
 
-            var whiteViewData = new Dictionary<string, object>
+            Dictionary<string, object> GetViewData(Guid localPlayerID, Player orientation)
             {
-                ["playerID"] = game.WhitePlayerID,
-                ["blackPlayerID"] = game.BlackPlayerID,
-                ["whitePlayerID"] = game.WhitePlayerID
-            };
-
-            var blackBoard = await _viewRenderService.RenderToStringAsync("Controls/CheckersBoard", move, blackViewData);
-            var whiteBoard = await _viewRenderService.RenderToStringAsync("Controls/CheckersBoard", move, whiteViewData);
+                return new Dictionary<string, object>
+                {
+                    ["playerID"] = localPlayerID,
+                    ["blackPlayerID"] = game.BlackPlayerID,
+                    ["whitePlayerID"] = game.WhitePlayerID,
+                    ["orientation"] = orientation
+                };
+            }
 
             var moveHistory = await _viewRenderService.RenderToStringAsync("Controls/MoveControl", move.MoveHistory, new Dictionary<string, object>());
 
-            _signalRHub.Clients.All.InvokeAsync("UpdateBoard", id, blackBoard, whiteBoard);
+            _signalRHub.Clients.Client(GetClientConnection(game.BlackPlayerID)).InvokeAsync("UpdateBoard", id,
+                await _viewRenderService.RenderToStringAsync("Controls/CheckersBoard", controller, GetViewData(game.BlackPlayerID, Player.Black)),
+                await _viewRenderService.RenderToStringAsync("Controls/CheckersBoard", controller, GetViewData(game.BlackPlayerID, Player.White)));
+
+            _signalRHub.Clients.Client(GetClientConnection(game.WhitePlayerID)).InvokeAsync("UpdateBoard", id,
+                await _viewRenderService.RenderToStringAsync("Controls/CheckersBoard", controller, GetViewData(game.WhitePlayerID, Player.Black)),
+                await _viewRenderService.RenderToStringAsync("Controls/CheckersBoard", controller, GetViewData(game.WhitePlayerID, Player.White)));
+
+            _signalRHub.Clients.AllExcept(new List<string> { GetClientConnection(game.BlackPlayerID), GetClientConnection(game.WhitePlayerID) }).InvokeAsync("UpdateBoard", id,
+                await _viewRenderService.RenderToStringAsync("Controls/CheckersBoard", controller, GetViewData(Guid.Empty, Player.Black)),
+                await _viewRenderService.RenderToStringAsync("Controls/CheckersBoard", controller, GetViewData(Guid.Empty, Player.White)));
+
             _signalRHub.Clients.All.InvokeAsync("UpdateMoves", moveHistory);
             _signalRHub.Clients.All.InvokeAsync("UpdateOpponentState", ((Player)game.CurrentPlayer).ToString(), move.GetGameStatus().ToString());
 
@@ -204,27 +214,32 @@ namespace CheckersWebsite.Controllers
             _context.SaveChanges();
 
             var controller = game.ToGame();
-
-            var blackViewData = new Dictionary<string, object>
-            {
-                ["playerID"] = game.BlackPlayerID,
-                ["blackPlayerID"] = game.BlackPlayerID,
-                ["whitePlayerID"] = game.WhitePlayerID
-            };
-
-            var whiteViewData = new Dictionary<string, object>
-            {
-                ["playerID"] = game.WhitePlayerID,
-                ["blackPlayerID"] = game.BlackPlayerID,
-                ["whitePlayerID"] = game.WhitePlayerID
-            };
-
-            var blackBoard = await _viewRenderService.RenderToStringAsync("Controls/CheckersBoard", controller, blackViewData);
-            var whiteBoard = await _viewRenderService.RenderToStringAsync("Controls/CheckersBoard", controller, whiteViewData);
-
-            var moveHistory = await _viewRenderService.RenderToStringAsync("Controls/MoveControl", controller.MoveHistory, new Dictionary<string, object>());
             
-            _signalRHub.Clients.All.InvokeAsync("UpdateBoard", id, blackBoard, whiteBoard);
+            var moveHistory = await _viewRenderService.RenderToStringAsync("Controls/MoveControl", controller.MoveHistory, new Dictionary<string, object>());
+
+            Dictionary<string, object> GetViewData(Guid localPlayerID, Player orientation)
+            {
+                return new Dictionary<string, object>
+                {
+                    ["playerID"] = localPlayerID,
+                    ["blackPlayerID"] = game.BlackPlayerID,
+                    ["whitePlayerID"] = game.WhitePlayerID,
+                    ["orientation"] = orientation
+                };
+            }
+            
+            _signalRHub.Clients.Client(GetClientConnection(game.BlackPlayerID)).InvokeAsync("UpdateBoard", id,
+                await _viewRenderService.RenderToStringAsync("Controls/CheckersBoard", controller, GetViewData(game.BlackPlayerID, Player.Black)),
+                await _viewRenderService.RenderToStringAsync("Controls/CheckersBoard", controller, GetViewData(game.BlackPlayerID, Player.White)));
+
+            _signalRHub.Clients.Client(GetClientConnection(game.WhitePlayerID)).InvokeAsync("UpdateBoard", id,
+                await _viewRenderService.RenderToStringAsync("Controls/CheckersBoard", controller, GetViewData(game.WhitePlayerID, Player.Black)),
+                await _viewRenderService.RenderToStringAsync("Controls/CheckersBoard", controller, GetViewData(game.WhitePlayerID, Player.White)));
+
+            _signalRHub.Clients.AllExcept(new List<string> { GetClientConnection(game.BlackPlayerID), GetClientConnection(game.WhitePlayerID) }).InvokeAsync("UpdateBoard", id,
+                await _viewRenderService.RenderToStringAsync("Controls/CheckersBoard", controller, GetViewData(Guid.Empty, Player.Black)),
+                await _viewRenderService.RenderToStringAsync("Controls/CheckersBoard", controller, GetViewData(Guid.Empty, Player.White)));
+
             _signalRHub.Clients.All.InvokeAsync("UpdateMoves", moveHistory);
 
             _signalRHub.Clients.All.InvokeAsync("UpdateOpponentState", ((Player)game.CurrentPlayer).ToString(), Status.InProgress.ToString());
@@ -292,40 +307,22 @@ namespace CheckersWebsite.Controllers
             var move = game.Turns.SelectMany(t => t.Moves).First(f => f.ID == moveID);
             var turn = game.Turns.First(f => f.ID == move.TurnID);
 
-            bool isLastTurn()
-            {
-                return game.Turns.OrderBy(a => a.MoveNumber).Last().MoveNumber == turn.MoveNumber &&
-                    (turn.Moves.Count == 1 || move.Player == (int) Player.White);
-            }
-
             var controller = GameController.FromPosition((Variant)game.Variant, move.ResultingFen);
             controller.ID = game.ID;
 
-            Dictionary<string, object> viewData;
-            if (player == Player.Black)
+            var viewData = new Dictionary<string, object>
             {
-                viewData = new Dictionary<string, object>
-                {
-                    ["playerID"] = game.BlackPlayerID,
-                    ["blackPlayerID"] = game.BlackPlayerID,
-                    ["whitePlayerID"] = game.WhitePlayerID
-                };
-            }
-            else
-            {
-                viewData = new Dictionary<string, object>
-                {
-                    ["playerID"] = game.WhitePlayerID,
-                    ["blackPlayerID"] = game.BlackPlayerID,
-                    ["whitePlayerID"] = game.WhitePlayerID
-                };
-            }
+                ["playerID"] = GetPlayerID(),
+                ["blackPlayerID"] = game.BlackPlayerID,
+                ["whitePlayerID"] = game.WhitePlayerID,
+                ["orientation"] = player
+            };
 
             var board = await _viewRenderService.RenderToStringAsync("Controls/CheckersBoard", controller, viewData);
             return Content(board);
         }
 
-        public async Task<ActionResult> Join(Guid id, string connectionID)
+        public async Task<ActionResult> Join(Guid id)
         {
             var playerID = GetPlayerID();
             if (!playerID.HasValue)
@@ -353,35 +350,23 @@ namespace CheckersWebsite.Controllers
             }
 
             _context.SaveChanges();
-
+            
             _signalRHub.Clients.All.InvokeAsync("AddClass", "join", "hide");
-            _signalRHub.Clients.Client(connectionID).InvokeAsync("AddClass", game.BlackPlayerID == playerID ? "black-player-text" : "white-player-text", "bold");
+            _signalRHub.Clients.Client(GetClientConnection(playerID.Value)).InvokeAsync("AddClass", game.BlackPlayerID == playerID.Value ? "black-player-text" : "white-player-text", "bold");
 
-            _signalRHub.Clients.Client(connectionID).InvokeAsync("AddClass", "new-game", "hide");
-            _signalRHub.Clients.Client(connectionID).InvokeAsync("RemoveClass", "resign", "hide");
+            _signalRHub.Clients.Client(GetClientConnection(playerID.Value)).InvokeAsync("AddClass", "new-game", "hide");
+            _signalRHub.Clients.Client(GetClientConnection(playerID.Value)).InvokeAsync("RemoveClass", "resign", "hide");
 
             _signalRHub.Clients.All.InvokeAsync("SetAttribute", "resign", "title", "Resign");
             _signalRHub.Clients.All.InvokeAsync("SetHtml", "#resign .sr-only", "Resign");
 
-            Dictionary<string, object> viewData;
-            if (game.BlackPlayerID == playerID.Value)
+            var viewData = new Dictionary<string, object>
             {
-                viewData = new Dictionary<string, object>
-                {
-                    ["playerID"] = game.BlackPlayerID,
-                    ["blackPlayerID"] = game.BlackPlayerID,
-                    ["whitePlayerID"] = game.WhitePlayerID
-                };
-            }
-            else
-            {
-                viewData = new Dictionary<string, object>
-                {
-                    ["playerID"] = game.WhitePlayerID,
-                    ["blackPlayerID"] = game.BlackPlayerID,
-                    ["whitePlayerID"] = game.WhitePlayerID
-                };
-            }
+                ["playerID"] = playerID,
+                ["blackPlayerID"] = game.BlackPlayerID,
+                ["whitePlayerID"] = game.WhitePlayerID,
+                ["orientation"] = game.BlackPlayerID == playerID ? Player.Black : Player.White
+            };
 
             var board = await _viewRenderService.RenderToStringAsync("Controls/CheckersBoard", game.ToGame(), viewData);
             return Content(board);

@@ -5,35 +5,29 @@ using CheckersWebsite.Models;
 using Microsoft.EntityFrameworkCore;
 using CheckersWebsite.Facade;
 using System;
-using System.Collections.Generic;
+using Microsoft.AspNetCore.SignalR;
+using CheckersWebsite.SignalR;
 
 namespace CheckersWebsite.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly Database.Context _context;
+        private static Random Random = new Random();
 
-        public HomeController(Database.Context context)
+        private readonly Database.Context _context;
+        private readonly IHubContext<SignalRHub> _signalRHub;
+
+        public HomeController(Database.Context context, IHubContext<SignalRHub> signalRHub)
         {
             _context = context;
+            _signalRHub = signalRHub;
         }
 
-        private Guid CreateCookieIfNotExists()
+        private Guid GetPlayerID()
         {
             if (Request.Cookies.Keys.All(a => a != "playerID"))
             {
-                var guid = Guid.NewGuid();
-                Response.Cookies.Append(
-                    "playerID",
-                    guid.ToString(),
-                    new Microsoft.AspNetCore.Http.CookieOptions()
-                    {
-                        Path = "/",
-                        Expires = DateTime.Now.AddYears(1)
-                    }
-                );
-
-                return guid;
+                return Guid.Empty;
             }
 
             return Guid.Parse(Request.Cookies["playerID"]);
@@ -41,8 +35,8 @@ namespace CheckersWebsite.Controllers
 
         public IActionResult Index()
         {
-            var playerID = CreateCookieIfNotExists();
-            ViewData.Add(new KeyValuePair<string, object>("playerID", playerID));
+            var playerID = GetPlayerID();
+            ViewData.Add("playerID", playerID);
 
             var games = _context.Games
                 .OrderByDescending(g => g.CreatedOn)
@@ -53,8 +47,7 @@ namespace CheckersWebsite.Controllers
 
         public IActionResult Game(Guid id)
         {
-            var playerID = CreateCookieIfNotExists();
-            ViewData.Add(new KeyValuePair<string, object>("playerID", playerID));
+            var playerID = GetPlayerID();
 
             if (id == Guid.Empty)
             {
@@ -73,18 +66,20 @@ namespace CheckersWebsite.Controllers
                 return Content("");
             }
 
-            ViewData.Add(new KeyValuePair<string, object>("blackPlayerID", game.BlackPlayerID));
-            ViewData.Add(new KeyValuePair<string, object>("whitePlayerID", game.WhitePlayerID));
+            ViewData.Add("playerID", playerID);
+            ViewData.Add("blackPlayerID", game.BlackPlayerID);
+            ViewData.Add("whitePlayerID", game.WhitePlayerID);
+            ViewData.Add("orientation", playerID == game.WhitePlayerID ? Player.White : Player.Black);
 
             return View("~/Views/Controls/Game.cshtml", game.ToGame());
         }
 
         public ActionResult NewGame(Variant variant, string fen)
         {
-            var playerID = CreateCookieIfNotExists();
-            ViewData.Add(new KeyValuePair<string, object>("playerID", playerID));
+            var playerID = GetPlayerID();
+            ViewData.Add("playerID", playerID);
 
-            var player = new Random().Next(0, 2);
+            var player = Random.Next(0, 2);
 
             Database.Game newGame;
             if (!string.IsNullOrWhiteSpace(fen))

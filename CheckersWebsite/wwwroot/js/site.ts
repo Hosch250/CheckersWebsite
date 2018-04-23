@@ -148,6 +148,23 @@ function flip() {
         });
 }
 
+function getCookie(name :string) {
+    var cookies = document.cookie.split(';');
+    for (var index in cookies) {
+        var cookie = cookies[index];
+        if (cookie.indexOf('=') === -1) {
+            continue;
+        }
+
+        var keyValue = cookie.split('=');
+        if (keyValue[0].trim() === name) {
+            return keyValue[1].trim();
+        }
+    }
+
+    return '';
+}
+
 let signalRConnection: any;
 
 function connectToSignalR() {
@@ -214,7 +231,19 @@ function connectToSignalR() {
         $(`${selector}`).html(value);
     });
 
-    signalRConnection.start();
+    signalRConnection.start().then(function () {
+        var playerID = getCookie('playerID');
+
+        if (playerID === '') {
+            signalRConnection.invoke('GetNewPlayerID').then(function (value) {
+                document.cookie += `${document.cookie.trim() === '' ? '' : ';'}playerID=${value};path=/`;
+
+                signalRConnection.invoke('MapPlayerConnection', value);
+            });
+        } else {
+            signalRConnection.invoke('MapPlayerConnection', playerID);
+        }
+    });
 }
 
 connectToSignalR();

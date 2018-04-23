@@ -5,21 +5,15 @@
     var playerID = (Guid)ViewData["playerID"];
     var blackPlayerID = (Guid)ViewData["blackPlayerID"];
     var whitePlayerID = (Guid)ViewData["whitePlayerID"];
-
-    Player GetPlayer()
-    {
-        ViewData.TryGetValue("orientation", out var player);
-
-        return player as Player? ?? Player.Black;
-    }
+    var orientation = (Player)ViewData["orientation"];
 
     int GetAdjustedIndex(int value)
     {
-        return GetPlayer() == Player.White ? value : 7 - value;
+        return orientation == Player.White ? value : 7 - value;
     }
 }
 
-<div class="board @(playerID == whitePlayerID || playerID == blackPlayerID ? $"current-player {Model.CurrentPlayer.ToString()}" : "")" id="@Model.ID" orientation="@GetPlayer()">
+<div class="board @(playerID == blackPlayerID && Model.CurrentPlayer == Player.Black || playerID == whitePlayerID && Model.CurrentPlayer == Player.White ? "current-player" : "")" id="@Model.ID" orientation="@orientation">
     <svg width="100%" height="100%" style="background-color: #cccccc" version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" onload="Init(evt)" onmousedown="Grab(evt)" onmousemove="Drag(evt)" onmouseup="Drop(evt)">
 
         <rect id="back-drop" x="0" y="0" width="100%" height="100%" fill="none" pointer-events="all"></rect>
@@ -36,7 +30,7 @@
                     var onClick = $@"onclick=""pieceClick({GetAdjustedIndex(row)}, {GetAdjustedIndex(col)})""";
 
                     <g>
-                        <svg id="svg@(GetAdjustedIndex(row))@(GetAdjustedIndex(col))" @(playerID == whitePlayerID || playerID == blackPlayerID ? Html.Raw(onClick) : Html.Raw("")) y="@(GetAdjustedIndex(row) * 12.5m)%" x="@(GetAdjustedIndex(col) * 12.5m)%" width="12.5%" height="12.5%" style="fill:none">
+                        <svg id="svg@(GetAdjustedIndex(row))@(GetAdjustedIndex(col))" @(playerID == blackPlayerID && Model.CurrentPlayer == Player.Black && piece.Player == Player.Black || playerID == whitePlayerID && Model.CurrentPlayer == Player.White && piece.Player == Player.White ? Html.Raw(onClick) : Html.Raw("")) y="@(GetAdjustedIndex(row) * 12.5m)%" x="@(GetAdjustedIndex(col) * 12.5m)%" width="12.5%" height="12.5%" style="fill:none">
                             <image id="piece@(GetAdjustedIndex(row))@(GetAdjustedIndex(col))" player="@piece.Player.ToString()" height="100%" width="100%" xlink:href="@Url.Content($"~/images/SteelTheme/{piece.Player}{piece.PieceType}.png")" />
                             <rect id="rect@(GetAdjustedIndex(row))@(GetAdjustedIndex(col))" class="selected-piece-highlight" height="100%" width="100%" style="fill: none; stroke: goldenrod"></rect>
                         </svg>
