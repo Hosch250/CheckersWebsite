@@ -10,16 +10,14 @@
     }
 }
 
-<div class="board current-player black white" orientation="@orientation">
-    <svg width="100%" height="100%" style="background-color: #cccccc" version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" onload="Init(evt)" onmousedown="Grab(evt)" onmousemove="Drag(evt)" onmouseup="Drop(evt)">
-
-        <rect id="back-drop" x="0" y="0" width="100%" height="100%" fill="none" pointer-events="all"></rect>
+<div class="board current-player Black White" id="board-editor-board-container" orientation="@orientation">
+    <svg width="100%" height="100%" style="background-color: #cccccc" version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50">
 
         @for (var row = 0; row < 8; row++)
         {
             for (var col = 0; col < 8; col++)
             {
-                <image class="square" id="square@(GetAdjustedIndex(row))@(GetAdjustedIndex(col))" y="@(GetAdjustedIndex(row) * 12.5m)%" x="@(GetAdjustedIndex(col) * 12.5m)%" width="12.5%" height="12.5%" xlink:href="@Url.Content($"~/images/SteelTheme/{(GetAdjustedIndex(col) % 2 == GetAdjustedIndex(row) % 2 ? "Light" : "Dark")}Steel.png")" />
+                <image class="square @(GetAdjustedIndex(col) % 2 == GetAdjustedIndex(row) % 2 ? "" : "drop-target")" id="square@(GetAdjustedIndex(row))@(GetAdjustedIndex(col))" y="@(GetAdjustedIndex(row) * 12.5m)%" x="@(GetAdjustedIndex(col) * 12.5m)%" width="12.5%" height="12.5%" xlink:href="@Url.Content($"~/images/SteelTheme/{(GetAdjustedIndex(col) % 2 == GetAdjustedIndex(row) % 2 ? "Light" : "Dark")}Steel.png")" />
 
                 var piece = Model.Board[row, col];
                 if (piece != null)

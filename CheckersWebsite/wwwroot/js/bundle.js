@@ -407,7 +407,6 @@ function Init() {
     GrabPoint = SVGRoot.createSVGPoint();
 }
 function Grab(evt) {
-    console.log(evt);
     // find out which element we moused down on
     var targetElement = evt.target;
     GetTrueCoords(evt);
@@ -449,9 +448,6 @@ function Drag(evt) {
     if (DragTarget) {
         // account for zooming and panning
         GetTrueCoords(evt);
-        //console.log(TrueCoords);
-        //console.log(GrabPoint);
-        //console.log(SVGRoot.getBoundingClientRect());
         // account for the offset between the element's origin and the
         // exact place we grabbed it... this way, the drag will look more natural
         var newX = (TrueCoords.x - GrabPoint.x) / SVGRoot.getBoundingClientRect().width * 50;
@@ -478,6 +474,7 @@ function Drop(evt) {
                 y: GrabClientCoords.y + (evt.screenY - GrabScreenCoords.y)
             };
             var squares = $('.square');
+            var movePiece = $('.board').attr('id') !== 'board-editor-board-container';
             for (var i = 0; i < squares.length; i++) {
                 var el = squares[i];
                 var boundingRect = el.getBoundingClientRect();
@@ -485,17 +482,97 @@ function Drop(evt) {
                     boundingRect.right >= dropClientCoords.x &&
                     boundingRect.top <= dropClientCoords.y &&
                     boundingRect.bottom >= dropClientCoords.y) {
+                    targetElement = el;
                     var coord = el.id.replace('square', '');
-                    boardClick(parseInt(coord[0]), parseInt(coord[1]));
+                    var row = parseInt(coord[0]);
+                    var col = parseInt(coord[1]);
+                    if (movePiece) {
+                        boardClick(row, col);
+                        $(DragTarget).removeAttr('pointer-events');
+                    }
+                    else {
+                        if ($(targetElement).hasClass('drop-target')) {
+                            $(DragTarget).removeAttr('transform');
+                            $(DragTarget).find('svg').attr('x', $(targetElement).attr('x'));
+                            $(DragTarget).find('svg').attr('y', $(targetElement).attr('y'));
+                            $(DragTarget).removeAttr('pointer-events');
+                        }
+                        else {
+                            $(DragTarget).remove();
+                        }
+                    }
                     break;
                 }
             }
         }
-        // turn the pointer-events back on, so we can grab this item later
-        $(DragTarget).removeAttr('pointer-events');
         // set the global variable to null, so nothing will be dragged until we
         // grab the next element
         DragTarget = null;
+        return;
+    }
+    var boardBoundingRect = $('.board')[0].getBoundingClientRect();
+    if (!DragTarget && $('.selected-add').length !== 0) {
+        var dropClientCoords;
+        if (evt.type === 'dragend') {
+            var dropScreenCoords = {
+                x: evt.screenX,
+                y: evt.screenY
+            };
+            dropClientCoords = {
+                x: GrabClientCoords.x + (evt.screenX - GrabScreenCoords.x),
+                y: GrabClientCoords.y + (evt.screenY - GrabScreenCoords.y)
+            };
+        }
+        else {
+            dropClientCoords = {
+                x: evt.clientX,
+                y: evt.clientY
+            };
+        }
+        var htmlTemplate = "\n<g>\n    <svg id=\"svg_row__col_\" onclick=\"pieceClick(_row_, _col_)\" height=\"12.5%\" width=\"12.5%\" style=\"fill:none\" x=\"_x_\" y=\"_y_\">\n        <image id=\"piece_row__col_\" player=\"_player_\" height=\"100%\" width=\"100%\" xlink:href=\"/images/SteelTheme/_player__pieceType_.png\" />\n        <rect id=\"rect_row__col_\" class=\"selected-piece-highlight\" height=\"100%\" width=\"100%\" style=\"fill: none; stroke: goldenrod\"></rect>\n    </svg>\n</g>";
+        var squares = $('.square');
+        for (var i = 0; i < squares.length; i++) {
+            var el = squares[i];
+            var boundingRect = el.getBoundingClientRect();
+            if (boundingRect.left <= dropClientCoords.x &&
+                boundingRect.right >= dropClientCoords.x &&
+                boundingRect.top <= dropClientCoords.y &&
+                boundingRect.bottom >= dropClientCoords.y) {
+                var player;
+                var pieceType;
+                switch ($('.selected-add').attr('id')) {
+                    case 'black-checker':
+                        player = "Black";
+                        pieceType = "Checker";
+                        break;
+                    case 'black-king':
+                        player = "Black";
+                        pieceType = "King";
+                        break;
+                    case 'white-checker':
+                        player = "White";
+                        pieceType = "Checker";
+                        break;
+                    case 'white-king':
+                        player = "White";
+                        pieceType = "King";
+                        break;
+                }
+                var coord = el.id.replace('square', '');
+                var row = parseInt(coord[0]);
+                var col = parseInt(coord[1]);
+                $(el.id.replace('square', 'piece')).closest('g').remove();
+                var html = htmlTemplate
+                    .replace(/_row_/g, row.toString())
+                    .replace(/_col_/g, col.toString())
+                    .replace(/_player_/g, player)
+                    .replace(/_pieceType_/g, pieceType)
+                    .replace(/_x_/g, $(el).attr('x'))
+                    .replace(/_y_/g, $(el).attr('y'));
+                $(SVGRoot).append(html);
+                break;
+            }
+        }
     }
 }
 ;
