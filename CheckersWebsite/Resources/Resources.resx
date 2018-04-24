@@ -123,6 +123,9 @@
   <data name="AmericanCheckers" xml:space="preserve">
     <value>American Checkers</value>
   </data>
+  <data name="Black" xml:space="preserve">
+    <value>Black</value>
+  </data>
   <data name="BlackWin" xml:space="preserve">
     <value>Black Won</value>
   </data>
@@ -140,6 +143,9 @@
   </data>
   <data name="PoolCheckers" xml:space="preserve">
     <value>Pool Checkers</value>
+  </data>
+  <data name="White" xml:space="preserve">
+    <value>White</value>
   </data>
   <data name="WhiteWin" xml:space="preserve">
     <value>White Won</value>

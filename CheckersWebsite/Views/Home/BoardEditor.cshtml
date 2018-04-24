@@ -1,0 +1,47 @@
+﻿@using CheckersWebsite.Facade
+@using CheckersWebsite.Resources
+
+<div class="row board-editor">
+    <div class="col-md-1"></div>
+    <div class="col-md-1">
+        <svg width="100%" height="100%" style="background-color: white; border: 1px solid black" version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50">
+            <image id="black-checker" player="Black" height="100%" width="100%" xlink:href="@Url.Content($"~/images/SteelTheme/BlackChecker.png")" />
+        </svg>
+        <svg width="100%" height="100%" style="background-color: white; border: 1px solid black" version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50">
+            <image id="black-king" player="Black" height="100%" width="100%" xlink:href="@Url.Content($"~/images/SteelTheme/BlackKing.png")" />
+        </svg>
+        <svg width="100%" height="100%" style="background-color: white; border: 1px solid black" version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50">
+            <image id="white-checker" player="White" height="100%" width="100%" xlink:href="@Url.Content($"~/images/SteelTheme/WhiteChecker.png")" />
+        </svg>
+        <svg width="100%" height="100%" style="background-color: white; border: 1px solid black" version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50">
+            <image id="white-king" player="White" height="100%" width="100%" xlink:href="@Url.Content($"~/images/SteelTheme/WhiteKing.png")" />
+        </svg>
+    </div>
+    <div class="col-md-6">
+        @Html.Partial("~/Views/Controls/CheckersBoardEditor.cshtml", GameController.FromVariant(Variant.AmericanCheckers))
+    </div>
+    <div class="col-md-3">
+        <div class="form-group">
+            <label for="variant">Variant</label>
+            @Html.DropDownList("variant", Enum.GetNames(typeof(Variant)).Select(s =>
+                       new SelectListItem
+                       {
+                           Text = Resources.ResourceManager.GetString(s),
+                           Value = s
+                       }
+                   ),
+                   new { @class = "select form-control", id = "variant-board-editor" })
+        </div>
+        <div class="form-group">
+            <label for="variant">Variant</label>
+            @Html.DropDownList("player", Enum.GetNames(typeof(Player)).Select(s =>
+                       new SelectListItem
+                       {
+                           Text = Resources.ResourceManager.GetString(s),
+                           Value = s
+                       }
+                   ),
+                   new { @class = "select form-control", id = "player-board-editor" })
+        </div>
+    </div>
+</div>

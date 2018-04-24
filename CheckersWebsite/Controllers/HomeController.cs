@@ -45,6 +45,11 @@ namespace CheckersWebsite.Controllers
             return View(games);
         }
 
+        public IActionResult BoardEditor()
+        {
+            return View();
+        }
+
         public IActionResult Game(Guid id)
         {
             var playerID = GetPlayerID() ?? Guid.NewGuid();
