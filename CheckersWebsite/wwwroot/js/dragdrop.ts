@@ -162,10 +162,10 @@ function Drop(evt) {
             };
         }
 
-        var htmlTemplate = `
+        var svgTemplate = `
 <g>
-    <svg id="svg_row__col_" onclick="pieceClick(_row_, _col_)" height="12.5%" width="12.5%" style="fill:none" x="_x_" y="_y_">
-        <image id="piece_row__col_" player="_player_" height="100%" width="100%" xlink:href="/images/SteelTheme/_player__pieceType_.png" />
+    <svg id="svg_row__col_" onclick="pieceClick(_row_, _col_)" height="12.5%" width="12.5%" style="fill:none" x="_x_" y="_y_" >
+        <image id="piece_row__col_" player="_player_" height="100%" width="100%" href="/images/SteelTheme/_player__pieceType_.png" />
         <rect id="rect_row__col_" class="selected-piece-highlight" height="100%" width="100%" style="fill: none; stroke: goldenrod"></rect>
     </svg>
 </g>`;
@@ -205,10 +205,10 @@ function Drop(evt) {
                 var coord = el.id.replace('square', '');
                 var row = parseInt(coord[0]);
                 var col = parseInt(coord[1]);
+
+                $(`#piece${row}${col}`).closest('g').first().remove();
                 
-                $(el.id.replace('square', 'piece')).closest('g').remove();
-                
-                var html = htmlTemplate
+                var svgNodeSource = svgTemplate
                     .replace(/_row_/g, row.toString())
                     .replace(/_col_/g, col.toString())
                     .replace(/_player_/g, player)
@@ -216,7 +216,10 @@ function Drop(evt) {
                     .replace(/_x_/g, $(el).attr('x'))
                     .replace(/_y_/g, $(el).attr('y'));
 
-                $(SVGRoot).append(html);
+                var parser = new DOMParser();
+                var svgNode = parser.parseFromString(svgNodeSource, "image/svg+xml");
+                
+                SVGRoot.appendChild(svgNode.documentElement);
                 break;
             }
         }
