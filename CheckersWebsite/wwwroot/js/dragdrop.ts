@@ -165,14 +165,6 @@ function Drop(evt) {
             };
         }
 
-        var svgTemplate = `
-<g>
-    <svg id="svg_row__col_" onclick="pieceClick(_row_, _col_)" height="12.5%" width="12.5%" style="fill:none" x="_x_" y="_y_" >
-        <image id="piece_row__col_" player="_player_" height="100%" width="100%" href="/images/SteelTheme/_player__pieceType_.png" />
-        <rect id="rect_row__col_" class="selected-piece-highlight" height="100%" width="100%" style="fill: none; stroke: goldenrod"></rect>
-    </svg>
-</g>`;
-
         var squares = $('.square');
         for (var i = 0; i < squares.length; i++) {
             var el = squares[i];
@@ -183,8 +175,6 @@ function Drop(evt) {
                 boundingRect.right >= dropClientCoords.x &&
                 boundingRect.top <= dropClientCoords.y &&
                 boundingRect.bottom >= dropClientCoords.y) {
-
-                console.log('test');
 
                 var player: string;
                 var pieceType: string;
@@ -211,20 +201,36 @@ function Drop(evt) {
                 var row = parseInt(coord[0]);
                 var col = parseInt(coord[1]);
 
-                $(`#piece${row}${col}`).closest('g').first().remove();
-                
-                var svgNodeSource = svgTemplate
-                    .replace(/_row_/g, row.toString())
-                    .replace(/_col_/g, col.toString())
-                    .replace(/_player_/g, player)
-                    .replace(/_pieceType_/g, pieceType)
-                    .replace(/_x_/g, $(el).attr('x'))
-                    .replace(/_y_/g, $(el).attr('y'));
+                var g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+                var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+                svg.setAttribute('id', `svg${row}${col}`);
+                svg.setAttribute('onclick', `pieceClick(${row}${col})`);
+                svg.setAttribute('height', '12.5%');
+                svg.setAttribute('width', '12.5%');
+                svg.setAttribute('style', 'fill:none');
+                svg.setAttribute('x', `${$(el).attr('x')}`);
+                svg.setAttribute('y', `${$(el).attr('y')}`);
 
-                var parser = new DOMParser();
-                var svgNode = parser.parseFromString(svgNodeSource, "image/svg+xml");
+                var image = document.createElementNS('http://www.w3.org/2000/svg', 'image');
+                image.setAttribute('id', `piece${row}${col}`);
+                image.setAttribute('player', player);
+                image.setAttribute('height', '100%');
+                image.setAttribute('width', '100%');
+                image.setAttribute('href', `/images/SteelTheme/${player}${pieceType}.png`);
+
+                var rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+                rect.setAttribute('id', `rect${row}${col}`);
+                rect.setAttribute('class', 'selected-piece-highlight');
+                rect.setAttribute('height', '100%');
+                rect.setAttribute('width', '100%');
+                rect.setAttribute('style', 'fill:none; stroke:goldenrod');
                 
-                SVGRoot.appendChild(svgNode.documentElement);
+                svg.appendChild(image);
+                svg.appendChild(rect);
+                g.appendChild(svg);
+
+                $(`#piece${row}${col}`).closest('g').first().remove();
+                SVGRoot.appendChild(g);
                 $('.selected-add').removeClass('selected-add');
                 break;
             }
