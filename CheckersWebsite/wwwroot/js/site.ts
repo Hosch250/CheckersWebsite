@@ -95,7 +95,7 @@ function joinGame() {
             method: 'POST',
             success(data) {
                 $('.board')[0].outerHTML = data;
-                Init();
+                Init('.board svg');
             }
         });
 }
@@ -111,7 +111,7 @@ function displayGame(moveID) {
             method: 'POST',
             success(data) {
                 $('.board')[0].outerHTML = data;
-                Init();
+                Init('.board svg');
             }
         });
 }
@@ -142,7 +142,7 @@ function flip() {
             method: 'POST',
             success(data) {
                 $('.board')[0].outerHTML = data;
-                Init();
+                Init('.board svg');
             }
         });
 }
@@ -181,7 +181,7 @@ function connectToSignalR() {
                     $('.board')[0].outerHTML = whiteBoard;
                     break;
             }
-            Init();
+            Init('.board svg');
         }
     });
 

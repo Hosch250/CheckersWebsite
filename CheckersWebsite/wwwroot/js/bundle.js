@@ -693,7 +693,7 @@ function joinGame() {
         method: 'POST',
         success: function (data) {
             $('.board')[0].outerHTML = data;
-            Init();
+            Init('.board svg');
         }
     });
 }
@@ -707,7 +707,7 @@ function displayGame(moveID) {
         method: 'POST',
         success: function (data) {
             $('.board')[0].outerHTML = data;
-            Init();
+            Init('.board svg');
         }
     });
 }
@@ -734,7 +734,7 @@ function flip() {
         method: 'POST',
         success: function (data) {
             $('.board')[0].outerHTML = data;
-            Init();
+            Init('.board svg');
         }
     });
 }
@@ -766,7 +766,7 @@ function connectToSignalR() {
                     $('.board')[0].outerHTML = whiteBoard;
                     break;
             }
-            Init();
+            Init('.board svg');
         }
     });
     signalRConnection.on('UpdateMoves', function (data) {
