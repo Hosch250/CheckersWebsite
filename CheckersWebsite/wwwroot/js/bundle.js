@@ -404,7 +404,7 @@ function Init(rootSelector) {
     // these svg points hold x and y values...
     // very handy, but they do not display on the screen (just so you know)
     TrueCoords = SVGRoot.createSVGPoint();
-    GrabPoint = SVGRoot.createSVGPoint();
+    GrabPoint = $('.board > svg')[0].createSVGPoint();
 }
 function Grab(evt) {
     console.log('grab');
@@ -436,7 +436,7 @@ function Grab(evt) {
         // \"in the folder\" (children of the folder group) with only maintain
         // hierarchy within that group
         if (DragTarget) {
-            SVGRoot.appendChild(DragTarget);
+            $('.board svg')[0].appendChild(DragTarget);
         }
         // turn off all pointer events to the dragged element, this does 2 things:
         // 1) allows us to drag text elements without selecting the text
@@ -459,8 +459,10 @@ function Drag(evt) {
         GetTrueCoords(evt);
         // account for the offset between the element's origin and the
         // exact place we grabbed it... this way, the drag will look more natural
-        var newX = (TrueCoords.x - GrabPoint.x) / SVGRoot.getBoundingClientRect().width * 50;
-        var newY = (TrueCoords.y - GrabPoint.y) / SVGRoot.getBoundingClientRect().height * 50;
+        console.log(TrueCoords);
+        console.log(GrabPoint);
+        var newX = (TrueCoords.x - GrabPoint.x) / $('.board > svg')[0].getBoundingClientRect().width * 50;
+        var newY = (TrueCoords.y - GrabPoint.y) / $('.board > svg')[0].getBoundingClientRect().height * 50;
         // apply a new tranform translation to the dragged element, to display
         // it in its new location
         $(DragTarget)[0].setAttribute('transform', 'translate(' + newX + ',' + newY + ')');
