@@ -411,7 +411,7 @@ function Grab(evt) {
     var targetElement = evt.target;
     GetTrueCoords(evt);
     // you cannot drag the background itself, so ignore any attempts to mouse down on it
-    if ($('.current-player').length === 1 && $('.current-player').hasClass($(targetElement).attr('player')) && targetElement.id.startsWith('piece')) {
+    if ($('.selected-add').length === 0 && $('.current-player').length === 1 && $('.current-player').hasClass($(targetElement).attr('player')) && targetElement.id.startsWith('piece')) {
         $('.selected').removeClass('selected');
         $("#" + targetElement.id).addClass('selected drag');
         GrabScreenCoords = {
@@ -459,6 +459,8 @@ function Drag(evt) {
 }
 ;
 function Drop(evt) {
+    console.log('drop');
+    console.log(DragTarget);
     // if we aren't currently dragging an element, don't do anything
     if (DragTarget) {
         // since the element currently being dragged has its pointer-events turned off,
@@ -512,6 +514,7 @@ function Drop(evt) {
     }
     var boardBoundingRect = $('.board')[0].getBoundingClientRect();
     if (!DragTarget && $('.selected-add').length !== 0) {
+        console.log('here');
         var dropClientCoords;
         if (evt.type === 'dragend') {
             var dropScreenCoords = {
@@ -538,6 +541,7 @@ function Drop(evt) {
                 boundingRect.right >= dropClientCoords.x &&
                 boundingRect.top <= dropClientCoords.y &&
                 boundingRect.bottom >= dropClientCoords.y) {
+                console.log('test');
                 var player;
                 var pieceType;
                 switch ($('.selected-add').attr('id')) {
@@ -572,6 +576,7 @@ function Drop(evt) {
                 var parser = new DOMParser();
                 var svgNode = parser.parseFromString(svgNodeSource, "image/svg+xml");
                 SVGRoot.appendChild(svgNode.documentElement);
+                $('.selected-add').removeClass('selected-add');
                 break;
             }
         }
