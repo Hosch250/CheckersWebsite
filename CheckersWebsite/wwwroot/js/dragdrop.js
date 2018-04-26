@@ -7,8 +7,8 @@ var DragTarget = null;
 var DragEnded = false;
 var GrabScreenCoords = null;
 var GrabClientCoords = null;
-function Init() {
-    SVGRoot = $('.board svg')[0];
+function Init(rootSelector) {
+    SVGRoot = $(rootSelector)[0];
     $(SVGRoot).on('dragover', Drag);
     $(SVGRoot).on('dragend', Drop);
     // these svg points hold x and y values...
@@ -17,11 +17,16 @@ function Init() {
     GrabPoint = SVGRoot.createSVGPoint();
 }
 function Grab(evt) {
+    console.log('grab');
     // find out which element we moused down on
     var targetElement = evt.target;
     GetTrueCoords(evt);
+    console.log($('.selected-add').length);
+    console.log($('.current-player').length);
+    console.log($('.current-player').hasClass($(targetElement).attr('player')));
+    console.log(targetElement.id.startsWith('piece'));
     // you cannot drag the background itself, so ignore any attempts to mouse down on it
-    if ($('.selected-add').length === 0 && $('.current-player').length === 1 && $('.current-player').hasClass($(targetElement).attr('player')) && targetElement.id.startsWith('piece')) {
+    if (!DragTarget && $('.current-player').length === 1 && $('.current-player').hasClass($(targetElement).attr('player')) && targetElement.id.startsWith('piece')) {
         $('.selected').removeClass('selected');
         $("#" + targetElement.id).addClass('selected drag');
         GrabScreenCoords = {
@@ -32,6 +37,7 @@ function Grab(evt) {
             x: evt.clientX,
             y: evt.clientY
         };
+        console.log(evt);
         targetElement = targetElement.closest('g');
         //set the item moused down on as the element to be dragged
         DragTarget = targetElement;
@@ -39,7 +45,9 @@ function Grab(evt) {
         // always over other elements (exception: in this case, elements that are
         // \"in the folder\" (children of the folder group) with only maintain
         // hierarchy within that group
-        SVGRoot.appendChild(DragTarget);
+        if (DragTarget) {
+            SVGRoot.appendChild(DragTarget);
+        }
         // turn off all pointer events to the dragged element, this does 2 things:
         // 1) allows us to drag text elements without selecting the text
         // 2) allows us to find out where the dragged element is dropped (see Drop)
@@ -54,6 +62,7 @@ function Grab(evt) {
 }
 ;
 function Drag(evt) {
+    console.log('drag');
     // if we don't currently have an element in tow, don't do anything
     if (DragTarget) {
         // account for zooming and panning
@@ -72,7 +81,7 @@ function Drop(evt) {
     console.log('drop');
     console.log(DragTarget);
     // if we aren't currently dragging an element, don't do anything
-    if (DragTarget) {
+    if (DragTarget && $('.selected-add').length === 0) {
         // since the element currently being dragged has its pointer-events turned off,
         // we are afforded the opportunity to find out the element it's being dropped on
         var targetElement = evt.target;
@@ -122,8 +131,7 @@ function Drop(evt) {
         DragTarget = null;
         return;
     }
-    var boardBoundingRect = $('.board')[0].getBoundingClientRect();
-    if (!DragTarget && $('.selected-add').length !== 0) {
+    if ($('.selected-add').length !== 0) {
         console.log('here');
         var dropClientCoords;
         if (evt.type === 'dragend') {
@@ -150,22 +158,23 @@ function Drop(evt) {
                 boundingRect.right >= dropClientCoords.x &&
                 boundingRect.top <= dropClientCoords.y &&
                 boundingRect.bottom >= dropClientCoords.y) {
+                console.log('bound');
                 var player;
                 var pieceType;
                 switch ($('.selected-add').attr('id')) {
-                    case 'black-checker':
+                    case 'piece-black-checker':
                         player = "Black";
                         pieceType = "Checker";
                         break;
-                    case 'black-king':
+                    case 'piece-black-king':
                         player = "Black";
                         pieceType = "King";
                         break;
-                    case 'white-checker':
+                    case 'piece-white-checker':
                         player = "White";
                         pieceType = "Checker";
                         break;
-                    case 'white-king':
+                    case 'piece-white-king':
                         player = "White";
                         pieceType = "King";
                         break;
@@ -198,7 +207,7 @@ function Drop(evt) {
                 svg.appendChild(rect);
                 g.appendChild(svg);
                 $("#piece" + row + col).closest('g').first().remove();
-                SVGRoot.appendChild(g);
+                $('.board > svg')[0].appendChild(g);
                 $('.selected-add').removeClass('selected-add');
                 break;
             }
