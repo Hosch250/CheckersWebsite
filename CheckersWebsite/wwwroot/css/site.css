@@ -190,3 +190,11 @@ input[type="radio"].toggle:checked + label {
 #fen-label {
     line-height: 34px;
 }
+
+.slider-group {
+    margin-top: 5px;
+}
+
+.slider-group output {
+    padding-top: 0;
+}

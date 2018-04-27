@@ -15,13 +15,37 @@
                     <div class="form-group">
                         <label for="variant">Variant</label>
                         @Html.DropDownList("variant", Enum.GetNames(typeof(Variant)).Select(s =>
-                                 new SelectListItem
-                                 {
-                                     Text = Resources.ResourceManager.GetString(s),
-                                     Value = s
-                                 }
-                             ),
-                             new { @class = "select form-control", id = "variant" })
+                      new SelectListItem
+                      {
+                          Text = Resources.ResourceManager.GetString(s),
+                          Value = s
+                      }
+                  ),
+                  new { @class = "select form-control", id = "variant" })
+                    </div>
+                    <div class="form-group">
+                        <label for="black-opponent">Black Opponent</label>
+                        <select id="black-opponent" class="select form-control">
+                            <option value="human" selected>Human</option>
+                            <option value="computer">Computer</option>
+                        </select>
+                        <div id="black-level" class="hide input-group slider-group">
+                            <div class="input-group-addon"><label for="black-weight">Level</label></div>
+                            <input class="form-control" type="range" id="black-weight" min="1" value="3" max="9" step="1">
+                            <div class="input-group-addon"><output id="black-weight-output">3</output></div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="white-opponent">White Opponent</label>
+                        <select id="white-opponent" class="select form-control">
+                            <option value="human" selected>Human</option>
+                            <option value="computer">Computer</option>
+                        </select>
+                        <div id="white-level" class="hide input-group slider-group">
+                            <div class="input-group-addon"><label for="white-weight">Level</label></div>
+                            <input class="form-control" type="range" id="white-weight" min="1" value="3" max="9" step="1">
+                            <div class="input-group-addon"><output id="white-weight-output">3</output></div>
+                        </div>
                     </div>
                     <div class="form-group">
                         <label for="setup">Setup</label>
@@ -54,9 +78,47 @@
             }
         });
 
+        $('#black-opponent').change(function () {
+            if ($('#black-opponent option:selected').val() === 'computer') {
+                $('#black-level').removeClass('hide');
+            }
+            else {
+                $('#black-level').addClass('hide');
+            }
+        });
+
+        $('#white-opponent').change(function () {
+            if ($('#white-opponent option:selected').val() === 'computer') {
+                $('#white-level').removeClass('hide');
+            }
+            else {
+                $('#white-level').addClass('hide');
+            }
+        });
+
         $('#create-game-modal').on('hidden.bs.modal', function (e) {
             $('#variant').val('AmericanCheckers');
             $('#setup').val('default');
+
+            $('#black-opponent').val('human');
+            $('#white-opponent').val('human');
+
+            $('#black-level').addClass('hide');
+            $('#white-level').addClass('hide');
+
+            $('#black-weight').val(3);
+            $('#white-weight').val(3);
+
+            $('#black-weight-output').val(3);
+            $('#white-weight-output').val(3);
+
+            $('#black-weight').on('input', function () {
+                $('#black-weight-output').val($('#black-weight').val());
+            });
+
+            $('#white-weight').on('input', function () {
+                $('#white-weight-output').val($('#white-weight').val());
+            });
 
             $('#fen').val('');
             $('#position').addClass('hide');
