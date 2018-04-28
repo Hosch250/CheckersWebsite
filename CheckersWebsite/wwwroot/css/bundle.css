@@ -6863,14 +6863,6 @@ input[type="radio"].toggle:checked + label {
     font-weight: bold;
 }
 
-.selected-piece-highlight {
-    stroke-width: 0;
-}
-
-.selected:not(.drag) + .selected-piece-highlight {
-    stroke-width: .75;
-}
-
 .player-to-move {
     margin-top: 0;
     text-align: center;
@@ -7001,6 +6993,6 @@ input[type="radio"].toggle:checked + label {
     z-index: 99;
 }
 
-.piece.selected {
+.current-player .piece.selected:not(.drag) {
     border: 5px solid goldenrod;
 }
