@@ -6996,6 +6996,7 @@ input[type="radio"].toggle:checked + label {
 
 .piece {
     border: 5px solid transparent;
+    z-index: 99;
 }
 
 .piece.selected {

@@ -5,10 +5,10 @@
     <div class="row board-editor" xmlns="http://www.w3.org/1999/xhtml">
         <div class="col-lg-1"></div>
         <div class="col-lg-1 piece-col">
-            <img id="piece-black-checker" class="piece" src="@Url.Content($"~/images/SteelTheme/BlackChecker.png")" onmousedown="{ $('.selected-add').removeClass('selected-add'); $(evt.target).addClass('selected-add'); }" />
-            <img id="piece-black-king" src="@Url.Content($"~/images/SteelTheme/BlackKing.png")" onmousedown="{ $('.selected-add').removeClass('selected-add'); $(evt.target).addClass('selected-add'); }" />
-            <img id="piece-white-checker" src="@Url.Content($"~/images/SteelTheme/WhiteChecker.png")" onmousedown="{ $('.selected-add').removeClass('selected-add'); $(evt.target).addClass('selected-add'); }" />
-            <img id="piece-white-king" src="@Url.Content($"~/images/SteelTheme/WhiteKing.png")" onmousedown="{ $('.selected-add').removeClass('selected-add'); $(evt.target).addClass('selected-add'); }" />
+            <img id="piece-black-checker" class="piece" src="@Url.Content($"~/images/SteelTheme/BlackChecker.png")" onmousedown="{ $('.selected-add').removeClass('selected-add'); $('#piece-black-checker').addClass('selected-add'); }" />
+            <img id="piece-black-king" src="@Url.Content($"~/images/SteelTheme/BlackKing.png")" onmousedown="{ $('.selected-add').removeClass('selected-add'); $('#piece-black-king').addClass('selected-add'); }" />
+            <img id="piece-white-checker" src="@Url.Content($"~/images/SteelTheme/WhiteChecker.png")" onmousedown="{ $('.selected-add').removeClass('selected-add'); $('#piece-white-checker').addClass('selected-add'); }" />
+            <img id="piece-white-king" src="@Url.Content($"~/images/SteelTheme/WhiteKing.png")" onmousedown="{ $('.selected-add').removeClass('selected-add'); $('#piece-white-king').addClass('selected-add'); }" />
         </div>
         <div class="col-lg-6">
             @Html.Partial("~/Views/Controls/CheckersBoardEditor.cshtml", GameController.FromVariant(Variant.AmericanCheckers).Board)

@@ -2,8 +2,6 @@
 
 // Taken with modifications from http://svg-whiz.com/svg/DragAndDrop.svg
 
-var BoardEditorSVGRoot = null;
-
 var BoardEditorTrueCoords = null;
 var BoardEditorGrabPoint = null;
 var BoardEditorDragTarget = null;
@@ -12,18 +10,12 @@ var BoardEditorGrabScreenCoords = null;
 var BoardEditorGrabClientCoords = null;
 
 function BoardEditorInit() {
-    BoardEditorSVGRoot = $('#board-editor-svg')[0];
-
-    $(BoardEditorSVGRoot).on('dragover', BoardEditorDrag);
-    $(BoardEditorSVGRoot).on('dragend', BoardEditorDrop);
-    
-    BoardEditorTrueCoords = BoardEditorSVGRoot.createSVGPoint();
-    BoardEditorGrabPoint = ($('.board>svg')[0] as any).createSVGPoint();
+    $('*').on('mousedown', BoardEditorGrab);
+    $('*').on('dragend', BoardEditorDrop);
 }
 
 function BoardEditorGrab(evt) {
     var targetElement = evt.target;
-    BoardEditorGetTrueCoords(evt);
     
     if (!BoardEditorDragTarget && evt.target.id.startsWith('piece')) {
         if (!$(targetElement).hasClass('selected-add')) {
@@ -43,29 +35,12 @@ function BoardEditorGrab(evt) {
             y: evt.clientY
         };
         
-        BoardEditorDragTarget = targetElement.closest('g');
+        BoardEditorDragTarget = targetElement;
 
-        if (BoardEditorDragTarget) {
-            $('.board svg')[0].appendChild(BoardEditorDragTarget);
-        }
-
-        targetElement.setAttributeNS(null, 'pointer-events', 'none');
-
-        BoardEditorGrabPoint.x = BoardEditorTrueCoords.x;
-        BoardEditorGrabPoint.y = BoardEditorTrueCoords.y;
-    }
-};
-
-function BoardEditorDrag(evt) {
-    if (BoardEditorDragTarget) {
-        BoardEditorGetTrueCoords(evt);
-
-        var boardBounds = $('.board>svg')[0].getBoundingClientRect();
-
-        var newX = (BoardEditorTrueCoords.x - BoardEditorGrabPoint.x) / boardBounds.width * 50;
-        var newY = (BoardEditorTrueCoords.y - BoardEditorGrabPoint.y) / boardBounds.height * 50;
-        
-        $(BoardEditorDragTarget)[0].setAttribute('transform', 'translate(' + newX + ',' + newY + ')');
+        BoardEditorGrabPoint = {
+            x: evt.clientX,
+            y: evt.clientY
+        };
     }
 };
 
@@ -76,7 +51,7 @@ function BoardEditorDrop(evt) {
         AddPieceToBoard(evt);
     }
 
-    $('[pointer-events]').removeAttr('pointer-events');
+    BoardEditorDragTarget = null;
 };
 
 function MovePiece(evt) {
@@ -88,23 +63,27 @@ function MovePiece(evt) {
 
     if (boundingSquare) {
         var coord = boundingSquare.id.replace('square', '');
+        var startCoord = evt.target.id.replace('piece', '');
+
         var row = parseInt(coord[0]);
         var col = parseInt(coord[1]);
 
-        $(`#piece${row}${col}`).closest('g').first().remove();
-        $(BoardEditorDragTarget).removeAttr('transform');
-        $(BoardEditorDragTarget).find('svg').attr('x', $(boundingSquare).attr('x'));
-        $(BoardEditorDragTarget).find('svg').attr('y', $(boundingSquare).attr('y'));
+        var startRow = parseInt(startCoord[0]);
+        var startCol = parseInt(startCoord[1]);
 
-        $(BoardEditorDragTarget).find('svg').attr('id', `svg${row}${col}`);
-        $(BoardEditorDragTarget).find('image').attr('id', `piece${row}${col}`);
-        $(BoardEditorDragTarget).find('rect').attr('id', `rect${row}${col}`);
-        $(BoardEditorDragTarget).find('svg').attr('onclick', `pieceClick(${row}, ${col})`);
+        if (coord === startCoord) {
+            return;
+        }
+
+        $(`#piece${row}${col}`).remove();
+
+        $(BoardEditorDragTarget).attr('id', `piece${row}${col}`);
+        $(BoardEditorDragTarget).attr('onmousedown', `pieceClick(${row}, ${col})`);
+        $(BoardEditorDragTarget).css('grid-row', `${row + 1}`);
+        $(BoardEditorDragTarget).css('grid-column', `${col + 1}`);
     } else {
         $(BoardEditorDragTarget).remove();
     }
-
-    BoardEditorDragTarget = null;
 }
 
 function AddPieceToBoard(evt) {
@@ -152,35 +131,10 @@ function AddPieceToBoard(evt) {
         var row = parseInt(coord[0]);
         var col = parseInt(coord[1]);
 
-        var g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-        var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-        svg.setAttribute('id', `svg${row}${col}`);
-        svg.setAttribute('onclick', `pieceClick(${row}${col})`);
-        svg.setAttribute('height', '12.5%');
-        svg.setAttribute('width', '12.5%');
-        svg.setAttribute('style', 'fill:none');
-        svg.setAttribute('x', `${$(boundingSquare).attr('x')}`);
-        svg.setAttribute('y', `${$(boundingSquare).attr('y')}`);
+        $(`#piece${row}${col}`).remove();
 
-        var image = document.createElementNS('http://www.w3.org/2000/svg', 'image');
-        image.setAttribute('id', `piece${row}${col}`);
-        image.setAttribute('height', '100%');
-        image.setAttribute('width', '100%');
-        image.setAttribute('href', `/images/SteelTheme/${player}${pieceType}.png`);
-
-        var rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-        rect.setAttribute('id', `rect${row}${col}`);
-        rect.setAttribute('class', 'selected-piece-highlight');
-        rect.setAttribute('height', '100%');
-        rect.setAttribute('width', '100%');
-        rect.setAttribute('style', 'fill:none; stroke:goldenrod');
-
-        svg.appendChild(image);
-        svg.appendChild(rect);
-        g.appendChild(svg);
-
-        $(`#piece${row}${col}`).closest('g').first().remove();
-        $('.board>svg')[0].appendChild(g);
+        var newPiece = `<img id="piece${row}${col}" class="piece" onmousedown="pieceClick(${row}, ${col})" src="/images/SteelTheme/${player}${pieceType}.png" style="grid-row: ${row + 1}; grid-column: ${col + 1}" />`;
+        $('.board').append(newPiece);
         $('.selected-add').removeClass('selected-add');
     }
 }
@@ -204,7 +158,4 @@ function GetBoundingSquare(dropClientCoords) {
     return null;
 }
 
-function BoardEditorGetTrueCoords(evt) {    
-    BoardEditorTrueCoords.x = evt.clientX;
-    BoardEditorTrueCoords.y = evt.clientY;
-};
+BoardEditorInit();
