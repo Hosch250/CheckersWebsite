@@ -36,6 +36,12 @@ namespace CheckersWebsite.Facade
         Aborted
     }
 
+    public enum BoardEditorPosition
+    {
+        Default,
+        Empty
+    }
+
     public static class Extensions
     {
         public static Player Convert(this Generic.Player value) =>

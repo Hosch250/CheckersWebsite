@@ -164,6 +164,22 @@ function getCookie(name :string) {
     return '';
 }
 
+function updateBoardEditor() {
+    $.ajax("/BoardEditor/GetBoard",
+        {
+            data: {
+                variant: $('#variant').val(),
+                position: $('#position').val()
+            },
+            dataType: 'html',
+            method: 'POST',
+            success(data) {
+                $('.board')[0].outerHTML = data;
+                BoardEditorInit();
+            }
+        });
+}
+
 let signalRConnection: any;
 
 function connectToSignalR() {

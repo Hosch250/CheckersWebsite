@@ -20,7 +20,7 @@
                 </svg>
             </div>
             <div class="col-md-6">
-                @Html.Partial("~/Views/Controls/CheckersBoardEditor.cshtml", GameController.FromVariant(Variant.AmericanCheckers))
+                @Html.Partial("~/Views/Controls/CheckersBoardEditor.cshtml", GameController.FromVariant(Variant.AmericanCheckers).Board)
             </div>
             <div class="col-md-3">
                 <div class="form-group">
@@ -35,7 +35,7 @@
                          new { @class = "select form-control", id = "variant-board-editor" })
                 </div>
                 <div class="form-group">
-                    <label for="variant">Starting Player</label>
+                    <label for="player">Starting Player</label>
                     @Html.DropDownList("player", Enum.GetNames(typeof(Player)).Select(s =>
                              new SelectListItem
                              {
@@ -46,7 +46,7 @@
                          new { @class = "select form-control", id = "player-board-editor" })
                 </div>
                 <div class="form-group">
-                    <label for="variant">Position</label>
+                    <label for="position">Position</label>
                     <select id="position" class="select form-control">
                         <option value="default">Default</option>
                         <option value="empty">Empty</option>
@@ -58,5 +58,10 @@
 </svg>
 
 <script>
-    $('#board-editor-svg').height($('.board').width());
+    $(function () {
+        $('#board-editor-svg').height($('.board').width());
+        
+        $('#variant').change(updateBoardEditor);
+        $('#position').change(updateBoardEditor);
+    });
 </script>

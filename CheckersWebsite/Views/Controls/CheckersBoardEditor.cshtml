@@ -1,5 +1,5 @@
 ﻿@using CheckersWebsite.Facade
-@model GameController
+@model Board
 
 @{
     var orientation = Player.Black;
@@ -19,7 +19,7 @@
             {
                 <image class="square @(GetAdjustedIndex(col) % 2 == GetAdjustedIndex(row) % 2 ? "" : "drop-target")" id="square@(GetAdjustedIndex(row))@(GetAdjustedIndex(col))" y="@(GetAdjustedIndex(row) * 12.5m)%" x="@(GetAdjustedIndex(col) * 12.5m)%" width="12.5%" height="12.5%" xlink:href="@Url.Content($"~/images/SteelTheme/{(GetAdjustedIndex(col) % 2 == GetAdjustedIndex(row) % 2 ? "Light" : "Dark")}Steel.png")" />
 
-                var piece = Model.Board[row, col];
+                var piece = Model[row, col];
                 if (piece != null)
                 {
                     <g>

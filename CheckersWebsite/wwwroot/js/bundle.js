@@ -932,6 +932,20 @@ function getCookie(name) {
     }
     return '';
 }
+function updateBoardEditor() {
+    $.ajax("/BoardEditor/GetBoard", {
+        data: {
+            variant: $('#variant').val(),
+            position: $('#position').val()
+        },
+        dataType: 'html',
+        method: 'POST',
+        success: function (data) {
+            $('.board')[0].outerHTML = data;
+            BoardEditorInit();
+        }
+    });
+}
 var signalRConnection;
 function connectToSignalR() {
     var httpConnection = new signalR.HttpConnection('/signalRHub');
