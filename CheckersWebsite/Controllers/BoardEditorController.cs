@@ -46,7 +46,8 @@ namespace CheckersWebsite.Controllers
                             Row = numberMap[coord[0]],
                             Column = numberMap[coord[1]]
                         },
-                        Piece = s.Piece
+                        Piece = s.Piece,
+                        Player = s.Player
                     };
                 }).ToList();
 

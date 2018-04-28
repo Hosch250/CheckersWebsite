@@ -1,4 +1,11 @@
 /// <reference path="../Scripts/typings/jquery/jquery.d.ts"/>
+var Coord = /** @class */ (function () {
+    function Coord(Row, Col) {
+        this.Row = Row;
+        this.Col = Col;
+    }
+    return Coord;
+}());
 function getAdjustedIndex(value) {
     switch ($('.board').attr('orientation').toLowerCase()) {
         case "black":
@@ -10,7 +17,6 @@ function getAdjustedIndex(value) {
 function pieceClick(row, col) {
     $('.selected').removeClass('selected');
     $("#piece" + row + col).addClass('selected');
-    $('.selected').closest('rect').css('stroke-width', '1');
 }
 function boardClick(row, col) {
     if ($('.selected').length === 0) {
@@ -21,14 +27,6 @@ function boardClick(row, col) {
     var startCol = getAdjustedIndex(parseInt(rowCol[1]));
     var endRow = getAdjustedIndex(row);
     var endCol = getAdjustedIndex(col);
-    if (startRow === endRow || startCol === endCol) {
-        $('.selected').closest('g').removeAttr('transform');
-        $('.selected').removeClass('drag');
-        return;
-    }
-    var transformX = 6.25 * (startCol - endCol);
-    var transformY = 6.25 * (startRow - endRow);
-    $('.selected').closest('g')[0].setAttributeNS(null, 'transform', 'translate(' + transformX + ',' + transformY + ')');
     $.ajax("/Board/MovePiece", {
         data: {
             id: $('.board').attr('id'),
@@ -44,7 +42,7 @@ function boardClick(row, col) {
         dataType: 'html',
         method: 'POST',
         error: function () {
-            $('.selected').closest('g').removeAttr('transform');
+            $('.selected').css('grid-area', parseInt(rowCol[0]) + 1 + " / " + (parseInt(rowCol[1]) + 1) + " / auto / auto");
             $('.selected').removeClass('drag');
         }
     });
@@ -76,7 +74,7 @@ function joinGame() {
         method: 'POST',
         success: function (data) {
             $('.board')[0].outerHTML = data;
-            Init('.board svg');
+            GameInit();
         }
     });
 }
@@ -90,7 +88,7 @@ function displayGame(moveID) {
         method: 'POST',
         success: function (data) {
             $('.board')[0].outerHTML = data;
-            Init('.board svg');
+            GameInit();
         }
     });
 }
@@ -117,7 +115,7 @@ function flip() {
         method: 'POST',
         success: function (data) {
             $('.board')[0].outerHTML = data;
-            Init('.board svg');
+            GameInit();
         }
     });
 }
@@ -183,7 +181,7 @@ function connectToSignalR() {
                     $('.board')[0].outerHTML = whiteBoard;
                     break;
             }
-            Init('.board svg');
+            GameInit();
         }
     });
     signalRConnection.on('UpdateMoves', function (data) {

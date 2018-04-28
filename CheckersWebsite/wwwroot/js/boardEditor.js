@@ -1,13 +1,14 @@
 /// <reference path="../Scripts/typings/jquery/jquery.d.ts"/>
-// Taken with modifications from http://svg-whiz.com/svg/DragAndDrop.svg
 var BoardEditorTrueCoords = null;
 var BoardEditorGrabPoint = null;
 var BoardEditorDragTarget = null;
 var BoardEditorGrabScreenCoords = null;
 var BoardEditorGrabClientCoords = null;
 function BoardEditorInit() {
-    $('*').on('mousedown', BoardEditorGrab);
-    $('*').on('dragend', BoardEditorDrop);
+    if ($('.board-editor').length === 1) {
+        $('*').on('mousedown', BoardEditorGrab);
+        $('*').on('dragend', BoardEditorDrop);
+    }
 }
 function BoardEditorGrab(evt) {
     var targetElement = evt.target;
@@ -36,17 +37,17 @@ function BoardEditorGrab(evt) {
 ;
 function BoardEditorDrop(evt) {
     if (BoardEditorDragTarget && $('.selected-add').length === 0) {
-        MovePiece(evt);
+        BoardEditorMovePiece(evt);
         GetFEN();
     }
     else if ($('.selected-add').length !== 0) {
-        AddPieceToBoard(evt);
+        BoardEditorAddPieceToBoard(evt);
         GetFEN();
     }
     BoardEditorDragTarget = null;
 }
 ;
-function MovePiece(evt) {
+function BoardEditorMovePiece(evt) {
     var dropClientCoords = {
         x: BoardEditorGrabClientCoords.x + (evt.screenX - BoardEditorGrabScreenCoords.x),
         y: BoardEditorGrabClientCoords.y + (evt.screenY - BoardEditorGrabScreenCoords.y)
@@ -72,7 +73,7 @@ function MovePiece(evt) {
         $(BoardEditorDragTarget).remove();
     }
 }
-function AddPieceToBoard(evt) {
+function BoardEditorAddPieceToBoard(evt) {
     var dropClientCoords;
     if (evt.type === 'dragend') {
         var dropScreenCoords = {
@@ -135,5 +136,4 @@ function GetBoundingSquare(dropClientCoords) {
     }
     return null;
 }
-BoardEditorInit();
 //# sourceMappingURL=boardEditor.js.map

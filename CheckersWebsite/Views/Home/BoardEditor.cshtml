@@ -64,6 +64,8 @@
 </div>
 <script>
     $(function () {
+        BoardEditorInit();
+
         $('#variant-board-editor').change(updateBoardEditor);
         $('#position-board-editor').change(updateBoardEditor);
         $('#player-board-editor').change(GetFEN);
