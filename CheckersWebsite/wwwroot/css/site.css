@@ -198,3 +198,23 @@ input[type="radio"].toggle:checked + label {
 .slider-group output {
     padding-top: 0;
 }
+
+.piece-col {
+    display: grid;
+    grid-template-columns: 75px 75px 75px 75px;
+    grid-template-rows: auto;
+    margin-bottom: 10px;
+}
+
+.piece-col svg {
+    height: 70px;
+    width: 70px;
+}
+
+@media (min-width: 992px) {
+    .piece-col {
+        display: grid;
+        grid-template-rows: 75px 75px 75px 75px;
+        grid-template-columns: auto;
+    }
+}

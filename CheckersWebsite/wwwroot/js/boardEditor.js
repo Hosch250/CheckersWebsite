@@ -139,7 +139,6 @@ function AddPieceToBoard(evt) {
         svg.setAttribute('y', "" + $(boundingSquare).attr('y'));
         var image = document.createElementNS('http://www.w3.org/2000/svg', 'image');
         image.setAttribute('id', "piece" + row + col);
-        image.setAttribute('player', player);
         image.setAttribute('height', '100%');
         image.setAttribute('width', '100%');
         image.setAttribute('href', "/images/SteelTheme/" + player + pieceType + ".png");
