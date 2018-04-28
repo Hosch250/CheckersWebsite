@@ -22,8 +22,6 @@ function BoardEditorInit() {
 }
 
 function BoardEditorGrab(evt) {
-    console.log(!BoardEditorDragTarget);
-    console.log(evt.target.id);
     var targetElement = evt.target;
     BoardEditorGetTrueCoords(evt);
     

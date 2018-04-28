@@ -14,8 +14,6 @@ function BoardEditorInit() {
     BoardEditorGrabPoint = $('.board>svg')[0].createSVGPoint();
 }
 function BoardEditorGrab(evt) {
-    console.log(!BoardEditorDragTarget);
-    console.log(evt.target.id);
     var targetElement = evt.target;
     BoardEditorGetTrueCoords(evt);
     if (!BoardEditorDragTarget && evt.target.id.startsWith('piece')) {
