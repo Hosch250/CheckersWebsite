@@ -121,6 +121,27 @@ function flip() {
         }
     });
 }
+function GetFEN() {
+    var board = $('.piece').map(function (index, el) {
+        return {
+            id: el.id,
+            player: $(el).attr('player'),
+            piece: $(el).attr('pieceType')
+        };
+    });
+    $.ajax("/BoardEditor/GetFEN", {
+        data: {
+            variant: $('#variant-board-editor').val(),
+            startingPlayer: $('#player-board-editor').val(),
+            pieces: board.get()
+        },
+        dataType: 'text',
+        method: 'POST',
+        success: function (data) {
+            $('#fen-board-editor').val(data);
+        }
+    });
+}
 function getCookie(name) {
     var cookies = document.cookie.split(';');
     for (var index in cookies) {

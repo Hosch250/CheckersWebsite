@@ -37,9 +37,11 @@ function BoardEditorGrab(evt) {
 function BoardEditorDrop(evt) {
     if (BoardEditorDragTarget && $('.selected-add').length === 0) {
         MovePiece(evt);
+        GetFEN();
     }
     else if ($('.selected-add').length !== 0) {
         AddPieceToBoard(evt);
+        GetFEN();
     }
     BoardEditorDragTarget = null;
 }
@@ -114,7 +116,7 @@ function AddPieceToBoard(evt) {
         var row = parseInt(coord[0]);
         var col = parseInt(coord[1]);
         $("#piece" + row + col).remove();
-        var newPiece = "<img id=\"piece" + row + col + "\" class=\"piece\" onmousedown=\"pieceClick(" + row + ", " + col + ")\" src=\"/images/SteelTheme/" + player + pieceType + ".png\" style=\"grid-row: " + (row + 1) + "; grid-column: " + (col + 1) + "\" />";
+        var newPiece = "<img id=\"piece" + row + col + "\" class=\"piece\" player=\"" + player + "\" pieceType=\"" + pieceType + "\" onmousedown=\"pieceClick(" + row + ", " + col + ")\" src=\"/images/SteelTheme/" + player + pieceType + ".png\" style=\"grid-row: " + (row + 1) + "; grid-column: " + (col + 1) + "\" />";
         $('.board').append(newPiece);
         $('.selected-add').removeClass('selected-add');
     }

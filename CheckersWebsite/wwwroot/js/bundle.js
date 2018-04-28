@@ -654,13 +654,13 @@ function BoardEditorGrab(evt) {
 }
 ;
 function BoardEditorDrop(evt) {
-    console.log(BoardEditorDragTarget);
-    console.log($('.selected-add').length === 0);
     if (BoardEditorDragTarget && $('.selected-add').length === 0) {
         MovePiece(evt);
+        GetFEN();
     }
     else if ($('.selected-add').length !== 0) {
         AddPieceToBoard(evt);
+        GetFEN();
     }
     BoardEditorDragTarget = null;
 }
@@ -735,7 +735,7 @@ function AddPieceToBoard(evt) {
         var row = parseInt(coord[0]);
         var col = parseInt(coord[1]);
         $("#piece" + row + col).remove();
-        var newPiece = "<img id=\"piece" + row + col + "\" class=\"piece\" onmousedown=\"pieceClick(" + row + ", " + col + ")\" src=\"/images/SteelTheme/" + player + pieceType + ".png\" style=\"grid-row: " + (row + 1) + "; grid-column: " + (col + 1) + "\" />";
+        var newPiece = "<img id=\"piece" + row + col + "\" class=\"piece\" player=\"" + player + "\" pieceType=\"" + pieceType + "\" onmousedown=\"pieceClick(" + row + ", " + col + ")\" src=\"/images/SteelTheme/" + player + pieceType + ".png\" style=\"grid-row: " + (row + 1) + "; grid-column: " + (col + 1) + "\" />";
         $('.board').append(newPiece);
         $('.selected-add').removeClass('selected-add');
     }
@@ -876,6 +876,27 @@ function flip() {
         success: function (data) {
             $('.board')[0].outerHTML = data;
             Init('.board svg');
+        }
+    });
+}
+function GetFEN() {
+    var board = $('.piece').map(function (index, el) {
+        return {
+            id: el.id,
+            player: $(el).attr('player'),
+            piece: $(el).attr('pieceType')
+        };
+    });
+    $.ajax("/BoardEditor/GetFEN", {
+        data: {
+            variant: $('#variant-board-editor').val(),
+            startingPlayer: $('#player-board-editor').val(),
+            pieces: board.get()
+        },
+        dataType: 'text',
+        method: 'POST',
+        success: function (data) {
+            $('#fen-board-editor').val(data);
         }
     });
 }

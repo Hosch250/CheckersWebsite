@@ -23,7 +23,7 @@
             var piece = Model[row, col];
             if (piece != null)
             {
-                <img id="piece@(GetAdjustedIndex(row))@(GetAdjustedIndex(col))" class="piece" onmousedown="pieceClick(@(GetAdjustedIndex(row)), @(GetAdjustedIndex(col)))" src="@Url.Content($"~/images/SteelTheme/{piece.Player}{piece.PieceType}.png")" style="grid-row: @(GetAdjustedIndex(row) + 1); grid-column: @(GetAdjustedIndex(col) + 1)" />
+                <img id="piece@(GetAdjustedIndex(row))@(GetAdjustedIndex(col))" class="piece" player="@piece.Player.ToString()" pieceType="@piece.PieceType.ToString()" onmousedown="pieceClick(@(GetAdjustedIndex(row)), @(GetAdjustedIndex(col)))" src="@Url.Content($"~/images/SteelTheme/{piece.Player}{piece.PieceType}.png")" style="grid-row: @(GetAdjustedIndex(row) + 1); grid-column: @(GetAdjustedIndex(col) + 1)" />
             }
         }
     }

@@ -5,13 +5,26 @@
     <div class="row board-editor" xmlns="http://www.w3.org/1999/xhtml">
         <div class="col-lg-1"></div>
         <div class="col-lg-1 piece-col">
-            <img id="piece-black-checker" class="piece" src="@Url.Content($"~/images/SteelTheme/BlackChecker.png")" onmousedown="{ $('.selected-add').removeClass('selected-add'); $('#piece-black-checker').addClass('selected-add'); }" />
+            <img id="piece-black-checker" src="@Url.Content($"~/images/SteelTheme/BlackChecker.png")" onmousedown="{ $('.selected-add').removeClass('selected-add'); $('#piece-black-checker').addClass('selected-add'); }" />
             <img id="piece-black-king" src="@Url.Content($"~/images/SteelTheme/BlackKing.png")" onmousedown="{ $('.selected-add').removeClass('selected-add'); $('#piece-black-king').addClass('selected-add'); }" />
             <img id="piece-white-checker" src="@Url.Content($"~/images/SteelTheme/WhiteChecker.png")" onmousedown="{ $('.selected-add').removeClass('selected-add'); $('#piece-white-checker').addClass('selected-add'); }" />
             <img id="piece-white-king" src="@Url.Content($"~/images/SteelTheme/WhiteKing.png")" onmousedown="{ $('.selected-add').removeClass('selected-add'); $('#piece-white-king').addClass('selected-add'); }" />
         </div>
         <div class="col-lg-6">
             @Html.Partial("~/Views/Controls/CheckersBoardEditor.cshtml", GameController.FromVariant(Variant.AmericanCheckers).Board)
+            <div class="input-group">
+                <div class="input-group-addon"><label for="white-weight">FEN</label></div>
+                <input id="fen-board-editor" class="form-control" type="text" readonly>
+                <span class="input-group-btn">
+                    <button id="copy-fen" class="btn btn-default" type="button">
+                        <span class="glyphicon glyphicon-copy"></span>
+                        <span class="sr-only">Copy FEN</span>
+                    </button>
+                </span>
+            </div>
+            <div id="copied" style="display:none; text-align: center; font-size: 18px; color: dimgray; margin: 5px">
+                <span>Copied!</span>
+            </div>
         </div>
         <div class="col-lg-3">
             <div class="form-group">
@@ -50,5 +63,15 @@
     $(function () {
         $('#variant-board-editor').change(updateBoardEditor);
         $('#position-board-editor').change(updateBoardEditor);
+        $('#player-board-editor').change(GetFEN);
+
+        $('#copy-fen').click(function () {
+            $('#fen-board-editor').select();
+            document.execCommand("copy");
+
+            $('#copied').fadeIn('slow', function () {
+                $('#copied').delay(5000).fadeOut();
+            });
+        });
     });
 </script>
