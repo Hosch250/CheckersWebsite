@@ -25,7 +25,7 @@ function BoardEditorGrab(evt) {
     var targetElement = evt.target;
     BoardEditorGetTrueCoords(evt);
     
-    if (!BoardEditorDragTarget) {
+    if (!BoardEditorDragTarget && evt.target.id.startsWith('piece')) {
         if (!$(targetElement).hasClass('selected-add')) {
             $('.selected-add').removeClass('selected-add');
         }
@@ -44,7 +44,7 @@ function BoardEditorGrab(evt) {
         };
         
         BoardEditorDragTarget = targetElement.closest('g');
-        
+
         if (BoardEditorDragTarget) {
             $('.board svg')[0].appendChild(BoardEditorDragTarget);
         }
@@ -70,43 +70,38 @@ function BoardEditorDrag(evt) {
 };
 
 function BoardEditorDrop(evt) {
-    $('[pointer-events]').removeAttr('pointer-events');
-
     if (BoardEditorDragTarget && $('.selected-add').length === 0) {
         MovePiece(evt);
-        return;
-    }
-    
-    if ($('.selected-add').length !== 0) {
+    } else if ($('.selected-add').length !== 0) {
         AddPieceToBoard(evt);
     }
+
+    $('[pointer-events]').removeAttr('pointer-events');
 };
 
 function MovePiece(evt) {
-    if (evt.type === 'dragend') {
-        var dropScreenCoords = {
-            x: evt.screenX,
-            y: evt.screenY
-        };
-        var dropClientCoords = {
-            x: BoardEditorGrabClientCoords.x + (evt.screenX - BoardEditorGrabScreenCoords.x),
-            y: BoardEditorGrabClientCoords.y + (evt.screenY - BoardEditorGrabScreenCoords.y)
-        };
+    var dropClientCoords = {
+        x: BoardEditorGrabClientCoords.x + (evt.screenX - BoardEditorGrabScreenCoords.x),
+        y: BoardEditorGrabClientCoords.y + (evt.screenY - BoardEditorGrabScreenCoords.y)
+    };
+    var boundingSquare = GetBoundingSquare(dropClientCoords);
 
-        var pieceMoved = false;
+    if (boundingSquare) {
+        var coord = boundingSquare.id.replace('square', '');
+        var row = parseInt(coord[0]);
+        var col = parseInt(coord[1]);
 
-        var boundingSquare = GetBoundingSquare(dropClientCoords);
-        if (boundingSquare) {
-            var coord = boundingSquare.id.replace('square', '');
-            var row = parseInt(coord[0]);
-            var col = parseInt(coord[1]);
+        $(`#piece${row}${col}`).closest('g').first().remove();
+        $(BoardEditorDragTarget).removeAttr('transform');
+        $(BoardEditorDragTarget).find('svg').attr('x', $(boundingSquare).attr('x'));
+        $(BoardEditorDragTarget).find('svg').attr('y', $(boundingSquare).attr('y'));
 
-            $(BoardEditorDragTarget).removeAttr('transform');
-            $(BoardEditorDragTarget).find('svg').attr('x', $(boundingSquare).attr('x'));
-            $(BoardEditorDragTarget).find('svg').attr('y', $(boundingSquare).attr('y'));
-        } else {
-            $(BoardEditorDragTarget).remove();
-        }
+        $(BoardEditorDragTarget).find('svg').attr('id', `#svg${row}${col}`);
+        $(BoardEditorDragTarget).find('image').attr('id', `#piece${row}${col}`);
+        $(BoardEditorDragTarget).find('rect').attr('id', `#rect${row}${col}`);
+        $(BoardEditorDragTarget).find('svg').attr('onclick', `pieceClick(${row}, ${col})`);
+    } else {
+        $(BoardEditorDragTarget).remove();
     }
 
     BoardEditorDragTarget = null;
@@ -135,19 +130,19 @@ function AddPieceToBoard(evt) {
         var player: string;
         var pieceType: string;
         switch ($('.selected-add').attr('id')) {
-            case 'black-checker':
+            case 'piece-black-checker':
                 player = "Black";
                 pieceType = "Checker";
                 break;
-            case 'black-king':
+            case 'piece-black-king':
                 player = "Black";
                 pieceType = "King";
                 break;
-            case 'white-checker':
+            case 'piece-white-checker':
                 player = "White";
                 pieceType = "Checker";
                 break;
-            case 'white-king':
+            case 'piece-white-king':
                 player = "White";
                 pieceType = "King";
                 break;
