@@ -12,6 +12,7 @@
     <Content Remove="wwwroot\images\SteelTheme\LightSteel.png" />
     <Content Remove="wwwroot\images\SteelTheme\WhiteChecker.png" />
     <Content Remove="wwwroot\images\SteelTheme\WhiteKing.png" />
+    <Content Remove="wwwroot\js\boardEditor.ts" />
     <Content Remove="wwwroot\js\dragdrop.ts" />
     <Content Remove="wwwroot\js\site.ts" />
   </ItemGroup>
@@ -64,6 +65,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <TypeScriptCompile Include="wwwroot\js\boardEditor.ts" />
     <TypeScriptCompile Include="wwwroot\js\dragdrop.ts" />
     <TypeScriptCompile Include="wwwroot\js\site.ts">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

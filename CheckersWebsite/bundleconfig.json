@@ -4,6 +4,7 @@
     "inputFiles": [
       "wwwroot/lib/jquery-match-height/jquery-match-height.js",
       "wwwroot/js/dragdrop.js",
+      "wwwroot/js/boardEditor.js",
       "wwwroot/js/site.js"
     ],
     "minify": {
