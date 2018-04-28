@@ -935,14 +935,13 @@ function getCookie(name) {
 function updateBoardEditor() {
     $.ajax("/BoardEditor/GetBoard", {
         data: {
-            variant: $('#variant').val(),
-            position: $('#position').val()
+            variant: $('#variant-board-editor').val(),
+            position: $('#position-board-editor').val()
         },
         dataType: 'html',
         method: 'POST',
         success: function (data) {
             $('.board')[0].outerHTML = data;
-            BoardEditorInit();
         }
     });
 }

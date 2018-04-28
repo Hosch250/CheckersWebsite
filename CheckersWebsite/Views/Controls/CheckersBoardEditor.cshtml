@@ -11,25 +11,20 @@
 }
 
 <div class="board" id="board-editor-board-container" orientation="@orientation">
-    <svg width="100%" height="100%" style="background-color: #cccccc" version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50">
-
-        @for (var row = 0; row < 8; row++)
+    @for (var row = 0; row < 8; row++)
+    {
+        for (var col = 0; col < 8; col++)
         {
-            for (var col = 0; col < 8; col++)
-            {
-                <image class="square @(GetAdjustedIndex(col) % 2 == GetAdjustedIndex(row) % 2 ? "" : "drop-target")" id="square@(GetAdjustedIndex(row))@(GetAdjustedIndex(col))" y="@(GetAdjustedIndex(row) * 12.5m)%" x="@(GetAdjustedIndex(col) * 12.5m)%" width="12.5%" height="12.5%" xlink:href="@Url.Content($"~/images/SteelTheme/{(GetAdjustedIndex(col) % 2 == GetAdjustedIndex(row) % 2 ? "Light" : "Dark")}Steel.png")" />
+            <img class="square @(GetAdjustedIndex(col) % 2 == GetAdjustedIndex(row) % 2 ? "" : "drop-target")"
+                 id="square@(GetAdjustedIndex(row))@(GetAdjustedIndex(col))"
+                 src="@Url.Content($"~/images/SteelTheme/{(GetAdjustedIndex(col) % 2 == GetAdjustedIndex(row) % 2 ? "Light" : "Dark")}Steel.png")"
+                 style="grid-row: @(GetAdjustedIndex(row) + 1); grid-column: @(GetAdjustedIndex(col) + 1)" />
 
-                var piece = Model[row, col];
-                if (piece != null)
-                {
-                    <g>
-                        <svg id="svg@(GetAdjustedIndex(row))@(GetAdjustedIndex(col))" onclick="pieceClick(@GetAdjustedIndex(row), @GetAdjustedIndex(col))" y="@(GetAdjustedIndex(row) * 12.5m)%" x="@(GetAdjustedIndex(col) * 12.5m)%" width="12.5%" height="12.5%" style="fill:none">
-                            <image id="piece@(GetAdjustedIndex(row))@(GetAdjustedIndex(col))" height="100%" width="100%" href="@Url.Content($"~/images/SteelTheme/{piece.Player}{piece.PieceType}.png")" />
-                            <rect id="rect@(GetAdjustedIndex(row))@(GetAdjustedIndex(col))" class="selected-piece-highlight" height="100%" width="100%" style="fill: none; stroke: goldenrod"></rect>
-                        </svg>
-                    </g>
-                }
+            var piece = Model[row, col];
+            if (piece != null)
+            {
+                <img id="piece@(GetAdjustedIndex(row))@(GetAdjustedIndex(col))" class="piece" onmousedown="pieceClick(@(GetAdjustedIndex(row)), @(GetAdjustedIndex(col)))" src="@Url.Content($"~/images/SteelTheme/{piece.Player}{piece.PieceType}.png")" style="grid-row: @(GetAdjustedIndex(row) + 1); grid-column: @(GetAdjustedIndex(col) + 1)" />
             }
         }
-    </svg>
+    }
 </div>

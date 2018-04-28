@@ -3,9 +3,9 @@
 @model List<Database.Game>
 
 <div class="row">
-    <div class="col-md-2 column">
+    <div class="col-lg-2 column">
     </div>
-    <div class="col-md-6 column game-list-col">
+    <div class="col-lg-6 column game-list-col">
         @{ 
             var playerID = (Guid)ViewData["playerID"];
         }
@@ -48,7 +48,7 @@
             </table>
         </div>
     </div>
-    <div class="col-md-3 column">
+    <div class="col-lg-3 column">
         <a class="btn btn-default home-page-create" data-toggle="modal" data-target="#create-game-modal">
             <span class="glyphicon glyphicon-plus"></span>
             <span>Create Game</span>

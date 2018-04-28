@@ -202,19 +202,44 @@ input[type="radio"].toggle:checked + label {
 .piece-col {
     display: grid;
     grid-template-columns: 75px 75px 75px 75px;
-    grid-template-rows: auto;
+    grid-template-rows: 75px;
     margin-bottom: 10px;
+    border: 5px groove black;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    margin-left: 15px;
+    margin-right: 15px;
 }
 
-.piece-col svg {
-    height: 70px;
-    width: 70px;
+.piece-col img {
+    max-height: 75px;
+    max-width: 75px;
+    margin-left: -6px;
 }
 
-@media (min-width: 992px) {
+@media (min-width: 1200px) {
     .piece-col {
         display: grid;
         grid-template-rows: 75px 75px 75px 75px;
-        grid-template-columns: auto;
+        grid-template-columns: 75px;
     }
+}
+
+.board {
+    display: grid;
+    grid-template-rows: auto auto auto auto auto auto auto auto;
+    grid-template-columns: auto auto auto auto auto auto auto auto;
+}
+
+.square,
+.piece {
+    width: 100%;
+}
+
+.piece {
+    border: 5px solid transparent;
+}
+
+.piece.selected {
+    border: 5px solid goldenrod;
 }

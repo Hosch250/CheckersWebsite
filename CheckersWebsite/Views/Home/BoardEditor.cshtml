@@ -1,67 +1,54 @@
 ﻿@using CheckersWebsite.Facade
 @using CheckersWebsite.Resources
 
-<svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" id="board-editor-svg" style="overflow-y: auto" class="back-drop" onload="BoardEditorInit()" onmousedown="BoardEditorGrab(evt)" onmousemove="BoardEditorDrag(evt)" onmouseup="BoardEditorDrop(evt)">
-    <foreignObject class="node" x="0" y="0" width="100%" height="100%">
-        <div class="row board-editor" xmlns="http://www.w3.org/1999/xhtml">
-            <div class="col-md-1"></div>
-            <div class="col-md-1 piece-col">
-                <svg width="100%" height="100%" style="background-color: white; border: 1px solid black" version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50">
-                    <image id="piece-black-checker" player="Black" height="100%" width="100%" xlink:href="@Url.Content($"~/images/SteelTheme/BlackChecker.png")" onmousedown="{ $('.selected-add').removeClass('selected-add'); $(evt.target).addClass('selected-add'); }" />
-                </svg>
-                <svg width="100%" height="100%" style="background-color: white; border: 1px solid black" version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50">
-                    <image id="piece-black-king" player="Black" height="100%" width="100%" xlink:href="@Url.Content($"~/images/SteelTheme/BlackKing.png")" onmousedown="{ $('.selected-add').removeClass('selected-add'); $(evt.target).addClass('selected-add'); }" />
-                </svg>
-                <svg width="100%" height="100%" style="background-color: white; border: 1px solid black" version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50">
-                    <image id="piece-white-checker" player="White" height="100%" width="100%" xlink:href="@Url.Content($"~/images/SteelTheme/WhiteChecker.png")" onmousedown="{ $('.selected-add').removeClass('selected-add'); $(evt.target).addClass('selected-add'); }" />
-                </svg>
-                <svg width="100%" height="100%" style="background-color: white; border: 1px solid black" version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50">
-                    <image id="piece-white-king" player="White" height="100%" width="100%" xlink:href="@Url.Content($"~/images/SteelTheme/WhiteKing.png")" onmousedown="{ $('.selected-add').removeClass('selected-add'); $(evt.target).addClass('selected-add'); }" />
-                </svg>
+<div>
+    <div class="row board-editor" xmlns="http://www.w3.org/1999/xhtml">
+        <div class="col-lg-1"></div>
+        <div class="col-lg-1 piece-col">
+            <img id="piece-black-checker" class="piece" src="@Url.Content($"~/images/SteelTheme/BlackChecker.png")" onmousedown="{ $('.selected-add').removeClass('selected-add'); $(evt.target).addClass('selected-add'); }" />
+            <img id="piece-black-king" src="@Url.Content($"~/images/SteelTheme/BlackKing.png")" onmousedown="{ $('.selected-add').removeClass('selected-add'); $(evt.target).addClass('selected-add'); }" />
+            <img id="piece-white-checker" src="@Url.Content($"~/images/SteelTheme/WhiteChecker.png")" onmousedown="{ $('.selected-add').removeClass('selected-add'); $(evt.target).addClass('selected-add'); }" />
+            <img id="piece-white-king" src="@Url.Content($"~/images/SteelTheme/WhiteKing.png")" onmousedown="{ $('.selected-add').removeClass('selected-add'); $(evt.target).addClass('selected-add'); }" />
+        </div>
+        <div class="col-lg-6">
+            @Html.Partial("~/Views/Controls/CheckersBoardEditor.cshtml", GameController.FromVariant(Variant.AmericanCheckers).Board)
+        </div>
+        <div class="col-lg-3">
+            <div class="form-group">
+                <label for="variant">Variant</label>
+                @Html.DropDownList("variant-board-editor", Enum.GetNames(typeof(Variant)).Select(s =>
+                              new SelectListItem
+                              {
+                                  Text = Resources.ResourceManager.GetString(s),
+                                  Value = s
+                              }
+                          ),
+                          new { @class = "select form-control", id = "variant-board-editor" })
             </div>
-            <div class="col-md-6">
-                @Html.Partial("~/Views/Controls/CheckersBoardEditor.cshtml", GameController.FromVariant(Variant.AmericanCheckers).Board)
+            <div class="form-group">
+                <label for="player">Starting Player</label>
+                @Html.DropDownList("player-board-editor", Enum.GetNames(typeof(Player)).Select(s =>
+                              new SelectListItem
+                              {
+                                  Text = Resources.ResourceManager.GetString(s),
+                                  Value = s
+                              }
+                          ),
+                          new { @class = "select form-control", id = "player-board-editor" })
             </div>
-            <div class="col-md-3">
-                <div class="form-group">
-                    <label for="variant">Variant</label>
-                    @Html.DropDownList("variant", Enum.GetNames(typeof(Variant)).Select(s =>
-                             new SelectListItem
-                             {
-                                 Text = Resources.ResourceManager.GetString(s),
-                                 Value = s
-                             }
-                         ),
-                         new { @class = "select form-control", id = "variant-board-editor" })
-                </div>
-                <div class="form-group">
-                    <label for="player">Starting Player</label>
-                    @Html.DropDownList("player", Enum.GetNames(typeof(Player)).Select(s =>
-                             new SelectListItem
-                             {
-                                 Text = Resources.ResourceManager.GetString(s),
-                                 Value = s
-                             }
-                         ),
-                         new { @class = "select form-control", id = "player-board-editor" })
-                </div>
-                <div class="form-group">
-                    <label for="position">Position</label>
-                    <select id="position" class="select form-control">
-                        <option value="default">Default</option>
-                        <option value="empty">Empty</option>
-                    </select>
-                </div>
+            <div class="form-group">
+                <label for="position-board-editor">Position</label>
+                <select id="position-board-editor" class="select form-control">
+                    <option value="default">Default</option>
+                    <option value="empty">Empty</option>
+                </select>
             </div>
         </div>
-    </foreignObject>
-</svg>
-
+    </div>
+</div>
 <script>
     $(function () {
-        $('#board-editor-svg').height($('.board').width());
-        
-        $('#variant').change(updateBoardEditor);
-        $('#position').change(updateBoardEditor);
+        $('#variant-board-editor').change(updateBoardEditor);
+        $('#position-board-editor').change(updateBoardEditor);
     });
 </script>

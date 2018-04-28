@@ -8,7 +8,7 @@ namespace CheckersWebsite.Controllers
         public IActionResult GetBoard(Variant variant, BoardEditorPosition position)
         {
             var board = position == BoardEditorPosition.Empty ? Board.EmptyBoard() : Board.DefaultBoard(variant);
-            return View("~/Views/Controls/CheckersBoardEditor.cshtml", board);
+            return PartialView("~/Views/Controls/CheckersBoardEditor.cshtml", board);
         }
     }
 }
