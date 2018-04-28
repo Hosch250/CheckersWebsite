@@ -11,10 +11,13 @@
             <img id="piece-white-king" src="@Url.Content($"~/images/SteelTheme/WhiteKing.png")" onmousedown="{ $('.selected-add').removeClass('selected-add'); $('#piece-white-king').addClass('selected-add'); }" />
         </div>
         <div class="col-lg-6">
-            @Html.Partial("~/Views/Controls/CheckersBoardEditor.cshtml", GameController.FromVariant(Variant.AmericanCheckers).Board)
+            @{ 
+                var controller = GameController.FromVariant(Variant.AmericanCheckers);
+            }
+            @Html.Partial("~/Views/Controls/CheckersBoardEditor.cshtml", controller.Board)
             <div class="input-group">
                 <div class="input-group-addon"><label for="white-weight">FEN</label></div>
-                <input id="fen-board-editor" class="form-control" type="text" readonly>
+                <input id="fen-board-editor" class="form-control" type="text" readonly value="@controller.Fen" />
                 <span class="input-group-btn">
                     <button id="copy-fen" class="btn btn-default" type="button">
                         <span class="glyphicon glyphicon-copy"></span>
