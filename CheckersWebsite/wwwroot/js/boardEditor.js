@@ -14,6 +14,8 @@ function BoardEditorInit() {
     BoardEditorGrabPoint = $('.board>svg')[0].createSVGPoint();
 }
 function BoardEditorGrab(evt) {
+    console.log(!BoardEditorDragTarget);
+    console.log(evt.target.id);
     var targetElement = evt.target;
     BoardEditorGetTrueCoords(evt);
     if (!BoardEditorDragTarget && evt.target.id.startsWith('piece')) {
@@ -75,9 +77,9 @@ function MovePiece(evt) {
         $(BoardEditorDragTarget).removeAttr('transform');
         $(BoardEditorDragTarget).find('svg').attr('x', $(boundingSquare).attr('x'));
         $(BoardEditorDragTarget).find('svg').attr('y', $(boundingSquare).attr('y'));
-        $(BoardEditorDragTarget).find('svg').attr('id', "#svg" + row + col);
-        $(BoardEditorDragTarget).find('image').attr('id', "#piece" + row + col);
-        $(BoardEditorDragTarget).find('rect').attr('id', "#rect" + row + col);
+        $(BoardEditorDragTarget).find('svg').attr('id', "svg" + row + col);
+        $(BoardEditorDragTarget).find('image').attr('id', "piece" + row + col);
+        $(BoardEditorDragTarget).find('rect').attr('id', "rect" + row + col);
         $(BoardEditorDragTarget).find('svg').attr('onclick', "pieceClick(" + row + ", " + col + ")");
     }
     else {
