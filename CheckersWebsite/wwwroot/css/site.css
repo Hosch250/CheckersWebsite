@@ -201,7 +201,7 @@ input[type="radio"].toggle:checked + label {
 
 .piece-col {
     display: grid;
-    grid-template-columns: 75px 75px 75px 75px;
+    grid-template-columns: auto auto auto auto;
     grid-template-rows: 75px;
     margin-bottom: 10px;
     border: 5px groove black;
@@ -214,13 +214,13 @@ input[type="radio"].toggle:checked + label {
 .piece-col img {
     max-height: 75px;
     max-width: 75px;
-    margin-left: -6px;
+    margin-left: -8px;
 }
 
 @media (min-width: 1200px) {
     .piece-col {
         display: grid;
-        grid-template-rows: 75px 75px 75px 75px;
+        grid-template-rows: auto auto auto auto;
         grid-template-columns: 75px;
     }
 }
@@ -234,6 +234,7 @@ input[type="radio"].toggle:checked + label {
 .square,
 .piece {
     width: 100%;
+    height: 100%;
 }
 
 .piece {
