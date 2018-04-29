@@ -17,7 +17,6 @@ using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Routing;
 using Project.Utilities;
-using Microsoft.ApplicationInsights.Extensibility.Implementation;
 
 namespace CheckersWebsite.Controllers
 {
@@ -380,45 +379,38 @@ namespace CheckersWebsite.Controllers
 
         public async Task<ActionResult> Orientate(Guid id, Guid? moveID, Player orientation)
         {
-            try
-            {
-                var game = _context.Games
-                        .Include("Turns")
-                        .Include("Turns.Moves")
-                        .FirstOrDefault(f => f.ID == id);
+            var game = _context.Games
+                    .Include("Turns")
+                    .Include("Turns.Moves")
+                    .FirstOrDefault(f => f.ID == id);
 
-                if (game == null)
+            if (game == null)
+            {
+                Response.StatusCode = 403;
+                return Content("");
+            }
+
+            var move = game.Turns.SelectMany(t => t.Moves).FirstOrDefault(f => f.ID == moveID) ??
+                game.Turns.OrderBy(o => o.MoveNumber).LastOrDefault()?.Moves.OrderBy(a => a.CreatedOn).LastOrDefault();
+
+            var fen = move?.ResultingFen ?? game.Fen;
+
+            var playerID = GetPlayerID();
+
+            var controller = GameController.FromPosition((Variant)game.Variant, fen);
+            controller.ID = game.ID;
+
+            Dictionary<string, object>
+                viewData = new Dictionary<string, object>
                 {
-                    Response.StatusCode = 403;
-                    return Content("");
-                }
+                    ["playerID"] = playerID,
+                    ["blackPlayerID"] = game.BlackPlayerID,
+                    ["whitePlayerID"] = game.WhitePlayerID,
+                    ["orientation"] = orientation
+                };
 
-                var move = game.Turns.SelectMany(t => t.Moves).FirstOrDefault(f => f.ID == moveID) ??
-                    game.Turns.OrderBy(o => o.MoveNumber).LastOrDefault()?.Moves.OrderBy(a => a.CreatedOn).LastOrDefault();
-
-                var fen = move?.ResultingFen ?? game.Fen;
-
-                var playerID = GetPlayerID();
-
-                var controller = GameController.FromPosition((Variant)game.Variant, fen);
-                controller.ID = game.ID;
-
-                Dictionary<string, object>
-                    viewData = new Dictionary<string, object>
-                    {
-                        ["playerID"] = playerID,
-                        ["blackPlayerID"] = game.BlackPlayerID,
-                        ["whitePlayerID"] = game.WhitePlayerID,
-                        ["orientation"] = orientation
-                    };
-
-                var board = await _viewRenderService.RenderToStringAsync("Controls/CheckersBoard", game.ToGame(), viewData);
-                return Content(board);
-            }
-            catch (Exception ex)
-            {
-                return Json(ex);
-            }
+            var board = await _viewRenderService.RenderToStringAsync("Controls/CheckersBoard", game.ToGame(), viewData);
+            return Content(board);
         }
 
         private Guid? GetPlayerID()
