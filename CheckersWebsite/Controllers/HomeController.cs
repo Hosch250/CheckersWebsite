@@ -81,7 +81,7 @@ namespace CheckersWebsite.Controllers
             ViewData.Add("whitePlayerID", game.WhitePlayerID);
             ViewData.Add("orientation", playerID == game.WhitePlayerID ? Player.White : Player.Black);
 
-            Task.Run(() => _computerPlayer.DoComputerMove(game.ID));
+            _computerPlayer.DoComputerMove(game.ID);
             return View("~/Views/Controls/Game.cshtml", game.ToGame());
         }
 

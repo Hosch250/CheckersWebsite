@@ -130,7 +130,7 @@ namespace CheckersWebsite.Controllers
             _signalRHub.Clients.All.InvokeAsync(move.IsDrawn() || move.IsWon() ? "RemoveClass" : "AddClass", "new-game", "hide");
             _signalRHub.Clients.All.InvokeAsync(move.IsDrawn() || move.IsWon() ? "AddClass" : "RemoveClass", "resign", "hide");
 
-            Task.Run(() => DoComputerMove(id));
+            DoComputerMove(id);
             return;
         }
     }
