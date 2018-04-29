@@ -6,6 +6,7 @@
     var blackPlayerID = (Guid)ViewData["blackPlayerID"];
     var whitePlayerID = (Guid)ViewData["whitePlayerID"];
     var orientation = (Player)ViewData["orientation"];
+    var theme = (Theme)ViewData["theme"];
 
     int GetAdjustedIndex(int value)
     {
@@ -21,7 +22,7 @@
         {
             <img class="square @(GetAdjustedIndex(col) % 2 == GetAdjustedIndex(row) % 2 ? "" : "drop-target")"
                  id="square@(GetAdjustedIndex(row))@(GetAdjustedIndex(col))"
-                 src="@Url.Content($"~/images/SteelTheme/{(GetAdjustedIndex(col) % 2 == GetAdjustedIndex(row) % 2 ? "Light" : "Dark")}Steel.png")"
+                 src="@Url.Content($"~/images/{theme}Theme/{(GetAdjustedIndex(col) % 2 == GetAdjustedIndex(row) % 2 ? "Light" : "Dark")}{theme}.png")"
                  style="grid-row: @(GetAdjustedIndex(row) + 1); grid-column: @(GetAdjustedIndex(col) + 1)" />
 
             var piece = Model.Board[row, col];
@@ -30,7 +31,7 @@
                 <img id="piece@(GetAdjustedIndex(row))@(GetAdjustedIndex(col))"
                      class="piece"
                      player="@piece.Player.ToString()"
-                     src="@Url.Content($"~/images/SteelTheme/{piece.Player}{piece.PieceType}.png")"
+                     src="@Url.Content($"~/images/{theme}Theme/{piece.Player}{piece.PieceType}.png")"
                      style="grid-row: @(GetAdjustedIndex(row) + 1); grid-column: @(GetAdjustedIndex(col) + 1)" />
 
             }

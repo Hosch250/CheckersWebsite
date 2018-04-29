@@ -6,6 +6,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="wwwroot\images\WoodTheme - Copy\**" />
+    <Compile Remove="wwwroot\images\`\**" />
+    <Content Remove="wwwroot\images\WoodTheme - Copy\**" />
+    <Content Remove="wwwroot\images\`\**" />
+    <EmbeddedResource Remove="wwwroot\images\WoodTheme - Copy\**" />
+    <EmbeddedResource Remove="wwwroot\images\`\**" />
+    <None Remove="wwwroot\images\WoodTheme - Copy\**" />
+    <None Remove="wwwroot\images\`\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Remove="wwwroot\images\SteelTheme\BlackChecker.png" />
     <Content Remove="wwwroot\images\SteelTheme\BlackKing.png" />
     <Content Remove="wwwroot\images\SteelTheme\DarkSteel.png" />
@@ -105,6 +116,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Update="Views\Home\Rules.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="Views\Modals\SettingsModal.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Update="Views\Modals\NewGameModal.cshtml">

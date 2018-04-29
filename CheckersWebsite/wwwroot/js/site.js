@@ -226,7 +226,7 @@ function connectToSignalR() {
         var playerID = getCookie('playerID');
         if (playerID === '') {
             signalRConnection.invoke('GetNewPlayerID').then(function (value) {
-                document.cookie += (document.cookie.trim() === '' ? '' : ';') + "playerID=" + value + ";path=/";
+                document.cookie = "playerID=" + value + ";path=/";
                 signalRConnection.invoke('MapPlayerConnection', value);
             });
         }

@@ -38,6 +38,16 @@ namespace CheckersWebsite.Controllers
             return Guid.Parse(Request.Cookies["playerID"]);
         }
 
+        private Theme GetThemeOrDefault()
+        {
+            if (Request.Cookies.Keys.All(a => a != "theme"))
+            {
+                return Theme.Steel;
+            }
+
+            return Enum.Parse(typeof(Theme), Request.Cookies["theme"]) as Theme? ?? Theme.Steel;
+        }
+
         public IActionResult Index()
         {
             var playerID = GetPlayerID() ?? Guid.NewGuid();
@@ -80,6 +90,7 @@ namespace CheckersWebsite.Controllers
             ViewData.Add("blackPlayerID", game.BlackPlayerID);
             ViewData.Add("whitePlayerID", game.WhitePlayerID);
             ViewData.Add("orientation", playerID == game.WhitePlayerID ? Player.White : Player.Black);
+            ViewData.Add("theme", GetThemeOrDefault());
 
             _computerPlayer.DoComputerMove(game.ID);
             return View("~/Views/Controls/Game.cshtml", game.ToGame());

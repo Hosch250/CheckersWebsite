@@ -268,7 +268,7 @@ function connectToSignalR() {
 
         if (playerID === '') {
             signalRConnection.invoke('GetNewPlayerID').then(function (value) {
-                document.cookie += `${document.cookie.trim() === '' ? '' : ';'}playerID=${value};path=/`;
+                document.cookie = `playerID=${value};path=/`;
 
                 signalRConnection.invoke('MapPlayerConnection', value);
             });

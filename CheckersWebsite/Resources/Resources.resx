@@ -147,13 +147,22 @@
   <data name="InProgress" xml:space="preserve">
     <value>In Progress</value>
   </data>
+  <data name="Plastic" xml:space="preserve">
+    <value>Plastic</value>
+  </data>
   <data name="PoolCheckers" xml:space="preserve">
     <value>Pool Checkers</value>
+  </data>
+  <data name="Steel" xml:space="preserve">
+    <value>Steel</value>
   </data>
   <data name="White" xml:space="preserve">
     <value>White</value>
   </data>
   <data name="WhiteWin" xml:space="preserve">
     <value>White Won</value>
+  </data>
+  <data name="Wood" xml:space="preserve">
+    <value>Wood</value>
   </data>
 </root>

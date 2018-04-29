@@ -151,11 +151,29 @@ namespace CheckersWebsite.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Plastic.
+        /// </summary>
+        public static string Plastic {
+            get {
+                return ResourceManager.GetString("Plastic", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Pool Checkers.
         /// </summary>
         public static string PoolCheckers {
             get {
                 return ResourceManager.GetString("PoolCheckers", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Steel.
+        /// </summary>
+        public static string Steel {
+            get {
+                return ResourceManager.GetString("Steel", resourceCulture);
             }
         }
         
@@ -174,6 +192,15 @@ namespace CheckersWebsite.Resources {
         public static string WhiteWin {
             get {
                 return ResourceManager.GetString("WhiteWin", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Wood.
+        /// </summary>
+        public static string Wood {
+            get {
+                return ResourceManager.GetString("Wood", resourceCulture);
             }
         }
     }

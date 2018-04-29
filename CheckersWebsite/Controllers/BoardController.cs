@@ -38,6 +38,16 @@ namespace CheckersWebsite.Controllers
             _computerPlayer = computerPlayer;
         }
 
+        private Theme GetThemeOrDefault()
+        {
+            if (Request.Cookies.Keys.All(a => a != "theme"))
+            {
+                return Theme.Steel;
+            }
+
+            return Enum.Parse(typeof(Theme), Request.Cookies["theme"]) as Theme? ?? Theme.Steel;
+        }
+
         private string GetClientConnection(Guid id)
         {
             return _context.Players.Find(id).ConnectionID;
@@ -122,7 +132,8 @@ namespace CheckersWebsite.Controllers
                     ["playerID"] = localPlayerID,
                     ["blackPlayerID"] = game.BlackPlayerID,
                     ["whitePlayerID"] = game.WhitePlayerID,
-                    ["orientation"] = orientation
+                    ["orientation"] = orientation,
+                    ["theme"] = GetThemeOrDefault()
                 };
             }
 
@@ -228,7 +239,8 @@ namespace CheckersWebsite.Controllers
                     ["playerID"] = localPlayerID,
                     ["blackPlayerID"] = game.BlackPlayerID,
                     ["whitePlayerID"] = game.WhitePlayerID,
-                    ["orientation"] = orientation
+                    ["orientation"] = orientation,
+                    ["theme"] = GetThemeOrDefault()
                 };
             }
             
@@ -320,7 +332,8 @@ namespace CheckersWebsite.Controllers
                 ["playerID"] = GetPlayerID(),
                 ["blackPlayerID"] = game.BlackPlayerID,
                 ["whitePlayerID"] = game.WhitePlayerID,
-                ["orientation"] = player
+                ["orientation"] = player,
+                ["theme"] = GetThemeOrDefault()
             };
 
             var board = await _viewRenderService.RenderToStringAsync("Controls/CheckersBoard", controller, viewData);
@@ -370,7 +383,8 @@ namespace CheckersWebsite.Controllers
                 ["playerID"] = playerID,
                 ["blackPlayerID"] = game.BlackPlayerID,
                 ["whitePlayerID"] = game.WhitePlayerID,
-                ["orientation"] = game.BlackPlayerID == playerID ? Player.Black : Player.White
+                ["orientation"] = game.BlackPlayerID == playerID ? Player.Black : Player.White,
+                ["theme"] = GetThemeOrDefault()
             };
 
             var board = await _viewRenderService.RenderToStringAsync("Controls/CheckersBoard", game.ToGame(), viewData);
@@ -406,7 +420,8 @@ namespace CheckersWebsite.Controllers
                     ["playerID"] = playerID,
                     ["blackPlayerID"] = game.BlackPlayerID,
                     ["whitePlayerID"] = game.WhitePlayerID,
-                    ["orientation"] = orientation
+                    ["orientation"] = orientation,
+                    ["theme"] = GetThemeOrDefault()
                 };
 
             var board = await _viewRenderService.RenderToStringAsync("Controls/CheckersBoard", game.ToGame(), viewData);

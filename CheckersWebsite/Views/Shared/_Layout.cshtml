@@ -33,6 +33,7 @@
 </head>
 <body>
     @Html.Partial("~/Views/Modals/NewGameModal.cshtml")
+    @Html.Partial("~/Views/Modals/SettingsModal.cshtml")
     <nav class="container" style="text-align: left">
         <div class="row">
             <div class="col-lg-2 column"></div>
@@ -43,7 +44,7 @@
                 <span>|</span>
                 <a asp-controller="Home" asp-action="Rules">Rules</a>
 
-                <button class="pull-right btn-link settings">
+                <button class="pull-right btn-link settings" data-toggle="modal" data-target="#settings-modal">
                     <span class="glyphicon glyphicon-cog"></span>
                     <span class="sr-only">Settings</span>
                 </button>

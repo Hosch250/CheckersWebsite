@@ -48,6 +48,13 @@ namespace CheckersWebsite.Facade
         Empty
     }
 
+    public enum Theme
+    {
+        Steel,
+        Wood,
+        Plastic
+    }
+
     public static class Extensions
     {
         public static Player Convert(this Generic.Player value) =>
