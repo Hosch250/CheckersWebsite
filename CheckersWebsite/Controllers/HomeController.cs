@@ -16,11 +16,15 @@ namespace CheckersWebsite.Controllers
 
         private readonly Database.Context _context;
         private readonly IHubContext<SignalRHub> _signalRHub;
+        private readonly ComputerPlayer _computerPlayer;
 
-        public HomeController(Database.Context context, IHubContext<SignalRHub> signalRHub)
+        public HomeController(Database.Context context,
+            IHubContext<SignalRHub> signalRHub,
+            ComputerPlayer computerPlayer)
         {
             _context = context;
             _signalRHub = signalRHub;
+            _computerPlayer = computerPlayer;
         }
 
         private Guid? GetPlayerID()
@@ -76,15 +80,15 @@ namespace CheckersWebsite.Controllers
             ViewData.Add("whitePlayerID", game.WhitePlayerID);
             ViewData.Add("orientation", playerID == game.WhitePlayerID ? Player.White : Player.Black);
 
+            _computerPlayer.DoComputerMove(game.ID);
             return View("~/Views/Controls/Game.cshtml", game.ToGame());
         }
 
-        public ActionResult NewGame(Variant variant, string fen)
+        public ActionResult NewGame(Variant variant, Opponent blackOpponent, Opponent whiteOpponent, int blackStrength, int whiteStrength, string fen)
         {
             var playerID = GetPlayerID().Value;
             ViewData.Add("playerID", playerID);
 
-            var player = Random.Next(0, 2);
 
             Database.Game newGame;
             if (!string.IsNullOrWhiteSpace(fen))
@@ -104,13 +108,33 @@ namespace CheckersWebsite.Controllers
                 newGame = GameController.FromVariant(variant).ToGame();
             }
 
-            if (player == (int)Player.Black)
+            newGame.BlackPlayerStrength = -1;
+            newGame.WhitePlayerStrength = -1;
+
+            if (blackOpponent == Opponent.Human && whiteOpponent == Opponent.Human)
             {
-                newGame.BlackPlayerID = playerID;
+                var player = Random.Next(0, 2);
+                if (player == (int)Player.Black)
+                {
+                    newGame.BlackPlayerID = playerID;
+                }
+                else
+                {
+                    newGame.WhitePlayerID = playerID;
+                }
             }
             else
             {
-                newGame.WhitePlayerID = playerID;
+                if (blackOpponent == Opponent.Computer)
+                {
+                    newGame.BlackPlayerID = ComputerPlayer.ComputerPlayerID;
+                    newGame.BlackPlayerStrength = blackStrength;
+                }
+                if (whiteOpponent == Opponent.Computer)
+                {
+                    newGame.WhitePlayerID = ComputerPlayer.ComputerPlayerID;
+                    newGame.WhitePlayerStrength = whiteStrength;
+                }
             }
 
             _context.Games.Add(newGame);

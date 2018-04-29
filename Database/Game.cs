@@ -20,6 +20,9 @@ namespace Database
         public Guid BlackPlayerID { get; set; }
         public Guid WhitePlayerID { get; set; }
 
+        public int BlackPlayerStrength { get; set; }
+        public int WhitePlayerStrength { get; set; }
+
         [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         public DateTime CreatedOn { get; set; }
 

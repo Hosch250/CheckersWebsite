@@ -1,4 +1,5 @@
-﻿using Database;
+﻿using CheckersWebsite.Controllers;
+using Database;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -33,6 +34,8 @@ namespace CheckersWebsite
 
             // new context on each request
             services.AddScoped<Context, Context>();
+
+            services.AddScoped<ComputerPlayer, ComputerPlayer>();
 
             services.AddSignalR();
 

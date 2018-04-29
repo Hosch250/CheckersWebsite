@@ -97,6 +97,15 @@ namespace CheckersWebsite.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Computer.
+        /// </summary>
+        public static string Computer {
+            get {
+                return ResourceManager.GetString("Computer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Default.
         /// </summary>
         public static string Default {
@@ -120,6 +129,15 @@ namespace CheckersWebsite.Resources {
         public static string FromPosition {
             get {
                 return ResourceManager.GetString("FromPosition", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Human.
+        /// </summary>
+        public static string Human {
+            get {
+                return ResourceManager.GetString("Human", resourceCulture);
             }
         }
         

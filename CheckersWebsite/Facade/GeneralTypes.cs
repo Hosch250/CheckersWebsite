@@ -36,6 +36,12 @@ namespace CheckersWebsite.Facade
         Aborted
     }
 
+    public enum Opponent
+    {
+        Human,
+        Computer
+    }
+
     public enum BoardEditorPosition
     {
         Default,

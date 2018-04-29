@@ -25,14 +25,17 @@ namespace CheckersWebsite.Controllers
         private readonly Database.Context _context;
         private readonly IHubContext<SignalRHub> _signalRHub;
         private readonly IViewRenderService _viewRenderService;
+        private readonly ComputerPlayer _computerPlayer;
 
         public BoardController(Database.Context context,
             IHubContext<SignalRHub> signalRHub,
-            IViewRenderService viewRenderService)
+            IViewRenderService viewRenderService,
+            ComputerPlayer computerPlayer)
         {
             _context = context;
             _signalRHub = signalRHub;
             _viewRenderService = viewRenderService;
+            _computerPlayer = computerPlayer;
         }
 
         private string GetClientConnection(Guid id)
@@ -152,6 +155,7 @@ namespace CheckersWebsite.Controllers
             _signalRHub.Clients.All.InvokeAsync(move.IsDrawn() || move.IsWon() ? "RemoveClass" : "AddClass", "new-game", "hide");
             _signalRHub.Clients.All.InvokeAsync(move.IsDrawn() || move.IsWon() ? "AddClass" : "RemoveClass", "resign", "hide");
 
+            _computerPlayer.DoComputerMove(game.ID);
             return Content("");
         }
 
@@ -253,6 +257,7 @@ namespace CheckersWebsite.Controllers
                 _signalRHub.Clients.All.InvokeAsync("RemoveAttribute", "undo", "disabled");
             }
 
+            _computerPlayer.DoComputerMove(game.ID);
             return Content("");
         }
 

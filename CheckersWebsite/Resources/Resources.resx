@@ -129,6 +129,9 @@
   <data name="BlackWin" xml:space="preserve">
     <value>Black Won</value>
   </data>
+  <data name="Computer" xml:space="preserve">
+    <value>Computer</value>
+  </data>
   <data name="Default" xml:space="preserve">
     <value>Default</value>
   </data>
@@ -137,6 +140,9 @@
   </data>
   <data name="FromPosition" xml:space="preserve">
     <value>From Position</value>
+  </data>
+  <data name="Human" xml:space="preserve">
+    <value>Human</value>
   </data>
   <data name="InProgress" xml:space="preserve">
     <value>In Progress</value>
