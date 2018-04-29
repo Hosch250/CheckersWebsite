@@ -26,7 +26,7 @@ namespace CheckersWebsite.Views.Controls
                 {
                     for (var col = 0; col < 8; col++)
                     {
-                        write($@"<img class=""square {(GetAdjustedIndex(col) % 2 == GetAdjustedIndex(row) % 2 ? "" : "drop-target")}" +
+                        write($@"<img class=""square {(GetAdjustedIndex(col) % 2 == GetAdjustedIndex(row) % 2 ? "" : "drop-target")}""" +
                                   $@"id=""square{GetAdjustedIndex(row)}{GetAdjustedIndex(col)}""" +
                                   $@"src=""/images/{theme}Theme/{(GetAdjustedIndex(col) % 2 == GetAdjustedIndex(row) % 2 ? "Light" : "Dark")}{theme}.png""" +
                                   $@"style=""grid-row: {GetAdjustedIndex(row) + 1}; grid-column: {GetAdjustedIndex(col) + 1}"" />");

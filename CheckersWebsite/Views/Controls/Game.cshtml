@@ -1,4 +1,5 @@
 ﻿@using CheckersWebsite.Facade
+@using CheckersWebsite.Views.Controls
 @model GameController
 
 @{
@@ -38,7 +39,7 @@
                     break;
             }
         </h2>
-        @Html.Partial("~/Views/Controls/CheckersBoard.cshtml", Model)
+        @Html.Raw(ComponentGenerator.GetBoard(Model, ViewData.ToDictionary(a => a.Key, a => a.Value)))
     </div>
     <div class="col-lg-3 column move-history match-height-game-control">
         @Html.Partial("~/Views/Controls/MoveControl.cshtml", Model.MoveHistory)

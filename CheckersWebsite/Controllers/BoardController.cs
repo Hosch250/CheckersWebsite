@@ -17,6 +17,7 @@ using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Routing;
 using Project.Utilities;
+using CheckersWebsite.Views.Controls;
 
 namespace CheckersWebsite.Controllers
 {
@@ -142,16 +143,16 @@ namespace CheckersWebsite.Controllers
             var moveHistory = await _viewRenderService.RenderToStringAsync("Controls/MoveControl", move.MoveHistory, new Dictionary<string, object>());
 
             _signalRHub.Clients.Client(GetClientConnection(game.BlackPlayerID)).InvokeAsync("UpdateBoard", id,
-                await _viewRenderService.RenderToStringAsync("Controls/CheckersBoard", move, GetViewData(game.BlackPlayerID, Player.Black)),
-                await _viewRenderService.RenderToStringAsync("Controls/CheckersBoard", move, GetViewData(game.BlackPlayerID, Player.White)));
+                ComponentGenerator.GetBoard(move, GetViewData(game.BlackPlayerID, Player.Black)),
+                ComponentGenerator.GetBoard(move, GetViewData(game.BlackPlayerID, Player.White)));
 
             _signalRHub.Clients.Client(GetClientConnection(game.WhitePlayerID)).InvokeAsync("UpdateBoard", id,
-                await _viewRenderService.RenderToStringAsync("Controls/CheckersBoard", move, GetViewData(game.WhitePlayerID, Player.Black)),
-                await _viewRenderService.RenderToStringAsync("Controls/CheckersBoard", move, GetViewData(game.WhitePlayerID, Player.White)));
+                ComponentGenerator.GetBoard(move, GetViewData(game.WhitePlayerID, Player.Black)),
+                ComponentGenerator.GetBoard(move, GetViewData(game.WhitePlayerID, Player.White)));
 
             _signalRHub.Clients.AllExcept(new List<string> { GetClientConnection(game.BlackPlayerID), GetClientConnection(game.WhitePlayerID) }).InvokeAsync("UpdateBoard", id,
-                await _viewRenderService.RenderToStringAsync("Controls/CheckersBoard", move, GetViewData(Guid.Empty, Player.Black)),
-                await _viewRenderService.RenderToStringAsync("Controls/CheckersBoard", move, GetViewData(Guid.Empty, Player.White)));
+                ComponentGenerator.GetBoard(move, GetViewData(Guid.Empty, Player.Black)),
+                ComponentGenerator.GetBoard(move, GetViewData(Guid.Empty, Player.White)));
 
             _signalRHub.Clients.All.InvokeAsync("UpdateMoves", moveHistory);
             _signalRHub.Clients.All.InvokeAsync("UpdateOpponentState", ((Player)game.CurrentPlayer).ToString(), move.GetGameStatus().ToString());
@@ -247,18 +248,18 @@ namespace CheckersWebsite.Controllers
                     ["whiteStrength"] = game.WhitePlayerStrength
                 };
             }
-            
+
             _signalRHub.Clients.Client(GetClientConnection(game.BlackPlayerID)).InvokeAsync("UpdateBoard", id,
-                await _viewRenderService.RenderToStringAsync("Controls/CheckersBoard", controller, GetViewData(game.BlackPlayerID, Player.Black)),
-                await _viewRenderService.RenderToStringAsync("Controls/CheckersBoard", controller, GetViewData(game.BlackPlayerID, Player.White)));
+                ComponentGenerator.GetBoard(controller, GetViewData(game.BlackPlayerID, Player.Black)),
+                ComponentGenerator.GetBoard(controller, GetViewData(game.BlackPlayerID, Player.White)));
 
             _signalRHub.Clients.Client(GetClientConnection(game.WhitePlayerID)).InvokeAsync("UpdateBoard", id,
-                await _viewRenderService.RenderToStringAsync("Controls/CheckersBoard", controller, GetViewData(game.WhitePlayerID, Player.Black)),
-                await _viewRenderService.RenderToStringAsync("Controls/CheckersBoard", controller, GetViewData(game.WhitePlayerID, Player.White)));
+                ComponentGenerator.GetBoard(controller, GetViewData(game.WhitePlayerID, Player.Black)),
+                ComponentGenerator.GetBoard(controller, GetViewData(game.WhitePlayerID, Player.White)));
 
             _signalRHub.Clients.AllExcept(new List<string> { GetClientConnection(game.BlackPlayerID), GetClientConnection(game.WhitePlayerID) }).InvokeAsync("UpdateBoard", id,
-                await _viewRenderService.RenderToStringAsync("Controls/CheckersBoard", controller, GetViewData(Guid.Empty, Player.Black)),
-                await _viewRenderService.RenderToStringAsync("Controls/CheckersBoard", controller, GetViewData(Guid.Empty, Player.White)));
+                ComponentGenerator.GetBoard(controller, GetViewData(Guid.Empty, Player.Black)),
+                ComponentGenerator.GetBoard(controller, GetViewData(Guid.Empty, Player.White)));
 
             _signalRHub.Clients.All.InvokeAsync("UpdateMoves", moveHistory);
 
@@ -342,7 +343,7 @@ namespace CheckersWebsite.Controllers
                 ["whiteStrength"] = game.WhitePlayerStrength
             };
 
-            var board = await _viewRenderService.RenderToStringAsync("Controls/CheckersBoard", controller, viewData);
+            var board = ComponentGenerator.GetBoard(controller, viewData);
             return Content(board);
         }
 
@@ -393,9 +394,9 @@ namespace CheckersWebsite.Controllers
                 ["theme"] = GetThemeOrDefault(),
                 ["blackStrength"] = game.BlackPlayerStrength,
                 ["whiteStrength"] = game.WhitePlayerStrength
-        };
+            };
 
-            var board = await _viewRenderService.RenderToStringAsync("Controls/CheckersBoard", game.ToGame(), viewData);
+            var board = ComponentGenerator.GetBoard(game.ToGame(), viewData);
             return Content(board);
         }
 
@@ -434,7 +435,7 @@ namespace CheckersWebsite.Controllers
                     ["whiteStrength"] = game.WhitePlayerStrength
                 };
 
-            var board = await _viewRenderService.RenderToStringAsync("Controls/CheckersBoard", game.ToGame(), viewData);
+            var board = ComponentGenerator.GetBoard(game.ToGame(), viewData);
             return Content(board);
         }
 
