@@ -7,6 +7,7 @@ using CheckersWebsite.Facade;
 using System;
 using Microsoft.AspNetCore.SignalR;
 using CheckersWebsite.SignalR;
+using System.Threading.Tasks;
 
 namespace CheckersWebsite.Controllers
 {
@@ -80,7 +81,7 @@ namespace CheckersWebsite.Controllers
             ViewData.Add("whitePlayerID", game.WhitePlayerID);
             ViewData.Add("orientation", playerID == game.WhitePlayerID ? Player.White : Player.Black);
 
-            _computerPlayer.DoComputerMove(game.ID);
+            Task.Run(() => _computerPlayer.DoComputerMove(game.ID));
             return View("~/Views/Controls/Game.cshtml", game.ToGame());
         }
 
