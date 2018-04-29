@@ -133,7 +133,9 @@ namespace CheckersWebsite.Controllers
                     ["blackPlayerID"] = game.BlackPlayerID,
                     ["whitePlayerID"] = game.WhitePlayerID,
                     ["orientation"] = orientation,
-                    ["theme"] = GetThemeOrDefault()
+                    ["theme"] = GetThemeOrDefault(),
+                    ["blackStrength"] = game.BlackPlayerStrength,
+                    ["whiteStrength"] = game.WhitePlayerStrength
                 };
             }
 
@@ -240,7 +242,9 @@ namespace CheckersWebsite.Controllers
                     ["blackPlayerID"] = game.BlackPlayerID,
                     ["whitePlayerID"] = game.WhitePlayerID,
                     ["orientation"] = orientation,
-                    ["theme"] = GetThemeOrDefault()
+                    ["theme"] = GetThemeOrDefault(),
+                    ["blackStrength"] = game.BlackPlayerStrength,
+                    ["whiteStrength"] = game.WhitePlayerStrength
                 };
             }
             
@@ -333,7 +337,9 @@ namespace CheckersWebsite.Controllers
                 ["blackPlayerID"] = game.BlackPlayerID,
                 ["whitePlayerID"] = game.WhitePlayerID,
                 ["orientation"] = player,
-                ["theme"] = GetThemeOrDefault()
+                ["theme"] = GetThemeOrDefault(),
+                ["blackStrength"] = game.BlackPlayerStrength,
+                ["whiteStrength"] = game.WhitePlayerStrength
             };
 
             var board = await _viewRenderService.RenderToStringAsync("Controls/CheckersBoard", controller, viewData);
@@ -384,8 +390,10 @@ namespace CheckersWebsite.Controllers
                 ["blackPlayerID"] = game.BlackPlayerID,
                 ["whitePlayerID"] = game.WhitePlayerID,
                 ["orientation"] = game.BlackPlayerID == playerID ? Player.Black : Player.White,
-                ["theme"] = GetThemeOrDefault()
-            };
+                ["theme"] = GetThemeOrDefault(),
+                ["blackStrength"] = game.BlackPlayerStrength,
+                ["whiteStrength"] = game.WhitePlayerStrength
+        };
 
             var board = await _viewRenderService.RenderToStringAsync("Controls/CheckersBoard", game.ToGame(), viewData);
             return Content(board);
@@ -421,7 +429,9 @@ namespace CheckersWebsite.Controllers
                     ["blackPlayerID"] = game.BlackPlayerID,
                     ["whitePlayerID"] = game.WhitePlayerID,
                     ["orientation"] = orientation,
-                    ["theme"] = GetThemeOrDefault()
+                    ["theme"] = GetThemeOrDefault(),
+                    ["blackStrength"] = game.BlackPlayerStrength,
+                    ["whiteStrength"] = game.WhitePlayerStrength
                 };
 
             var board = await _viewRenderService.RenderToStringAsync("Controls/CheckersBoard", game.ToGame(), viewData);

@@ -91,6 +91,8 @@ namespace CheckersWebsite.Controllers
             ViewData.Add("whitePlayerID", game.WhitePlayerID);
             ViewData.Add("orientation", playerID == game.WhitePlayerID ? Player.White : Player.Black);
             ViewData.Add("theme", GetThemeOrDefault());
+            ViewData.Add("blackStrength", game.BlackPlayerStrength);
+            ViewData.Add("whiteStrength", game.WhitePlayerStrength);
 
             _computerPlayer.DoComputerMove(game.ID);
             return View("~/Views/Controls/Game.cshtml", game.ToGame());

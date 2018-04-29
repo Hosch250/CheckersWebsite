@@ -36,6 +36,11 @@ namespace CheckersWebsite.Controllers
         {
             var game = _context.Games.FirstOrDefault(f => f.ID == id);
 
+            if (game.GameStatus != (int)Status.InProgress)
+            {
+                return;
+            }
+
             if (game.CurrentPlayer == (int)Player.Black && game.BlackPlayerID != ComputerPlayerID ||
                 game.CurrentPlayer == (int)Player.White && game.WhitePlayerID != ComputerPlayerID)
             {

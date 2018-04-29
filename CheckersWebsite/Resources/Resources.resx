@@ -132,6 +132,33 @@
   <data name="Computer" xml:space="preserve">
     <value>Computer</value>
   </data>
+  <data name="Computer1" xml:space="preserve">
+    <value>Computer Level 1</value>
+  </data>
+  <data name="Computer2" xml:space="preserve">
+    <value>Computer Level 2</value>
+  </data>
+  <data name="Computer3" xml:space="preserve">
+    <value>Computer Level 3</value>
+  </data>
+  <data name="Computer4" xml:space="preserve">
+    <value>Computer Level 4</value>
+  </data>
+  <data name="Computer5" xml:space="preserve">
+    <value>Computer Level 5</value>
+  </data>
+  <data name="Computer6" xml:space="preserve">
+    <value>Computer Level 6</value>
+  </data>
+  <data name="Computer7" xml:space="preserve">
+    <value>Computer Level 7</value>
+  </data>
+  <data name="Computer8" xml:space="preserve">
+    <value>Computer Level 8</value>
+  </data>
+  <data name="Computer9" xml:space="preserve">
+    <value>Computer Level 9</value>
+  </data>
   <data name="Default" xml:space="preserve">
     <value>Default</value>
   </data>

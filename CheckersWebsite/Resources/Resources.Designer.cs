@@ -106,6 +106,87 @@ namespace CheckersWebsite.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Computer Level 1.
+        /// </summary>
+        public static string Computer1 {
+            get {
+                return ResourceManager.GetString("Computer1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Computer Level 2.
+        /// </summary>
+        public static string Computer2 {
+            get {
+                return ResourceManager.GetString("Computer2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Computer Level 3.
+        /// </summary>
+        public static string Computer3 {
+            get {
+                return ResourceManager.GetString("Computer3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Computer Level 4.
+        /// </summary>
+        public static string Computer4 {
+            get {
+                return ResourceManager.GetString("Computer4", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Computer Level 5.
+        /// </summary>
+        public static string Computer5 {
+            get {
+                return ResourceManager.GetString("Computer5", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Computer Level 6.
+        /// </summary>
+        public static string Computer6 {
+            get {
+                return ResourceManager.GetString("Computer6", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Computer Level 7.
+        /// </summary>
+        public static string Computer7 {
+            get {
+                return ResourceManager.GetString("Computer7", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Computer Level 8.
+        /// </summary>
+        public static string Computer8 {
+            get {
+                return ResourceManager.GetString("Computer8", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Computer Level 9.
+        /// </summary>
+        public static string Computer9 {
+            get {
+                return ResourceManager.GetString("Computer9", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Default.
         /// </summary>
         public static string Default {
