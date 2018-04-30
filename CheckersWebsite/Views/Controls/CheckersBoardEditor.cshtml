@@ -3,6 +3,7 @@
 
 @{
     var orientation = Player.Black;
+    var theme = (Theme)ViewData["theme"];
 
     int GetAdjustedIndex(int value)
     {
@@ -17,7 +18,7 @@
         {
             <img class="square @(GetAdjustedIndex(col) % 2 == GetAdjustedIndex(row) % 2 ? "" : "drop-target")"
                  id="square@(GetAdjustedIndex(row))@(GetAdjustedIndex(col))"
-                 src="@Url.Content($"~/images/SteelTheme/{(GetAdjustedIndex(col) % 2 == GetAdjustedIndex(row) % 2 ? "Light" : "Dark")}Steel.png")"
+                 src="@Url.Content($"~/images/{theme}Theme/{(GetAdjustedIndex(col) % 2 == GetAdjustedIndex(row) % 2 ? "Light" : "Dark")}{theme}.png")"
                  style="grid-row: @(GetAdjustedIndex(row) + 1); grid-column: @(GetAdjustedIndex(col) + 1)" />
 
             var piece = Model[row, col];
@@ -28,7 +29,7 @@
                      player="@piece.Player.ToString()"
                      pieceType="@piece.PieceType.ToString()"
                      onmousedown="pieceClick(@(GetAdjustedIndex(row)), @(GetAdjustedIndex(col)))"
-                     src="@Url.Content($"~/images/SteelTheme/{piece.Player}{piece.PieceType}.png")"
+                     src="@Url.Content($"~/images/{theme}Theme/{piece.Player}{piece.PieceType}.png")"
                      style="grid-row: @(GetAdjustedIndex(row) + 1); grid-column: @(GetAdjustedIndex(col) + 1)" />
             }
         }

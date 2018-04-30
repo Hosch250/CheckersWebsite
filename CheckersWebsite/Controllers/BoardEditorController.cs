@@ -1,5 +1,6 @@
 ﻿using CheckersWebsite.Facade;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -15,8 +16,20 @@ namespace CheckersWebsite.Controllers
 
     public class BoardEditorController : Controller
     {
+        private Theme GetThemeOrDefault()
+        {
+            if (Request.Cookies.Keys.All(a => a != "theme"))
+            {
+                return Theme.Steel;
+            }
+
+            return Enum.Parse(typeof(Theme), Request.Cookies["theme"]) as Theme? ?? Theme.Steel;
+        }
+
         public IActionResult GetBoard(Variant variant, BoardEditorPosition position)
         {
+            ViewData.Add("theme", GetThemeOrDefault());
+
             var board = position == BoardEditorPosition.Empty ? Board.EmptyBoard() : Board.DefaultBoard(variant);
             return PartialView("~/Views/Controls/CheckersBoardEditor.cshtml", board);
         }

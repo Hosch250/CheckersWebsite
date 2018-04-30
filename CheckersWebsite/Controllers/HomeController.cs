@@ -62,6 +62,7 @@ namespace CheckersWebsite.Controllers
 
         public IActionResult BoardEditor()
         {
+            ViewData.Add("theme", GetThemeOrDefault());
             return View();
         }
 
