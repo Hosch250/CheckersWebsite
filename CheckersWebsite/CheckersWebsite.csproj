@@ -94,16 +94,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Update="Views\Controls\CheckersBoard.cshtml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Update="Views\Controls\CheckersBoardEditor.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Update="Views\Controls\Game.cshtml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Update="Views\Controls\MoveControl.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Update="Views\Controls\Opponents.cshtml">

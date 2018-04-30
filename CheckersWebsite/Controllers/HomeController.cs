@@ -100,10 +100,15 @@ namespace CheckersWebsite.Controllers
 
         public ActionResult NewGame(Variant variant, Opponent blackOpponent, Opponent whiteOpponent, int blackStrength, int whiteStrength, string fen)
         {
+            if (blackOpponent == Opponent.Computer && whiteOpponent == Opponent.Computer)
+            {
+                Response.StatusCode = 403;
+                return Redirect("/");
+            }
+
             var playerID = GetPlayerID().Value;
             ViewData.Add("playerID", playerID);
-
-
+            
             Database.Game newGame;
             if (!string.IsNullOrWhiteSpace(fen))
             {
