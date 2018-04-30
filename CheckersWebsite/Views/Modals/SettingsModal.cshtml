@@ -13,7 +13,7 @@
             <div class="modal-body">
                 <div class="form-group">
                     <label for="theme">Theme</label>
-                    @Html.DropDownList("variant", Enum.GetNames(typeof(Theme)).Select(s =>
+                    @Html.DropDownList("theme", Enum.GetNames(typeof(Theme)).Select(s =>
                             new SelectListItem
                             {
                                 Text = Resources.ResourceManager.GetString(s),
