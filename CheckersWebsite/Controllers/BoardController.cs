@@ -326,7 +326,7 @@ namespace CheckersWebsite.Controllers
                 ["whiteStrength"] = game.WhitePlayerStrength
             };
 
-            var board = ComponentGenerator.GetBoard(controller, viewData);
+            var board = ComponentGenerator.GetBoard(controller, viewData).Replace("[theme]", GetThemeOrDefault().ToString());
             return Content(board);
         }
 
@@ -379,7 +379,7 @@ namespace CheckersWebsite.Controllers
                 ["whiteStrength"] = game.WhitePlayerStrength
             };
 
-            var board = ComponentGenerator.GetBoard(game.ToGame(), viewData);
+            var board = ComponentGenerator.GetBoard(game.ToGame(), viewData).Replace("[theme]", GetThemeOrDefault().ToString());
             return Content(board);
         }
 
@@ -418,7 +418,7 @@ namespace CheckersWebsite.Controllers
                     ["whiteStrength"] = game.WhitePlayerStrength
                 };
 
-            var board = ComponentGenerator.GetBoard(game.ToGame(), viewData);
+            var board = ComponentGenerator.GetBoard(game.ToGame(), viewData).Replace("[theme]", GetThemeOrDefault().ToString());
             return Content(board);
         }
 

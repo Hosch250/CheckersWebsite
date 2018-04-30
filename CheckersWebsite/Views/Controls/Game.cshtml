@@ -6,6 +6,7 @@
     var playerID = (Guid)ViewData["playerID"];
     var blackPlayerID = (Guid)ViewData["blackPlayerID"];
     var whitePlayerID = (Guid)ViewData["whitePlayerID"];
+    var theme = (Theme)ViewData["theme"];
 }
 
 <div class="row">
@@ -39,7 +40,7 @@
                     break;
             }
         </h2>
-        @Html.Raw(ComponentGenerator.GetBoard(Model, ViewData.ToDictionary(a => a.Key, a => a.Value)))
+        @Html.Raw(ComponentGenerator.GetBoard(Model, ViewData.ToDictionary(a => a.Key, a => a.Value)).Replace("[theme]", theme.ToString()))
     </div>
     <div class="col-lg-3 column move-history match-height-game-control">
         @Html.Raw(ComponentGenerator.GetMoveControl(Model.MoveHistory))

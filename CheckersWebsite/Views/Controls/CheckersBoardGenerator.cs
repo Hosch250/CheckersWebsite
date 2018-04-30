@@ -17,7 +17,6 @@ namespace CheckersWebsite.Views.Controls
                 var blackPlayerID = (Guid)viewData["blackPlayerID"];
                 var whitePlayerID = (Guid)viewData["whitePlayerID"];
                 var orientation = (Player)viewData["orientation"];
-                var theme = (Theme)viewData["theme"];
 
                 var isCurrentPlayer = playerID == blackPlayerID && game.CurrentPlayer == Player.Black || playerID == whitePlayerID && game.CurrentPlayer == Player.White;
                 write($@"<div class=""board {game.CurrentPlayer} {(isCurrentPlayer ? "current-player" : "")}"" id=""{game.ID}"" orientation=""{orientation}"">");
@@ -28,7 +27,7 @@ namespace CheckersWebsite.Views.Controls
                     {
                         write($@"<img class=""square {(GetAdjustedIndex(col) % 2 == GetAdjustedIndex(row) % 2 ? "" : "drop-target")}""" +
                                   $@"id=""square{GetAdjustedIndex(row)}{GetAdjustedIndex(col)}""" +
-                                  $@"src=""/images/{theme}Theme/{(GetAdjustedIndex(col) % 2 == GetAdjustedIndex(row) % 2 ? "Light" : "Dark")}{theme}.png""" +
+                                  $@"src=""/images/[theme]Theme/{(GetAdjustedIndex(col) % 2 == GetAdjustedIndex(row) % 2 ? "Light" : "Dark")}[theme].png""" +
                                   $@"style=""grid-row: {GetAdjustedIndex(row) + 1}; grid-column: {GetAdjustedIndex(col) + 1}"" />");
 
                         var piece = game.Board[row, col];
@@ -37,7 +36,7 @@ namespace CheckersWebsite.Views.Controls
                             write($@"<img id=""piece{GetAdjustedIndex(row)}{GetAdjustedIndex(col)}""" +
                                       $@"class=""piece""" +
                                       $@"player=""{piece.Player}""" +
-                                      $@"src=""/images/{theme}Theme/{piece.Player}{piece.PieceType}.png""" +
+                                      $@"src=""/images/[theme]Theme/{piece.Player}{piece.PieceType}.png""" +
                                       $@"style=""grid-row: {GetAdjustedIndex(row) + 1}; grid-column: {GetAdjustedIndex(col) + 1}"" />");
                         }
                     }

@@ -175,12 +175,13 @@ function connectToSignalR() {
     signalRConnection = new signalR.HubConnection(httpConnection);
     signalRConnection.on('UpdateBoard', function (id, blackBoard, whiteBoard) {
         if ($('.board').attr('id').toLowerCase() === id.toLowerCase()) {
+            var theme = getCookie('theme');
             switch ($('.board').attr('orientation').toLowerCase()) {
                 case "black":
-                    $('.board')[0].outerHTML = blackBoard;
+                    $('.board')[0].outerHTML = blackBoard.replace(/\[theme\]/g, theme);
                     break;
                 case "white":
-                    $('.board')[0].outerHTML = whiteBoard;
+                    $('.board')[0].outerHTML = whiteBoard.replace(/\[theme\]/g, theme);
                     break;
             }
             GameInit();
