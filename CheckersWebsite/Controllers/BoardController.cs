@@ -1,22 +1,12 @@
 ﻿using CheckersWebsite.Facade;
 using CheckersWebsite.SignalR;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc.Abstractions;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Microsoft.AspNetCore.Mvc.Razor;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.AspNetCore.Routing;
-using Project.Utilities;
 using CheckersWebsite.Views.Controls;
 
 namespace CheckersWebsite.Controllers
@@ -25,17 +15,14 @@ namespace CheckersWebsite.Controllers
     {
         private readonly Database.Context _context;
         private readonly IHubContext<SignalRHub> _signalRHub;
-        private readonly IViewRenderService _viewRenderService;
         private readonly ComputerPlayer _computerPlayer;
 
         public BoardController(Database.Context context,
             IHubContext<SignalRHub> signalRHub,
-            IViewRenderService viewRenderService,
             ComputerPlayer computerPlayer)
         {
             _context = context;
             _signalRHub = signalRHub;
-            _viewRenderService = viewRenderService;
             _computerPlayer = computerPlayer;
         }
 
@@ -140,8 +127,6 @@ namespace CheckersWebsite.Controllers
                 };
             }
 
-            var moveHistory = await _viewRenderService.RenderToStringAsync("Controls/MoveControl", move.MoveHistory, new Dictionary<string, object>());
-
             _signalRHub.Clients.Client(GetClientConnection(game.BlackPlayerID)).InvokeAsync("UpdateBoard", id,
                 ComponentGenerator.GetBoard(move, GetViewData(game.BlackPlayerID, Player.Black)),
                 ComponentGenerator.GetBoard(move, GetViewData(game.BlackPlayerID, Player.White)));
@@ -154,7 +139,7 @@ namespace CheckersWebsite.Controllers
                 ComponentGenerator.GetBoard(move, GetViewData(Guid.Empty, Player.Black)),
                 ComponentGenerator.GetBoard(move, GetViewData(Guid.Empty, Player.White)));
 
-            _signalRHub.Clients.All.InvokeAsync("UpdateMoves", moveHistory);
+            _signalRHub.Clients.All.InvokeAsync("UpdateMoves", ComponentGenerator.GetMoveControl(move.MoveHistory));
             _signalRHub.Clients.All.InvokeAsync("UpdateOpponentState", ((Player)game.CurrentPlayer).ToString(), move.GetGameStatus().ToString());
 
             if (game.Turns.Count == 1 && game.Turns.ElementAt(0).Moves.Count == 1)
@@ -232,8 +217,6 @@ namespace CheckersWebsite.Controllers
             _context.SaveChanges();
 
             var controller = game.ToGame();
-            
-            var moveHistory = await _viewRenderService.RenderToStringAsync("Controls/MoveControl", controller.MoveHistory, new Dictionary<string, object>());
 
             Dictionary<string, object> GetViewData(Guid localPlayerID, Player orientation)
             {
@@ -261,7 +244,7 @@ namespace CheckersWebsite.Controllers
                 ComponentGenerator.GetBoard(controller, GetViewData(Guid.Empty, Player.Black)),
                 ComponentGenerator.GetBoard(controller, GetViewData(Guid.Empty, Player.White)));
 
-            _signalRHub.Clients.All.InvokeAsync("UpdateMoves", moveHistory);
+            _signalRHub.Clients.All.InvokeAsync("UpdateMoves", ComponentGenerator.GetMoveControl(controller.MoveHistory));
 
             _signalRHub.Clients.All.InvokeAsync("UpdateOpponentState", ((Player)game.CurrentPlayer).ToString(), Status.InProgress.ToString());
 
@@ -447,69 +430,6 @@ namespace CheckersWebsite.Controllers
             }
 
             return null;
-        }
-    }
-}
-
- 
-namespace Project.Utilities
-{
-    public interface IViewRenderService
-    {
-        Task<string> RenderToStringAsync(string viewName, object model, IDictionary<string, object> viewDataValues);
-    }
-
-    public class ViewRenderService : IViewRenderService
-    {
-        private readonly IRazorViewEngine _razorViewEngine;
-        private readonly ITempDataProvider _tempDataProvider;
-        private readonly IServiceProvider _serviceProvider;
-
-        public ViewRenderService(IRazorViewEngine razorViewEngine,
-            ITempDataProvider tempDataProvider,
-            IServiceProvider serviceProvider)
-        {
-            _razorViewEngine = razorViewEngine;
-            _tempDataProvider = tempDataProvider;
-            _serviceProvider = serviceProvider;
-        }
-
-        public async Task<string> RenderToStringAsync(string viewName, object model, IDictionary<string, object> viewDataValues)
-        {
-            var httpContext = new DefaultHttpContext { RequestServices = _serviceProvider };
-            var actionContext = new ActionContext(httpContext, new RouteData(), new ActionDescriptor());
-
-            using (var sw = new StringWriter())
-            {
-                var viewResult = _razorViewEngine.FindView(actionContext, viewName, false);
-
-                if (viewResult.View == null)
-                {
-                    throw new ArgumentNullException($"{viewName} does not match any available view");
-                }
-
-                var viewDictionary = new ViewDataDictionary(new EmptyModelMetadataProvider(), new ModelStateDictionary())
-                {
-                    Model = model
-                };
-
-                foreach (var kvp in viewDataValues)
-                {
-                    viewDictionary.Add(kvp);
-                }
-
-                var viewContext = new ViewContext(
-                    actionContext,
-                    viewResult.View,
-                    viewDictionary,
-                    new TempDataDictionary(actionContext.HttpContext, _tempDataProvider),
-                    sw,
-                    new HtmlHelperOptions()
-                );
-
-                await viewResult.View.RenderAsync(viewContext);
-                return sw.ToString();
-            }
         }
     }
 }

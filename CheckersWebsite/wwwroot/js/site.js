@@ -41,9 +41,11 @@ function boardClick(row, col) {
         },
         dataType: 'html',
         method: 'POST',
-        error: function () {
-            $('.selected').css('grid-area', parseInt(rowCol[0]) + 1 + " / " + (parseInt(rowCol[1]) + 1) + " / auto / auto");
-            $('.selected').removeClass('drag');
+        error: function (err) {
+            if (err.status === 403) {
+                $('.selected').css('grid-area', parseInt(rowCol[0]) + 1 + " / " + (parseInt(rowCol[1]) + 1) + " / auto / auto");
+                $('.selected').removeClass('drag');
+            }
         }
     });
 }

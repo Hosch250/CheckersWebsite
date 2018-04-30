@@ -1,6 +1,5 @@
 ﻿using CheckersWebsite.SignalR;
 using Microsoft.AspNetCore.SignalR;
-using Project.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,15 +16,12 @@ namespace CheckersWebsite.Controllers
 
         private readonly Database.Context _context;
         private readonly IHubContext<SignalRHub> _signalRHub;
-        private readonly IViewRenderService _viewRenderService;
 
         public ComputerPlayer(Database.Context context,
-            IHubContext<SignalRHub> signalRHub,
-            IViewRenderService viewRenderService)
+            IHubContext<SignalRHub> signalRHub)
         {
             _context = context;
             _signalRHub = signalRHub;
-            _viewRenderService = viewRenderService;
         }
 
         private string GetClientConnection(Guid id)
@@ -104,8 +100,6 @@ namespace CheckersWebsite.Controllers
                 };
             }
 
-            var moveHistory = await _viewRenderService.RenderToStringAsync("Controls/MoveControl", move.MoveHistory, new Dictionary<string, object>());
-
             if (game.BlackPlayerID != ComputerPlayerID)
             {
                 _signalRHub.Clients.Client(GetClientConnection(game.BlackPlayerID)).InvokeAsync("UpdateBoard", id,
@@ -124,7 +118,7 @@ namespace CheckersWebsite.Controllers
                 ComponentGenerator.GetBoard(move, GetViewData(Guid.Empty, Player.Black)),
                 ComponentGenerator.GetBoard(move, GetViewData(Guid.Empty, Player.White)));
 
-            _signalRHub.Clients.All.InvokeAsync("UpdateMoves", moveHistory);
+            _signalRHub.Clients.All.InvokeAsync("UpdateMoves", ComponentGenerator.GetMoveControl(move.MoveHistory));
             _signalRHub.Clients.All.InvokeAsync("UpdateOpponentState", ((Player)game.CurrentPlayer).ToString(), move.GetGameStatus().ToString());
 
             if (game.Turns.Count == 1 && game.Turns.ElementAt(0).Moves.Count == 1)

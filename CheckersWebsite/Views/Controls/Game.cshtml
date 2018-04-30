@@ -42,7 +42,7 @@
         @Html.Raw(ComponentGenerator.GetBoard(Model, ViewData.ToDictionary(a => a.Key, a => a.Value)))
     </div>
     <div class="col-lg-3 column move-history match-height-game-control">
-        @Html.Partial("~/Views/Controls/MoveControl.cshtml", Model.MoveHistory)
+        @Html.Raw(ComponentGenerator.GetMoveControl(Model.MoveHistory))
         <div class="controls">
             <button id="undo" class="ctrl-button btn btn-default" onclick="undo()" title="Undo" disabled="">
                 <span class="glyphicon glyphicon-share-alt"></span>
