@@ -214,6 +214,15 @@ namespace CheckersWebsite.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Someone else already joined this game.
+        /// </summary>
+        public static string GameJoined {
+            get {
+                return ResourceManager.GetString("GameJoined", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Human.
         /// </summary>
         public static string Human {

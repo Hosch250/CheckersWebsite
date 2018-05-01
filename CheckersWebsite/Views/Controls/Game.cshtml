@@ -40,6 +40,7 @@
                     break;
             }
         </h2>
+        <div id="alert"></div>
         @Html.Raw(ComponentGenerator.GetBoard(Model, ViewData.ToDictionary(a => a.Key, a => a.Value)).Replace("[theme]", theme.ToString()))
     </div>
     <div class="col-lg-3 column move-history match-height-game-control">

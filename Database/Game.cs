@@ -27,7 +27,7 @@ namespace Database
         public DateTime CreatedOn { get; set; }
 
         [ConcurrencyCheck]
-        public byte[] RowVersion { get; set; }
+        public DateTime RowVersion { get; set; }
 
         public virtual ICollection<PdnTurn> Turns { get; set; }
     }

@@ -168,6 +168,9 @@
   <data name="FromPosition" xml:space="preserve">
     <value>From Position</value>
   </data>
+  <data name="GameJoined" xml:space="preserve">
+    <value>Someone else already joined this game</value>
+  </data>
   <data name="Human" xml:space="preserve">
     <value>Human</value>
   </data>

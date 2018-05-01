@@ -6998,3 +6998,19 @@ input[type="radio"].toggle:checked + label {
 .current-player .piece.selected:not(.drag) {
     border: 5px solid goldenrod;
 }
+
+#copied {
+    display: none;
+    text-align: center;
+    font-size: 18px;
+    color: dimgray;
+    margin: 5px;
+}
+
+#alert {
+    display: none;
+    text-align: center;
+    font-size: 18px;
+    margin-bottom: 15px;
+    color: red;
+}

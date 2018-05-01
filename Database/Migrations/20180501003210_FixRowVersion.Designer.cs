@@ -11,8 +11,8 @@ using System;
 namespace Database.Migrations
 {
     [DbContext(typeof(Context))]
-    [Migration("20180415223029_AddTimes")]
-    partial class AddTimes
+    [Migration("20180501003210_FixRowVersion")]
+    partial class FixRowVersion
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -25,6 +25,10 @@ namespace Database.Migrations
                 {
                     b.Property<Guid>("ID")
                         .ValueGeneratedOnAdd();
+
+                    b.Property<Guid>("BlackPlayerID");
+
+                    b.Property<int>("BlackPlayerStrength");
 
                     b.Property<DateTime>("CreatedOn")
                         .ValueGeneratedOnAddOrUpdate();
@@ -39,7 +43,14 @@ namespace Database.Migrations
 
                     b.Property<string>("InitialPosition");
 
+                    b.Property<DateTime>("RowVersion")
+                        .IsConcurrencyToken();
+
                     b.Property<int>("Variant");
+
+                    b.Property<Guid>("WhitePlayerID");
+
+                    b.Property<int>("WhitePlayerStrength");
 
                     b.HasKey("ID");
 
@@ -60,9 +71,9 @@ namespace Database.Migrations
 
                     b.Property<string>("Move");
 
-                    b.Property<int>("PieceTypeMoved");
+                    b.Property<int?>("PieceTypeMoved");
 
-                    b.Property<int>("Player");
+                    b.Property<int?>("Player");
 
                     b.Property<string>("ResultingFen");
 
@@ -89,6 +100,18 @@ namespace Database.Migrations
                     b.HasIndex("GameID");
 
                     b.ToTable("Turns");
+                });
+
+            modelBuilder.Entity("Database.Player", b =>
+                {
+                    b.Property<Guid>("ID")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("ConnectionID");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("Players");
                 });
 
             modelBuilder.Entity("Database.PdnMove", b =>

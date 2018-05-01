@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using CheckersWebsite.Views.Controls;
+using System.IO;
 
 namespace CheckersWebsite.Controllers
 {
@@ -357,30 +358,41 @@ namespace CheckersWebsite.Controllers
                 game.WhitePlayerID = playerID.Value;
             }
 
-            _context.SaveChanges();
-            
-            _signalRHub.Clients.All.InvokeAsync("AddClass", "join", "hide");
-            _signalRHub.Clients.Client(GetClientConnection(playerID.Value)).InvokeAsync("AddClass", game.BlackPlayerID == playerID.Value ? "black-player-text" : "white-player-text", "bold");
-
-            _signalRHub.Clients.Client(GetClientConnection(playerID.Value)).InvokeAsync("AddClass", "new-game", "hide");
-            _signalRHub.Clients.Client(GetClientConnection(playerID.Value)).InvokeAsync("RemoveClass", "resign", "hide");
-
-            _signalRHub.Clients.All.InvokeAsync("SetAttribute", "resign", "title", "Resign");
-            _signalRHub.Clients.All.InvokeAsync("SetHtml", "#resign .sr-only", "Resign");
-
-            var viewData = new Dictionary<string, object>
+            game.RowVersion = DateTime.Now;
+            try
             {
-                ["playerID"] = playerID,
-                ["blackPlayerID"] = game.BlackPlayerID,
-                ["whitePlayerID"] = game.WhitePlayerID,
-                ["orientation"] = game.BlackPlayerID == playerID ? Player.Black : Player.White,
-                ["theme"] = GetThemeOrDefault(),
-                ["blackStrength"] = game.BlackPlayerStrength,
-                ["whiteStrength"] = game.WhitePlayerStrength
-            };
+                _context.SaveChanges();
 
-            var board = ComponentGenerator.GetBoard(game.ToGame(), viewData).Replace("[theme]", GetThemeOrDefault().ToString());
-            return Content(board);
+                _signalRHub.Clients.All.InvokeAsync("AddClass", "join", "hide");
+                _signalRHub.Clients.Client(GetClientConnection(playerID.Value)).InvokeAsync("AddClass", game.BlackPlayerID == playerID.Value ? "black-player-text" : "white-player-text", "bold");
+
+                _signalRHub.Clients.Client(GetClientConnection(playerID.Value)).InvokeAsync("AddClass", "new-game", "hide");
+                _signalRHub.Clients.Client(GetClientConnection(playerID.Value)).InvokeAsync("RemoveClass", "resign", "hide");
+
+                _signalRHub.Clients.All.InvokeAsync("SetAttribute", "resign", "title", "Resign");
+                _signalRHub.Clients.All.InvokeAsync("SetHtml", "#resign .sr-only", "Resign");
+
+                var viewData = new Dictionary<string, object>
+                {
+                    ["playerID"] = playerID,
+                    ["blackPlayerID"] = game.BlackPlayerID,
+                    ["whitePlayerID"] = game.WhitePlayerID,
+                    ["orientation"] = game.BlackPlayerID == playerID ? Player.Black : Player.White,
+                    ["theme"] = GetThemeOrDefault(),
+                    ["blackStrength"] = game.BlackPlayerStrength,
+                    ["whiteStrength"] = game.WhitePlayerStrength
+                };
+
+                var board = ComponentGenerator.GetBoard(game.ToGame(), viewData).Replace("[theme]", GetThemeOrDefault().ToString());
+                return Content(board);
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                _signalRHub.Clients.All.InvokeAsync("AddClass", "join", "hide");
+
+                Response.StatusCode = 403;
+                return Content(Resources.Resources.GameJoined);
+            }
         }
 
         public async Task<ActionResult> Orientate(Guid id, Guid? moveID, Player orientation)

@@ -128,6 +128,8 @@ namespace CheckersWebsite.Controllers
                 newGame = GameController.FromVariant(variant).ToGame();
             }
 
+            newGame.RowVersion = DateTime.Now;
+
             newGame.BlackPlayerStrength = -1;
             newGame.WhitePlayerStrength = -1;
 

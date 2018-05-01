@@ -92,6 +92,14 @@ function joinGame() {
             success(data) {
                 $('.board')[0].outerHTML = data;
                 GameInit();
+            },
+            error(err) {
+                if (err.status === 403) {
+                    $('#alert').text(err.responseText);
+                    $('#alert').fadeIn('slow', function () {
+                        $('#alert').delay(5000).fadeOut();
+                    });
+                }
             }
         });
 }
