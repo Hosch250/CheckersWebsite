@@ -1,60 +1,10 @@
 ﻿using System;
 using Checkers;
+using CheckersWebsite.Enums;
 using Microsoft.FSharp.Core;
 
 namespace CheckersWebsite.Facade
 {
-    public enum Player
-    {
-        White, Black
-    }
-
-    public enum PieceType
-    {
-        Checker,
-        King
-    }
-
-    public enum Variant
-    {
-        AmericanCheckers,
-        PoolCheckers
-    }
-
-    public enum Setup
-    {
-        Default,
-        FromPosition
-    }
-
-    public enum Status
-    {
-        InProgress,
-        Drawn,
-        BlackWin,
-        WhiteWin,
-        Aborted
-    }
-
-    public enum Opponent
-    {
-        Human,
-        Computer
-    }
-
-    public enum BoardEditorPosition
-    {
-        Default,
-        Empty
-    }
-
-    public enum Theme
-    {
-        Steel,
-        Wood,
-        Plastic
-    }
-
     public static class Extensions
     {
         public static Player Convert(this Generic.Player value) =>

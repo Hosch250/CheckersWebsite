@@ -1,4 +1,5 @@
 ﻿using Checkers;
+using CheckersWebsite.Enums;
 using System.Collections.Generic;
 using System.Linq;
 

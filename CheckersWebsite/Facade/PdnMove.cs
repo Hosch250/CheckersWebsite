@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Checkers;
+using CheckersWebsite.Enums;
 using Microsoft.FSharp.Core;
 
 namespace CheckersWebsite.Facade

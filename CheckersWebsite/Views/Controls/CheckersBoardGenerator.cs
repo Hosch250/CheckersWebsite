@@ -1,4 +1,5 @@
-﻿using CheckersWebsite.Facade;
+﻿using CheckersWebsite.Enums;
+using CheckersWebsite.Facade;
 using System;
 using System.Collections.Generic;
 using System.IO;

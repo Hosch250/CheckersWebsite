@@ -1,4 +1,6 @@
-﻿namespace CheckersWebsite.Facade
+﻿using CheckersWebsite.Enums;
+
+namespace CheckersWebsite.Facade
 {
     public class Piece
     {

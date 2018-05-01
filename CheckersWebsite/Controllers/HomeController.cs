@@ -8,6 +8,7 @@ using System;
 using Microsoft.AspNetCore.SignalR;
 using CheckersWebsite.SignalR;
 using System.Threading.Tasks;
+using CheckersWebsite.Enums;
 
 namespace CheckersWebsite.Controllers
 {

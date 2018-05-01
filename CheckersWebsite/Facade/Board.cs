@@ -1,4 +1,5 @@
-﻿using Microsoft.FSharp.Core;
+﻿using CheckersWebsite.Enums;
+using Microsoft.FSharp.Core;
 
 namespace CheckersWebsite.Facade
 {

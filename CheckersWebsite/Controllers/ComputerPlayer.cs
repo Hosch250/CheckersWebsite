@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using CheckersWebsite.Facade;
 using System.Threading;
 using CheckersWebsite.Views.Controls;
+using CheckersWebsite.Enums;
 
 namespace CheckersWebsite.Controllers
 {

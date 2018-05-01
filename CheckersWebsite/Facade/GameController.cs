@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
+using CheckersWebsite.Enums;
 using Microsoft.FSharp.Core;
 
 namespace CheckersWebsite.Facade

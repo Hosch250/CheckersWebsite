@@ -9,6 +9,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using CheckersWebsite.Views.Controls;
 using System.IO;
+using CheckersWebsite.Enums;
 
 namespace CheckersWebsite.Controllers
 {
