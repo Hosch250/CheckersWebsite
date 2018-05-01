@@ -4,13 +4,13 @@
 <div>
     <div class="row board-editor" xmlns="http://www.w3.org/1999/xhtml">
         <div class="col-lg-1"></div>
-        <div class="col-lg-1 piece-col">
+        <div class="col-lg-1 piece-col column">
             <img id="piece-black-checker" src="@Url.Content($"~/images/SteelTheme/BlackChecker.png")" onmousedown="{ $('.selected-add').removeClass('selected-add'); $('#piece-black-checker').addClass('selected-add'); }" />
             <img id="piece-black-king" src="@Url.Content($"~/images/SteelTheme/BlackKing.png")" onmousedown="{ $('.selected-add').removeClass('selected-add'); $('#piece-black-king').addClass('selected-add'); }" />
             <img id="piece-white-checker" src="@Url.Content($"~/images/SteelTheme/WhiteChecker.png")" onmousedown="{ $('.selected-add').removeClass('selected-add'); $('#piece-white-checker').addClass('selected-add'); }" />
             <img id="piece-white-king" src="@Url.Content($"~/images/SteelTheme/WhiteKing.png")" onmousedown="{ $('.selected-add').removeClass('selected-add'); $('#piece-white-king').addClass('selected-add'); }" />
         </div>
-        <div class="col-lg-6">
+        <div class="col-lg-6 column board-col">
             @{ 
                 var controller = GameController.FromVariant(Variant.AmericanCheckers);
             }
@@ -29,7 +29,7 @@
                 <span>Copied!</span>
             </div>
         </div>
-        <div class="col-lg-3">
+        <div class="col-lg-3 column">
             <div class="form-group">
                 <label for="variant">Variant</label>
                 @Html.DropDownList("variant-board-editor", Enum.GetNames(typeof(Variant)).Select(s =>
