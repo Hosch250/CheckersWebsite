@@ -26,7 +26,10 @@ function BoardEditorGrab(evt) {
 
         $('.selected').removeClass('selected');
         $('.drag').removeClass('drag');
-        $(`#${targetElement.id}`).addClass('selected drag')
+
+        if (!$(targetElement).hasClass('template-piece')) {
+            $(`#${targetElement.id}`).addClass('selected drag')
+        }
         
         BoardEditorGrabScreenCoords = {
             x: evt.screenX,
@@ -47,7 +50,7 @@ function BoardEditorGrab(evt) {
 };
 
 function BoardEditorClick(evt) {
-    if (!BoardEditorDragTarget && evt.target.id.startsWith('square')) {
+    if (!BoardEditorDragTarget && evt.target.id.startsWith('square') && $('.selected').length !== 0) {
         BoardEditorDragTarget = $('.selected')[0];
         BoardEditorDrop(evt);
         return false;
