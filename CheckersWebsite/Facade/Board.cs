@@ -1,4 +1,5 @@
 ﻿using CheckersWebsite.Enums;
+using CheckersWebsite.Extensions;
 using Microsoft.FSharp.Core;
 
 namespace CheckersWebsite.Facade

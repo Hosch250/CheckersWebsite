@@ -25,14 +25,14 @@
                     </div>
                     <div class="form-group">
                         <label for="black-opponent">Black Opponent</label>
-                        @Html.DropDownList("black-opponent", Enum.GetNames(typeof(Opponent)).Select(s =>
+                        @Html.DropDownList("blackOpponent", Enum.GetNames(typeof(Opponent)).Select(s =>
                               new SelectListItem
                               {
                                   Text = Resources.ResourceManager.GetString(s),
                                   Value = s
                               }
                           ),
-                          new { @class = "select form-control opponent", id = "black-opponent", name = "blackOpponent" })
+                          new { @class = "select form-control opponent", id = "black-opponent" })
                         <div id="black-level" class="hide input-group slider-group">
                             <div class="input-group-addon"><label for="black-weight">Level</label></div>
                             <input class="form-control" type="range" id="black-weight" min="1" value="3" max="9" step="1" name="blackStrength">
@@ -41,14 +41,14 @@
                     </div>
                     <div class="form-group">
                         <label for="white-opponent">White Opponent</label>
-                        @Html.DropDownList("white-opponent", Enum.GetNames(typeof(Opponent)).Select(s =>
+                        @Html.DropDownList("whiteOpponent", Enum.GetNames(typeof(Opponent)).Select(s =>
                               new SelectListItem
                               {
                                   Text = Resources.ResourceManager.GetString(s),
                                   Value = s
                               }
                           ),
-                          new { @class = "select form-control opponent", id = "white-opponent", name = "whiteOpponent" })
+                          new { @class = "select form-control opponent", id = "white-opponent" })
                         <div id="white-level" class="hide input-group slider-group">
                             <div class="input-group-addon"><label for="white-weight">Level</label></div>
                             <input class="form-control" type="range" id="white-weight" min="1" value="3" max="9" step="1" name="whiteStrength">

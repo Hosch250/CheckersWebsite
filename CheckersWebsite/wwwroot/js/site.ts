@@ -216,7 +216,7 @@ function connectToSignalR() {
     signalRConnection.on('UpdateBoard', function (id, blackBoard, whiteBoard) {
 
         if ($('.board').attr('id').toLowerCase() === id.toLowerCase()) {
-            var theme = getCookie('theme');
+            var theme = getCookie('theme') || 'Steel';
 
             switch ($('.board').attr('orientation').toLowerCase()) {
                 case "black":

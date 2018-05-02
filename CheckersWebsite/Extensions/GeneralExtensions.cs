@@ -2,10 +2,12 @@
 using Checkers;
 using CheckersWebsite.Enums;
 using Microsoft.FSharp.Core;
+using Player = CheckersWebsite.Enums.Player;
+using Piece = CheckersWebsite.Facade.Piece;
 
-namespace CheckersWebsite.Facade
+namespace CheckersWebsite.Extensions
 {
-    public static class Extensions
+    public static class GeneralExtensions
     {
         public static Player Convert(this Generic.Player value) =>
             value.IsBlack ? Player.Black : Player.White;

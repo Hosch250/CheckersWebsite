@@ -3,11 +3,11 @@ using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using CheckersWebsite.Models;
 using Microsoft.EntityFrameworkCore;
+using CheckersWebsite.Extensions;
 using CheckersWebsite.Facade;
 using System;
 using Microsoft.AspNetCore.SignalR;
 using CheckersWebsite.SignalR;
-using System.Threading.Tasks;
 using CheckersWebsite.Enums;
 
 namespace CheckersWebsite.Controllers

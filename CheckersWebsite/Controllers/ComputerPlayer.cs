@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using CheckersWebsite.Facade;
+using CheckersWebsite.Extensions;
 using System.Threading;
 using CheckersWebsite.Views.Controls;
 using CheckersWebsite.Enums;
