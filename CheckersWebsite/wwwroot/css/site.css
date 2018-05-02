@@ -237,7 +237,7 @@ input[type="radio"].toggle:checked + label {
     z-index: 99;
 }
 
-.current-player .piece.selected:not(.drag) {
+.piece.selected:not(.drag) {
     border: 5px solid goldenrod;
 }
 

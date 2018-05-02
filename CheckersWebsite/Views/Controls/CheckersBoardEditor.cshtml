@@ -29,7 +29,6 @@
                      class="piece"
                      player="@piece.Player.ToString()"
                      pieceType="@piece.PieceType.ToString()"
-                     onmousedown="pieceClick(@(GetAdjustedIndex(row)), @(GetAdjustedIndex(col)))"
                      src="@Url.Content($"~/images/{theme}Theme/{piece.Player}{piece.PieceType}.png")"
                      style="grid-row: @(GetAdjustedIndex(row) + 1); grid-column: @(GetAdjustedIndex(col) + 1)" />
             }

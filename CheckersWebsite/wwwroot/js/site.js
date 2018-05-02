@@ -14,10 +14,6 @@ function getAdjustedIndex(value) {
             return value;
     }
 }
-function pieceClick(row, col) {
-    $('.selected').removeClass('selected');
-    $("#piece" + row + col).addClass('selected');
-}
 function boardClick(row, col) {
     if ($('.selected').length === 0) {
         return;

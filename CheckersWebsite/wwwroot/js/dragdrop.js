@@ -8,6 +8,7 @@ function GameInit() {
     if ($('.board-col').length === 1) {
         $('*').on('mousedown', GameGrab);
         $('*').on('dragend', GameDrop);
+        $('*').on('mouseup', GameDrop);
     }
 }
 function GameGrab(evt) {
@@ -53,6 +54,7 @@ function GameMovePiece(evt) {
         var startRow = parseInt(startCoord[0]);
         var startCol = parseInt(startCoord[1]);
         if (coord === startCoord) {
+            $('.drag').removeClass('drag');
             return;
         }
         $(GameDragTarget).css('grid-row', "" + (row + 1));

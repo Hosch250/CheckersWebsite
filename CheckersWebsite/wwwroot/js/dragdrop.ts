@@ -11,6 +11,7 @@ function GameInit() {
     if ($('.board-col').length === 1) {
         $('*').on('mousedown', GameGrab);
         $('*').on('dragend', GameDrop);
+        $('*').on('mouseup', GameDrop);
     }
 }
 
@@ -66,6 +67,7 @@ function GameMovePiece(evt) {
         var startCol = parseInt(startCoord[1]);
 
         if (coord === startCoord) {
+            $('.drag').removeClass('drag');
             return;
         }
 
