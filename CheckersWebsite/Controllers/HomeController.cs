@@ -151,11 +151,13 @@ namespace CheckersWebsite.Controllers
                 if (blackOpponent == Opponent.Computer)
                 {
                     newGame.BlackPlayerID = ComputerPlayer.ComputerPlayerID;
+                    newGame.WhitePlayerID = playerID;
                     newGame.BlackPlayerStrength = blackStrength;
                 }
                 if (whiteOpponent == Opponent.Computer)
                 {
                     newGame.WhitePlayerID = ComputerPlayer.ComputerPlayerID;
+                    newGame.BlackPlayerID = playerID;
                     newGame.WhitePlayerStrength = whiteStrength;
                 }
             }
