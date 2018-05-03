@@ -172,7 +172,9 @@ namespace CheckersWebsite.Controllers
 
             if (game == null ||
                 game.GameStatus != (int)Status.InProgress ||
-                game.BlackPlayerID != playerID && game.WhitePlayerID != playerID)
+                game.BlackPlayerID != playerID && game.WhitePlayerID != playerID ||
+                game.BlackPlayerID == ComputerPlayer.ComputerPlayerID ||
+                game.WhitePlayerID == ComputerPlayer.ComputerPlayerID)
             {
                 Response.StatusCode = 403;
                 return Content("");

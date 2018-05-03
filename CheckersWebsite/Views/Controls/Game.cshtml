@@ -1,5 +1,6 @@
 ﻿@using CheckersWebsite.Enums
 @using CheckersWebsite.ViewModels
+@using CheckersWebsite.Controllers
 @using CheckersWebsite.Views.Controls
 @model GameViewModel
 
@@ -47,7 +48,7 @@
     <div class="col-lg-3 column move-history match-height-game-control">
         @Html.Raw(ComponentGenerator.GetMoveControl(Model.Turns))
         <div class="controls">
-            <button id="undo" class="ctrl-button btn btn-default" onclick="undo()" title="Undo" disabled="">
+            <button id="undo" class="ctrl-button btn btn-default @(Model.BlackPlayerID == ComputerPlayer.ComputerPlayerID || Model.WhitePlayerID == ComputerPlayer.ComputerPlayerID ? "hide" : "")" onclick="undo()" title="Undo" disabled="">
                 <span class="glyphicon glyphicon-share-alt"></span>
                 <span class="sr-only">Undo</span>
             </button>
