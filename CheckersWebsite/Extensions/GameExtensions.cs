@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using CheckersWebsite.Enums;
 using CheckersWebsite.Facade;
+using CheckersWebsite.ViewModels;
 
 namespace CheckersWebsite.Extensions
 {
-    public static class GameControllerExtensions
+    public static class GameExtensions
     {
         public static int GetCurrentPosition(this GameController controller)
         {
@@ -43,7 +44,7 @@ namespace CheckersWebsite.Extensions
             return game;
         }
 
-        public static GameController ToGame(this Database.Game game)
+        public static GameController ToGameController(this Database.Game game)
         {
             var controller = GameController.FromPosition((Variant)game.Variant, game.Fen);
             controller.MoveHistory = game.Turns?.Select(s => s.ToPdnTurn()).ToList() ?? new List<PdnTurn>();
@@ -70,6 +71,31 @@ namespace CheckersWebsite.Extensions
             controller.GameStatus = (Status) game.GameStatus;
             
             return controller;
+        }
+
+        public static GameViewModel ToGameViewModel(this Database.Game game)
+        {
+            var controller = GameController.FromPosition((Variant)game.Variant, game.Fen);
+
+            var viewModel = new GameViewModel
+            {
+                BlackPlayerID = game.BlackPlayerID,
+                BlackPlayerStrength = game.BlackPlayerStrength,
+                Board = new BoardViewModel { GameBoard = controller.Board.GameBoard },
+                CurrentPlayer = (Player)game.CurrentPlayer,
+                CurrentPosition = game.CurrentPosition,
+                DisplayingLastMove = true,
+                Fen = game.Fen,
+                GameStatus = (Status)game.GameStatus,
+                ID = game.ID,
+                InitialPosition = game.InitialPosition,
+                Turns = game.Turns.Select(s => s.ToPdnTurnViewModel()).ToList(),
+                Variant = (Variant)game.Variant,
+                WhitePlayerID = game.WhitePlayerID,
+                WhitePlayerStrength = game.WhitePlayerStrength
+            };
+
+            return viewModel;
         }
     }
 }

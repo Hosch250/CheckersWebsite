@@ -9,6 +9,7 @@ using System;
 using Microsoft.AspNetCore.SignalR;
 using CheckersWebsite.SignalR;
 using CheckersWebsite.Enums;
+using CheckersWebsite.ViewModels;
 
 namespace CheckersWebsite.Controllers
 {
@@ -56,6 +57,14 @@ namespace CheckersWebsite.Controllers
 
             var games = _context.Games
                 .OrderByDescending(g => g.CreatedOn)
+                .Select(g => new GameDisplayViewModel
+                {
+                    ID = g.ID,
+                    GameStatus = (Status)g.GameStatus,
+                    Variant = (Variant)g.Variant,
+                    BlackPlayerID = g.BlackPlayerID,
+                    WhitePlayerID = g.WhitePlayerID
+                })
                 .ToList();
             
             return View(games);
@@ -97,7 +106,7 @@ namespace CheckersWebsite.Controllers
             ViewData.Add("whiteStrength", game.WhitePlayerStrength);
 
             _computerPlayer.DoComputerMove(game.ID);
-            return View("~/Views/Controls/Game.cshtml", game.ToGame());
+            return View("~/Views/Controls/Game.cshtml", game.ToGameViewModel());
         }
 
         public ActionResult NewGame(Variant variant, Opponent blackOpponent, Opponent whiteOpponent, int blackStrength, int whiteStrength, string fen)

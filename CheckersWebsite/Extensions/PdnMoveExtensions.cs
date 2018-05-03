@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using CheckersWebsite.Enums;
 using CheckersWebsite.Facade;
+using CheckersWebsite.ViewModels;
 
 namespace CheckersWebsite.Extensions
 {
@@ -33,6 +34,21 @@ namespace CheckersWebsite.Extensions
             };
 
             return pdnMove;
+        }
+
+        public static PdnMoveViewModel ToPdnMoveViewModel(this Database.PdnMove move)
+        {
+            return new PdnMoveViewModel
+            {
+                CreatedOn = move.CreatedOn,
+                DisplayString = move.DisplayString,
+                ID = move.ID,
+                IsJump = move.IsJump,
+                Move = move.Move,
+                PieceTypeMoved = move.PieceTypeMoved,
+                Player = move.Player,
+                ResultingFen = move.ResultingFen
+            };
         }
     }
 }

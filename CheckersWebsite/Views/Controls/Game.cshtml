@@ -1,12 +1,12 @@
 ﻿@using CheckersWebsite.Enums
-@using CheckersWebsite.Facade
+@using CheckersWebsite.ViewModels
 @using CheckersWebsite.Views.Controls
-@model GameController
+@model GameViewModel
 
 @{
     var playerID = (Guid)ViewData["playerID"];
-    var blackPlayerID = (Guid)ViewData["blackPlayerID"];
-    var whitePlayerID = (Guid)ViewData["whitePlayerID"];
+    var blackPlayerID = Model.BlackPlayerID;
+    var whitePlayerID = Model.WhitePlayerID;
     var theme = (Theme)ViewData["theme"];
 }
 
@@ -45,7 +45,7 @@
         @Html.Raw(ComponentGenerator.GetBoard(Model, ViewData.ToDictionary(a => a.Key, a => a.Value)).Replace("[theme]", theme.ToString()))
     </div>
     <div class="col-lg-3 column move-history match-height-game-control">
-        @Html.Raw(ComponentGenerator.GetMoveControl(Model.MoveHistory))
+        @Html.Raw(ComponentGenerator.GetMoveControl(Model.Turns))
         <div class="controls">
             <button id="undo" class="ctrl-button btn btn-default" onclick="undo()" title="Undo" disabled="">
                 <span class="glyphicon glyphicon-share-alt"></span>

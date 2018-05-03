@@ -1,16 +1,16 @@
 ﻿@using CheckersWebsite.Enums
-@using CheckersWebsite.Facade
+@using CheckersWebsite.ViewModels
 @using CheckersWebsite.Resources
 @using CheckersWebsite.Controllers
-@model GameController
+@model GameViewModel
 
 @{
     var playerID = (Guid)ViewData["playerID"];
-    var blackPlayerID = (Guid)ViewData["blackPlayerID"];
-    var whitePlayerID = (Guid)ViewData["whitePlayerID"];
+    var blackPlayerID = Model.BlackPlayerID;
+    var whitePlayerID = Model.WhitePlayerID;
 
-    var blackStrength = (int)ViewData["blackStrength"];
-    var whiteStrength = (int)ViewData["whiteStrength"];
+    var blackStrength = Model.BlackPlayerStrength;
+    var whiteStrength = Model.WhitePlayerStrength;
 }
 <div><b>@Resources.ResourceManager.GetString(((Variant)Model.Variant).ToString())</b></div>
 <div>

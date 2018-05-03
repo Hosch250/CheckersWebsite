@@ -1,5 +1,5 @@
 ﻿using CheckersWebsite.Enums;
-using CheckersWebsite.Facade;
+using CheckersWebsite.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -8,18 +8,16 @@ namespace CheckersWebsite.Views.Controls
 {
     public static class ComponentGenerator
     {
-        public static string GetBoard(GameController game, Dictionary<string, object> viewData)
+        public static string GetBoard(GameViewModel game, Dictionary<string, object> viewData)
         {
             using (var stringWriter = new StringWriter())
             {
                 Action<string> write = stringWriter.Write;
 
                 var playerID = (Guid)viewData["playerID"];
-                var blackPlayerID = (Guid)viewData["blackPlayerID"];
-                var whitePlayerID = (Guid)viewData["whitePlayerID"];
                 var orientation = (Player)viewData["orientation"];
 
-                var isCurrentPlayer = playerID == blackPlayerID && game.CurrentPlayer == Player.Black || playerID == whitePlayerID && game.CurrentPlayer == Player.White;
+                var isCurrentPlayer = game.DisplayingLastMove && playerID == game.BlackPlayerID && game.CurrentPlayer == Player.Black || playerID == game.WhitePlayerID && game.CurrentPlayer == Player.White;
                 write($@"<div class=""board {game.CurrentPlayer} {(isCurrentPlayer ? "current-player" : "")}"" id=""{game.ID}"" orientation=""{orientation}"">");
 
                 for (var row = 0; row < 8; row++)
@@ -56,7 +54,7 @@ namespace CheckersWebsite.Views.Controls
             }
         }
 
-        public static string GetMoveControl(List<PdnTurn> turns)
+        public static string GetMoveControl(List<PdnTurnViewModel> turns)
         {
             using (var stringWriter = new StringWriter())
             {

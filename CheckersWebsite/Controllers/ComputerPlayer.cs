@@ -30,7 +30,7 @@ namespace CheckersWebsite.Controllers
             return _context.Players.Find(id).ConnectionID;
         }
 
-        internal async Task DoComputerMove(Guid id)
+        internal void DoComputerMove(Guid id)
         {
             var game = _context.Games.FirstOrDefault(f => f.ID == id);
 
@@ -45,7 +45,7 @@ namespace CheckersWebsite.Controllers
                 return;
             }
 
-            var controller = game.ToGame();
+            var controller = game.ToGameController();
             var move = controller.Move(controller.GetMove(game.CurrentPlayer == (int)Player.Black ? game.BlackPlayerStrength : game.WhitePlayerStrength, CancellationToken.None));
             move.ID = game.ID;
 
@@ -92,8 +92,6 @@ namespace CheckersWebsite.Controllers
                 return new Dictionary<string, object>
                 {
                     ["playerID"] = localPlayerID,
-                    ["blackPlayerID"] = game.BlackPlayerID,
-                    ["whitePlayerID"] = game.WhitePlayerID,
                     ["orientation"] = orientation,
                     ["theme"] = Theme.Steel,
                     ["blackStrength"] = game.BlackPlayerStrength,
@@ -101,25 +99,27 @@ namespace CheckersWebsite.Controllers
                 };
             }
 
+            var viewModel = game.ToGameViewModel();
+
             if (game.BlackPlayerID != ComputerPlayerID)
             {
                 _signalRHub.Clients.Client(GetClientConnection(game.BlackPlayerID)).InvokeAsync("UpdateBoard", id,
-                    ComponentGenerator.GetBoard(move, GetViewData(game.BlackPlayerID, Player.Black)),
-                    ComponentGenerator.GetBoard(move, GetViewData(game.BlackPlayerID, Player.White)));
+                    ComponentGenerator.GetBoard(viewModel, GetViewData(game.BlackPlayerID, Player.Black)),
+                    ComponentGenerator.GetBoard(viewModel, GetViewData(game.BlackPlayerID, Player.White)));
             }
 
             if (game.WhitePlayerID != ComputerPlayerID)
             {
                 _signalRHub.Clients.Client(GetClientConnection(game.WhitePlayerID)).InvokeAsync("UpdateBoard", id,
-                    ComponentGenerator.GetBoard(move, GetViewData(game.WhitePlayerID, Player.Black)),
-                    ComponentGenerator.GetBoard(move, GetViewData(game.WhitePlayerID, Player.White)));
+                    ComponentGenerator.GetBoard(viewModel, GetViewData(game.WhitePlayerID, Player.Black)),
+                    ComponentGenerator.GetBoard(viewModel, GetViewData(game.WhitePlayerID, Player.White)));
             }
 
             _signalRHub.Clients.AllExcept(new List<string> { GetClientConnection(game.BlackPlayerID), GetClientConnection(game.WhitePlayerID) }).InvokeAsync("UpdateBoard", id,
-                ComponentGenerator.GetBoard(move, GetViewData(Guid.Empty, Player.Black)),
-                ComponentGenerator.GetBoard(move, GetViewData(Guid.Empty, Player.White)));
+                ComponentGenerator.GetBoard(viewModel, GetViewData(Guid.Empty, Player.Black)),
+                ComponentGenerator.GetBoard(viewModel, GetViewData(Guid.Empty, Player.White)));
 
-            _signalRHub.Clients.All.InvokeAsync("UpdateMoves", ComponentGenerator.GetMoveControl(move.MoveHistory));
+            _signalRHub.Clients.All.InvokeAsync("UpdateMoves", ComponentGenerator.GetMoveControl(viewModel.Turns));
             _signalRHub.Clients.All.InvokeAsync("UpdateOpponentState", ((Player)game.CurrentPlayer).ToString(), move.GetGameStatus().ToString());
 
             if (game.Turns.Count == 1 && game.Turns.ElementAt(0).Moves.Count == 1)

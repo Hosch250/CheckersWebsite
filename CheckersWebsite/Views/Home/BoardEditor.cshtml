@@ -1,5 +1,6 @@
 ﻿@using CheckersWebsite.Enums
 @using CheckersWebsite.Facade
+@using CheckersWebsite.ViewModels
 @using CheckersWebsite.Resources
 
 <div>
@@ -12,10 +13,14 @@
             <img id="piece-white-king" class="template-piece" src="@Url.Content($"~/images/SteelTheme/WhiteKing.png")" onmousedown="{ $('.selected-add').removeClass('selected-add'); $('#piece-white-king').addClass('selected-add'); }" />
         </div>
         <div class="col-lg-6 column board-col">
-            @{ 
+            @{
                 var controller = GameController.FromVariant(Variant.AmericanCheckers);
+                var boardVM = new BoardViewModel
+                {
+                    GameBoard = controller.Board.GameBoard
+                };
             }
-            @Html.Partial("~/Views/Controls/CheckersBoardEditor.cshtml", controller.Board)
+            @Html.Partial("~/Views/Controls/CheckersBoardEditor.cshtml", boardVM)
             <div class="input-group">
                 <div class="input-group-addon"><label for="white-weight">FEN</label></div>
                 <input id="fen-board-editor" class="form-control" type="text" readonly value="@controller.Fen" />
@@ -34,24 +39,24 @@
             <div class="form-group">
                 <label for="variant">Variant</label>
                 @Html.DropDownList("variant-board-editor", Enum.GetNames(typeof(Variant)).Select(s =>
-                              new SelectListItem
-                              {
-                                  Text = Resources.ResourceManager.GetString(s),
-                                  Value = s
-                              }
-                          ),
-                          new { @class = "select form-control", id = "variant-board-editor" })
+                                   new SelectListItem
+                                   {
+                                       Text = Resources.ResourceManager.GetString(s),
+                                       Value = s
+                                   }
+                               ),
+                               new { @class = "select form-control", id = "variant-board-editor" })
             </div>
             <div class="form-group">
                 <label for="player">Starting Player</label>
                 @Html.DropDownList("player-board-editor", Enum.GetNames(typeof(Player)).Select(s =>
-                              new SelectListItem
-                              {
-                                  Text = Resources.ResourceManager.GetString(s),
-                                  Value = s
-                              }
-                          ),
-                          new { @class = "select form-control", id = "player-board-editor" })
+                                   new SelectListItem
+                                   {
+                                       Text = Resources.ResourceManager.GetString(s),
+                                       Value = s
+                                   }
+                               ),
+                               new { @class = "select form-control", id = "player-board-editor" })
             </div>
             <div class="form-group">
                 <label for="position-board-editor">Position</label>

@@ -6,7 +6,6 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using CheckersWebsite.Views.Controls;
 using CheckersWebsite.Enums;
 using CheckersWebsite.Extensions;
@@ -43,7 +42,7 @@ namespace CheckersWebsite.Controllers
             return _context.Players.Find(id).ConnectionID;
         }
 
-        public async Task<ActionResult> MovePiece(Guid id, Coord start, Coord end)
+        public ActionResult MovePiece(Guid id, Coord start, Coord end)
         {
             var playerID = GetPlayerID();
             if (!playerID.HasValue)
@@ -66,7 +65,7 @@ namespace CheckersWebsite.Controllers
                 return Content("");
             }
 
-            var controller = game.ToGame();
+            var controller = game.ToGameController();
 
             if (!controller.IsValidMove(start, end))
             {
@@ -120,28 +119,25 @@ namespace CheckersWebsite.Controllers
                 return new Dictionary<string, object>
                 {
                     ["playerID"] = localPlayerID,
-                    ["blackPlayerID"] = game.BlackPlayerID,
-                    ["whitePlayerID"] = game.WhitePlayerID,
-                    ["orientation"] = orientation,
-                    ["theme"] = GetThemeOrDefault(),
-                    ["blackStrength"] = game.BlackPlayerStrength,
-                    ["whiteStrength"] = game.WhitePlayerStrength
+                    ["orientation"] = orientation
                 };
             }
 
+            var viewModel = game.ToGameViewModel();
+
             _signalRHub.Clients.Client(GetClientConnection(game.BlackPlayerID)).InvokeAsync("UpdateBoard", id,
-                ComponentGenerator.GetBoard(move, GetViewData(game.BlackPlayerID, Player.Black)),
-                ComponentGenerator.GetBoard(move, GetViewData(game.BlackPlayerID, Player.White)));
+                ComponentGenerator.GetBoard(viewModel, GetViewData(game.BlackPlayerID, Player.Black)),
+                ComponentGenerator.GetBoard(viewModel, GetViewData(game.BlackPlayerID, Player.White)));
 
             _signalRHub.Clients.Client(GetClientConnection(game.WhitePlayerID)).InvokeAsync("UpdateBoard", id,
-                ComponentGenerator.GetBoard(move, GetViewData(game.WhitePlayerID, Player.Black)),
-                ComponentGenerator.GetBoard(move, GetViewData(game.WhitePlayerID, Player.White)));
+                ComponentGenerator.GetBoard(viewModel, GetViewData(game.WhitePlayerID, Player.Black)),
+                ComponentGenerator.GetBoard(viewModel, GetViewData(game.WhitePlayerID, Player.White)));
 
             _signalRHub.Clients.AllExcept(new List<string> { GetClientConnection(game.BlackPlayerID), GetClientConnection(game.WhitePlayerID) }).InvokeAsync("UpdateBoard", id,
-                ComponentGenerator.GetBoard(move, GetViewData(Guid.Empty, Player.Black)),
-                ComponentGenerator.GetBoard(move, GetViewData(Guid.Empty, Player.White)));
+                ComponentGenerator.GetBoard(viewModel, GetViewData(Guid.Empty, Player.Black)),
+                ComponentGenerator.GetBoard(viewModel, GetViewData(Guid.Empty, Player.White)));
 
-            _signalRHub.Clients.All.InvokeAsync("UpdateMoves", ComponentGenerator.GetMoveControl(move.MoveHistory));
+            _signalRHub.Clients.All.InvokeAsync("UpdateMoves", ComponentGenerator.GetMoveControl(viewModel.Turns));
             _signalRHub.Clients.All.InvokeAsync("UpdateOpponentState", ((Player)game.CurrentPlayer).ToString(), move.GetGameStatus().ToString());
 
             if (game.Turns.Count == 1 && game.Turns.ElementAt(0).Moves.Count == 1)
@@ -160,7 +156,7 @@ namespace CheckersWebsite.Controllers
             return Content("");
         }
 
-        public async Task<ActionResult> Undo(Guid id)
+        public ActionResult Undo(Guid id)
         {
             var playerID = GetPlayerID();
             if (!playerID.HasValue)
@@ -218,35 +214,32 @@ namespace CheckersWebsite.Controllers
 
             _context.SaveChanges();
 
-            var controller = game.ToGame();
+            var controller = game.ToGameController();
 
             Dictionary<string, object> GetViewData(Guid localPlayerID, Player orientation)
             {
                 return new Dictionary<string, object>
                 {
                     ["playerID"] = localPlayerID,
-                    ["blackPlayerID"] = game.BlackPlayerID,
-                    ["whitePlayerID"] = game.WhitePlayerID,
-                    ["orientation"] = orientation,
-                    ["theme"] = GetThemeOrDefault(),
-                    ["blackStrength"] = game.BlackPlayerStrength,
-                    ["whiteStrength"] = game.WhitePlayerStrength
+                    ["orientation"] = orientation
                 };
             }
 
+            var viewModel = game.ToGameViewModel();
+
             _signalRHub.Clients.Client(GetClientConnection(game.BlackPlayerID)).InvokeAsync("UpdateBoard", id,
-                ComponentGenerator.GetBoard(controller, GetViewData(game.BlackPlayerID, Player.Black)),
-                ComponentGenerator.GetBoard(controller, GetViewData(game.BlackPlayerID, Player.White)));
+                ComponentGenerator.GetBoard(viewModel, GetViewData(game.BlackPlayerID, Player.Black)),
+                ComponentGenerator.GetBoard(viewModel, GetViewData(game.BlackPlayerID, Player.White)));
 
             _signalRHub.Clients.Client(GetClientConnection(game.WhitePlayerID)).InvokeAsync("UpdateBoard", id,
-                ComponentGenerator.GetBoard(controller, GetViewData(game.WhitePlayerID, Player.Black)),
-                ComponentGenerator.GetBoard(controller, GetViewData(game.WhitePlayerID, Player.White)));
+                ComponentGenerator.GetBoard(viewModel, GetViewData(game.WhitePlayerID, Player.Black)),
+                ComponentGenerator.GetBoard(viewModel, GetViewData(game.WhitePlayerID, Player.White)));
 
             _signalRHub.Clients.AllExcept(new List<string> { GetClientConnection(game.BlackPlayerID), GetClientConnection(game.WhitePlayerID) }).InvokeAsync("UpdateBoard", id,
-                ComponentGenerator.GetBoard(controller, GetViewData(Guid.Empty, Player.Black)),
-                ComponentGenerator.GetBoard(controller, GetViewData(Guid.Empty, Player.White)));
+                ComponentGenerator.GetBoard(viewModel, GetViewData(Guid.Empty, Player.Black)),
+                ComponentGenerator.GetBoard(viewModel, GetViewData(Guid.Empty, Player.White)));
 
-            _signalRHub.Clients.All.InvokeAsync("UpdateMoves", ComponentGenerator.GetMoveControl(controller.MoveHistory));
+            _signalRHub.Clients.All.InvokeAsync("UpdateMoves", ComponentGenerator.GetMoveControl(viewModel.Turns));
 
             _signalRHub.Clients.All.InvokeAsync("UpdateOpponentState", ((Player)game.CurrentPlayer).ToString(), Status.InProgress.ToString());
 
@@ -298,7 +291,7 @@ namespace CheckersWebsite.Controllers
             return Content("");
         }
 
-        public async Task<ActionResult> DisplayGame(Guid moveID, Player player)
+        public ActionResult DisplayGame(Guid moveID, Player player)
         {
             var game = _context.Games
                     .Include("Turns")
@@ -312,27 +305,24 @@ namespace CheckersWebsite.Controllers
             }
 
             var move = game.Turns.SelectMany(t => t.Moves).First(f => f.ID == moveID);
-            var turn = game.Turns.First(f => f.ID == move.TurnID);
-
-            var controller = GameController.FromPosition((Variant)game.Variant, move.ResultingFen);
-            controller.ID = game.ID;
 
             var viewData = new Dictionary<string, object>
             {
                 ["playerID"] = GetPlayerID(),
-                ["blackPlayerID"] = game.BlackPlayerID,
-                ["whitePlayerID"] = game.WhitePlayerID,
-                ["orientation"] = player,
-                ["theme"] = GetThemeOrDefault(),
-                ["blackStrength"] = game.BlackPlayerStrength,
-                ["whiteStrength"] = game.WhitePlayerStrength
+                ["orientation"] = player
             };
 
-            var board = ComponentGenerator.GetBoard(controller, viewData).Replace("[theme]", GetThemeOrDefault().ToString());
+            var controller = GameController.FromPosition(Variant.AmericanCheckers, move.ResultingFen);
+
+            var viewModel = game.ToGameViewModel();
+            viewModel.Board.GameBoard = controller.Board.GameBoard;
+            viewModel.DisplayingLastMove = false;
+
+            var board = ComponentGenerator.GetBoard(viewModel, viewData).Replace("[theme]", GetThemeOrDefault().ToString());
             return Content(board);
         }
 
-        public async Task<ActionResult> Join(Guid id)
+        public ActionResult Join(Guid id)
         {
             var playerID = GetPlayerID();
             if (!playerID.HasValue)
@@ -376,15 +366,10 @@ namespace CheckersWebsite.Controllers
                 var viewData = new Dictionary<string, object>
                 {
                     ["playerID"] = playerID,
-                    ["blackPlayerID"] = game.BlackPlayerID,
-                    ["whitePlayerID"] = game.WhitePlayerID,
                     ["orientation"] = game.BlackPlayerID == playerID ? Player.Black : Player.White,
-                    ["theme"] = GetThemeOrDefault(),
-                    ["blackStrength"] = game.BlackPlayerStrength,
-                    ["whiteStrength"] = game.WhitePlayerStrength
                 };
 
-                var board = ComponentGenerator.GetBoard(game.ToGame(), viewData).Replace("[theme]", GetThemeOrDefault().ToString());
+                var board = ComponentGenerator.GetBoard(game.ToGameViewModel(), viewData).Replace("[theme]", GetThemeOrDefault().ToString());
                 return Content(board);
             }
             catch (DbUpdateConcurrencyException)
@@ -396,7 +381,7 @@ namespace CheckersWebsite.Controllers
             }
         }
 
-        public async Task<ActionResult> Orientate(Guid id, Guid? moveID, Player orientation)
+        public ActionResult Orientate(Guid id, Guid? moveID, Player orientation)
         {
             var game = _context.Games
                     .Include("Turns")
@@ -423,15 +408,10 @@ namespace CheckersWebsite.Controllers
                 viewData = new Dictionary<string, object>
                 {
                     ["playerID"] = playerID,
-                    ["blackPlayerID"] = game.BlackPlayerID,
-                    ["whitePlayerID"] = game.WhitePlayerID,
-                    ["orientation"] = orientation,
-                    ["theme"] = GetThemeOrDefault(),
-                    ["blackStrength"] = game.BlackPlayerStrength,
-                    ["whiteStrength"] = game.WhitePlayerStrength
+                    ["orientation"] = orientation
                 };
 
-            var board = ComponentGenerator.GetBoard(game.ToGame(), viewData).Replace("[theme]", GetThemeOrDefault().ToString());
+            var board = ComponentGenerator.GetBoard(game.ToGameViewModel(), viewData).Replace("[theme]", GetThemeOrDefault().ToString());
             return Content(board);
         }
 

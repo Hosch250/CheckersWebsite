@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using CheckersWebsite.Facade;
+using CheckersWebsite.ViewModels;
 
 namespace CheckersWebsite.Extensions
 {
@@ -33,6 +34,17 @@ namespace CheckersWebsite.Extensions
             };
 
             return pdnTurn;
+        }
+
+        public static PdnTurnViewModel ToPdnTurnViewModel(this Database.PdnTurn turn)
+        {
+            return new PdnTurnViewModel
+            {
+                ID = turn.ID,
+                MoveNumber = turn.MoveNumber,
+                BlackMove = turn.Moves.SingleOrDefault(s => s.Player == (int)Player.Black)?.ToPdnMoveViewModel(),
+                WhiteMove = turn.Moves.SingleOrDefault(s => s.Player == (int)Player.White)?.ToPdnMoveViewModel()
+            };
         }
     }
 }
