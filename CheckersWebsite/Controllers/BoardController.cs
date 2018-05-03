@@ -396,22 +396,25 @@ namespace CheckersWebsite.Controllers
 
             var move = game.Turns.SelectMany(t => t.Moves).FirstOrDefault(f => f.ID == moveID) ??
                 game.Turns.OrderBy(o => o.MoveNumber).LastOrDefault()?.Moves.OrderBy(a => a.CreatedOn).LastOrDefault();
-
-            var fen = move?.ResultingFen ?? game.Fen;
-
-            var playerID = GetPlayerID();
-
-            var controller = GameController.FromPosition((Variant)game.Variant, fen);
-            controller.ID = game.ID;
-
+            
             Dictionary<string, object>
                 viewData = new Dictionary<string, object>
                 {
-                    ["playerID"] = playerID,
+                    ["playerID"] = GetPlayerID(),
                     ["orientation"] = orientation
                 };
 
-            var board = ComponentGenerator.GetBoard(game.ToGameViewModel(), viewData).Replace("[theme]", GetThemeOrDefault().ToString());
+            var viewModel = game.ToGameViewModel();
+            if (moveID != null && moveID.Value != game.Turns.Last().Moves.OrderBy(o => o.CreatedOn).Last().ID)
+            {
+                var fen = move.ResultingFen;
+                var controller = GameController.FromPosition((Variant)game.Variant, fen);
+
+                viewModel.Board.GameBoard = controller.Board.GameBoard;
+                viewModel.DisplayingLastMove = false;
+            }
+
+            var board = ComponentGenerator.GetBoard(viewModel, viewData).Replace("[theme]", GetThemeOrDefault().ToString());
             return Content(board);
         }
 
