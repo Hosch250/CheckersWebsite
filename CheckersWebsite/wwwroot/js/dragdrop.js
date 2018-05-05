@@ -45,7 +45,7 @@ function GameMovePiece(evt) {
         x: GameGrabClientCoords.x + (evt.screenX - GameGrabScreenCoords.x),
         y: GameGrabClientCoords.y + (evt.screenY - GameGrabScreenCoords.y)
     };
-    var boundingSquare = GetBoundingSquare(dropClientCoords);
+    var boundingSquare = getBoundingSquare(dropClientCoords);
     if (boundingSquare) {
         var coord = boundingSquare.id.replace('square', '');
         var startCoord = evt.target.id.replace('piece', '');

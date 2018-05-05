@@ -1,25 +1,25 @@
 ﻿/// <reference path="../Scripts/typings/jquery/jquery.d.ts"/>
 
-var BoardEditorTrueCoords = null;
-var BoardEditorGrabPoint = null;
-var BoardEditorDragTarget = null;
+var boardEditorTrueCoords = null;
+var boardEditorGrabPoint = null;
+var boardEditorDragTarget = null;
 
-var BoardEditorGrabScreenCoords = null;
-var BoardEditorGrabClientCoords = null;
+var boardEditorGrabScreenCoords = null;
+var boardEditorGrabClientCoords = null;
 
-function BoardEditorInit() {
+function boardEditorInit() {
     if ($('.board-editor').length === 1) {
-        $('*').on('mousedown', BoardEditorGrab);
-        $('*').on('dragend', BoardEditorDrop);
-        $('*').on('mouseup', BoardEditorDrop);
-        $('*').on('click', BoardEditorClick);
+        $('*').on('mousedown', boardEditorGrab);
+        $('*').on('dragend', boardEditorDrop);
+        $('*').on('mouseup', boardEditorDrop);
+        $('*').on('click', boardEditorClick);
     }
 }
 
-function BoardEditorGrab(evt) {
+function boardEditorGrab(evt) {
     var targetElement = evt.target;
     
-    if (!BoardEditorDragTarget && evt.target.id.startsWith('piece')) {
+    if (!boardEditorDragTarget && evt.target.id.startsWith('piece') && $('.selected-add').length === 0) {
         if (!$(targetElement).hasClass('selected-add')) {
             $('.selected-add').removeClass('selected-add');
         }
@@ -31,52 +31,52 @@ function BoardEditorGrab(evt) {
             $(`#${targetElement.id}`).addClass('selected drag')
         }
         
-        BoardEditorGrabScreenCoords = {
+        boardEditorGrabScreenCoords = {
             x: evt.screenX,
             y: evt.screenY
         };
-        BoardEditorGrabClientCoords = {
+        boardEditorGrabClientCoords = {
             x: evt.clientX,
             y: evt.clientY
         };
         
-        BoardEditorDragTarget = targetElement;
+        boardEditorDragTarget = targetElement;
 
-        BoardEditorGrabPoint = {
+        boardEditorGrabPoint = {
             x: evt.clientX,
             y: evt.clientY
         };
     }
 };
 
-function BoardEditorClick(evt) {
-    if (!BoardEditorDragTarget && evt.target.id.startsWith('square') && $('.selected').length !== 0) {
-        BoardEditorDragTarget = $('.selected')[0];
-        BoardEditorDrop(evt);
+function boardEditorClick(evt) {
+    if (!boardEditorDragTarget && evt.target.id.startsWith('square') && $('.selected').length !== 0) {
+        boardEditorDragTarget = $('.selected')[0];
+        boardEditorDrop(evt);
         return false;
     }
 
     return true;
 }
 
-function BoardEditorDrop(evt) {
-    if (BoardEditorDragTarget && $('.selected-add').length === 0) {
-        BoardEditorMovePiece(evt);
+function boardEditorDrop(evt) {
+    if (boardEditorDragTarget && $('.selected-add').length === 0) {
+        boardEditorMovePiece(evt);
         GetFEN();
     } else if ($('.selected-add').length !== 0) {
-        BoardEditorAddPieceToBoard(evt);
+        boardEditorAddPieceToBoard(evt);
         GetFEN();
     }
 
-    BoardEditorDragTarget = null;
+    boardEditorDragTarget = null;
 };
 
-function BoardEditorMovePiece(evt) {
+function boardEditorMovePiece(evt) {
     var dropClientCoords = {
-        x: BoardEditorGrabClientCoords.x + (evt.screenX - BoardEditorGrabScreenCoords.x),
-        y: BoardEditorGrabClientCoords.y + (evt.screenY - BoardEditorGrabScreenCoords.y)
+        x: boardEditorGrabClientCoords.x + (evt.screenX - boardEditorGrabScreenCoords.x),
+        y: boardEditorGrabClientCoords.y + (evt.screenY - boardEditorGrabScreenCoords.y)
     };
-    var boundingSquare = GetBoundingSquare(dropClientCoords);
+    var boundingSquare = getBoundingSquare(dropClientCoords);
 
     if (boundingSquare) {
         var coord = boundingSquare.id.replace('square', '');
@@ -95,15 +95,15 @@ function BoardEditorMovePiece(evt) {
         
         $(`#piece${row}${col}`).remove();
 
-        $(BoardEditorDragTarget).attr('id', `piece${row}${col}`);
-        $(BoardEditorDragTarget).css('grid-row', `${row + 1}`);
-        $(BoardEditorDragTarget).css('grid-column', `${col + 1}`);
+        $(boardEditorDragTarget).attr('id', `piece${row}${col}`);
+        $(boardEditorDragTarget).css('grid-row', `${row + 1}`);
+        $(boardEditorDragTarget).css('grid-column', `${col + 1}`);
     } else {
-        $(BoardEditorDragTarget).remove();
+        $(boardEditorDragTarget).remove();
     }
 }
 
-function BoardEditorAddPieceToBoard(evt) {
+function boardEditorAddPieceToBoard(evt) {
     var dropClientCoords: { x; y };
     if (evt.type === 'dragend') {
         var dropScreenCoords = {
@@ -111,8 +111,8 @@ function BoardEditorAddPieceToBoard(evt) {
             y: evt.screenY
         };
         dropClientCoords = {
-            x: BoardEditorGrabClientCoords.x + (evt.screenX - BoardEditorGrabScreenCoords.x),
-            y: BoardEditorGrabClientCoords.y + (evt.screenY - BoardEditorGrabScreenCoords.y)
+            x: boardEditorGrabClientCoords.x + (evt.screenX - boardEditorGrabScreenCoords.x),
+            y: boardEditorGrabClientCoords.y + (evt.screenY - boardEditorGrabScreenCoords.y)
         };
     } else {
         dropClientCoords = {
@@ -121,7 +121,7 @@ function BoardEditorAddPieceToBoard(evt) {
         };
     }
 
-    var boundingSquare = GetBoundingSquare(dropClientCoords);
+    var boundingSquare = getBoundingSquare(dropClientCoords);
     if (boundingSquare) {
         var player: string;
         var pieceType: string;
@@ -156,7 +156,7 @@ function BoardEditorAddPieceToBoard(evt) {
     }
 }
 
-function GetBoundingSquare(dropClientCoords) {
+function getBoundingSquare(dropClientCoords) {
     var squares = $('.drop-target');
     for (var i = 0; i < squares.length; i++) {
         var el = squares[i];
