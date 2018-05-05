@@ -6996,6 +6996,10 @@ input[type="radio"].toggle:checked + label {
     border: 5px solid goldenrod;
 }
 
+.selected-add {
+    border: 5px solid goldenrod;
+}
+
 #copied {
     display: none;
     text-align: center;
