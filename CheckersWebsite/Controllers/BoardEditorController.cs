@@ -28,7 +28,7 @@ namespace CheckersWebsite.Controllers
             return PartialView("~/Views/Controls/CheckersBoardEditor.cshtml", board);
         }
 
-        public IActionResult GetFEN(Variant variant, Player startingPlayer, List<PieceValue> pieces)
+        public IActionResult GetFEN(Variant variant, Player startingPlayer, List<PieceValueViewModel> pieces)
         {
             var numberMap = new Dictionary<char, int>
             {
@@ -46,7 +46,7 @@ namespace CheckersWebsite.Controllers
 
             pieces = pieces.Select(s => {
                 var coord = s.ID.Replace("piece", "");
-                return new PieceValue
+                return new PieceValueViewModel
                     {
                         Coord = new Coord
                         {

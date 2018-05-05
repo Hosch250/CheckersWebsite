@@ -3,7 +3,7 @@ using CheckersWebsite.Facade;
 
 namespace CheckersWebsite.ViewModels
 {
-    public class PieceValue
+    public class PieceValueViewModel
     {
         public string ID { get; set; }
         public Player Player { get; set; }

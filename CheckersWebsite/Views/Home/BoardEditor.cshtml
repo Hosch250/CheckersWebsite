@@ -4,13 +4,13 @@
 @using CheckersWebsite.Resources
 
 <div>
-    <div class="row board-editor" xmlns="http://www.w3.org/1999/xhtml">
+    <div class="row board-editor">
         <div class="col-lg-1"></div>
         <div class="col-lg-1 piece-col column">
-            <img id="piece-black-checker" class="template-piece" src="@Url.Content($"~/images/SteelTheme/BlackChecker.png")" onmousedown="{ $('.selected-add').removeClass('selected-add'); $('#piece-black-checker').addClass('selected-add'); }" />
-            <img id="piece-black-king" class="template-piece" src="@Url.Content($"~/images/SteelTheme/BlackKing.png")" onmousedown="{ $('.selected-add').removeClass('selected-add'); $('#piece-black-king').addClass('selected-add'); }" />
-            <img id="piece-white-checker" class="template-piece" src="@Url.Content($"~/images/SteelTheme/WhiteChecker.png")" onmousedown="{ $('.selected-add').removeClass('selected-add'); $('#piece-white-checker').addClass('selected-add'); }" />
-            <img id="piece-white-king" class="template-piece" src="@Url.Content($"~/images/SteelTheme/WhiteKing.png")" onmousedown="{ $('.selected-add').removeClass('selected-add'); $('#piece-white-king').addClass('selected-add'); }" />
+            <img id="piece-black-checker" class="template-piece" src="@Url.Content($"~/images/SteelTheme/BlackChecker.png")" />
+            <img id="piece-black-king" class="template-piece" src="@Url.Content($"~/images/SteelTheme/BlackKing.png")" />
+            <img id="piece-white-checker" class="template-piece" src="@Url.Content($"~/images/SteelTheme/WhiteChecker.png")" />
+            <img id="piece-white-king" class="template-piece" src="@Url.Content($"~/images/SteelTheme/WhiteKing.png")" />
         </div>
         <div class="col-lg-6 column board-col">
             @{
@@ -84,5 +84,17 @@
                 $('#copied').delay(5000).fadeOut();
             });
         });
+
+        var selectTemplatePiece = function (evt) {
+            console.log('test');
+            console.log(evt.target);
+            $('.selected-add').removeClass('selected-add');
+            $(evt.target).addClass('selected-add');
+
+            $('.selected').removeClass('selected');
+            return false;
+        }
+
+        $('.template-piece').mousedown(selectTemplatePiece);
     });
 </script>

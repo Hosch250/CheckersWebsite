@@ -535,6 +535,7 @@ function boardEditorMovePiece(evt) {
         $(boardEditorDragTarget).attr('id', "piece" + row + col);
         $(boardEditorDragTarget).css('grid-row', "" + (row + 1));
         $(boardEditorDragTarget).css('grid-column', "" + (col + 1));
+        $('.selected').removeClass('selected');
     }
     else {
         $(boardEditorDragTarget).remove();
