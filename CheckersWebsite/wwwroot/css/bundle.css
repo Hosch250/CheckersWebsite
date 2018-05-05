@@ -6978,8 +6978,8 @@ input[type="radio"].toggle:checked + label {
 
 .board {
     display: grid;
-    grid-template-rows: auto auto auto auto auto auto auto auto;
-    grid-template-columns: auto auto auto auto auto auto auto auto;
+    grid-template-rows: 12.5% 12.5% 12.5% 12.5% 12.5% 12.5% 12.5% 12.5%;
+    grid-template-columns: 12.5% 12.5% 12.5% 12.5% 12.5% 12.5% 12.5% 12.5%;
 }
 
 .square,

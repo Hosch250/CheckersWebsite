@@ -112,6 +112,8 @@ namespace CheckersWebsite.Controllers
             game.CurrentPlayer = (int)move.CurrentPlayer;
             game.GameStatus = (int)move.GetGameStatus();
 
+
+            game.RowVersion = DateTime.Now;
             _context.SaveChanges();
 
             Dictionary<string, object> GetViewData(Guid localPlayerID, Player orientation)
@@ -125,13 +127,19 @@ namespace CheckersWebsite.Controllers
 
             var viewModel = game.ToGameViewModel();
 
-            _signalRHub.Clients.Client(GetClientConnection(game.BlackPlayerID)).InvokeAsync("UpdateBoard", id,
-                ComponentGenerator.GetBoard(viewModel, GetViewData(game.BlackPlayerID, Player.Black)),
-                ComponentGenerator.GetBoard(viewModel, GetViewData(game.BlackPlayerID, Player.White)));
+            if (game.BlackPlayerID != ComputerPlayer.ComputerPlayerID)
+            {
+                _signalRHub.Clients.Client(GetClientConnection(game.BlackPlayerID)).InvokeAsync("UpdateBoard", id,
+                    ComponentGenerator.GetBoard(viewModel, GetViewData(game.BlackPlayerID, Player.Black)),
+                    ComponentGenerator.GetBoard(viewModel, GetViewData(game.BlackPlayerID, Player.White)));
+            }
 
-            _signalRHub.Clients.Client(GetClientConnection(game.WhitePlayerID)).InvokeAsync("UpdateBoard", id,
-                ComponentGenerator.GetBoard(viewModel, GetViewData(game.WhitePlayerID, Player.Black)),
-                ComponentGenerator.GetBoard(viewModel, GetViewData(game.WhitePlayerID, Player.White)));
+            if (game.WhitePlayerID != ComputerPlayer.ComputerPlayerID)
+            {
+                _signalRHub.Clients.Client(GetClientConnection(game.WhitePlayerID)).InvokeAsync("UpdateBoard", id,
+                    ComponentGenerator.GetBoard(viewModel, GetViewData(game.WhitePlayerID, Player.Black)),
+                    ComponentGenerator.GetBoard(viewModel, GetViewData(game.WhitePlayerID, Player.White)));
+            }
 
             _signalRHub.Clients.AllExcept(new List<string> { GetClientConnection(game.BlackPlayerID), GetClientConnection(game.WhitePlayerID) }).InvokeAsync("UpdateBoard", id,
                 ComponentGenerator.GetBoard(viewModel, GetViewData(Guid.Empty, Player.Black)),
@@ -213,7 +221,8 @@ namespace CheckersWebsite.Controllers
                 default:
                     break;
             }
-
+            
+            game.RowVersion = DateTime.Now;
             _context.SaveChanges();
 
             var controller = game.ToGameController();
@@ -284,6 +293,8 @@ namespace CheckersWebsite.Controllers
             {
                 game.GameStatus = playerID == game.BlackPlayerID ? (int)Status.WhiteWin : (int)Status.BlackWin;
             }
+
+            game.RowVersion = DateTime.Now;
             _context.SaveChanges();
 
             _signalRHub.Clients.All.InvokeAsync("UpdateOpponentState", ((Player)game.CurrentPlayer).ToString(), game.GameStatus.ToString());

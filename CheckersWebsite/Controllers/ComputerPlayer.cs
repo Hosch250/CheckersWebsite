@@ -84,6 +84,7 @@ namespace CheckersWebsite.Controllers
             game.CurrentPosition = move.GetCurrentPosition();
             game.CurrentPlayer = (int)move.CurrentPlayer;
             game.GameStatus = (int)move.GetGameStatus();
+            game.RowVersion = DateTime.Now;
 
             _context.SaveChanges();
 
