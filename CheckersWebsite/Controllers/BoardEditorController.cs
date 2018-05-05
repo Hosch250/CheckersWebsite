@@ -7,14 +7,6 @@ using System.Linq;
 
 namespace CheckersWebsite.Controllers
 {
-    public class PieceValue
-    {
-        public string ID { get; set; }
-        public Player Player { get; set; }
-        public PieceType Piece { get; set; }
-        public Coord Coord { get; set; }
-    }
-
     public class BoardEditorController : Controller
     {
         private Theme GetThemeOrDefault()
