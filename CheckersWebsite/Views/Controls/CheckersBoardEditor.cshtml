@@ -18,6 +18,8 @@
         for (var col = 0; col < 8; col++)
         {
             <img class="square @(GetAdjustedIndex(col) % 2 == GetAdjustedIndex(row) % 2 ? "" : "drop-target")"
+                 @(GetAdjustedIndex(col) % 2 == GetAdjustedIndex(row) % 2 ? Html.Raw("") : Html.Raw(@"tabindex=""0"""))
+                 title="square on row @row column @col"
                  id="square@(GetAdjustedIndex(row))@(GetAdjustedIndex(col))"
                  src="@Url.Content($"~/images/{theme}Theme/{(GetAdjustedIndex(col) % 2 == GetAdjustedIndex(row) % 2 ? "Light" : "Dark")}{theme}.png")"
                  style="grid-row: @(GetAdjustedIndex(row) + 1); grid-column: @(GetAdjustedIndex(col) + 1)" />
@@ -26,11 +28,13 @@
             if (piece != null)
             {
                 <img id="piece@(GetAdjustedIndex(row))@(GetAdjustedIndex(col))"
-                     class="piece"
-                     player="@piece.Player.ToString()"
-                     pieceType="@piece.PieceType.ToString()"
-                     src="@Url.Content($"~/images/{theme}Theme/{piece.Player}{piece.PieceType}.png")"
-                     style="grid-row: @(GetAdjustedIndex(row) + 1); grid-column: @(GetAdjustedIndex(col) + 1)" />
+                        class="piece"
+                        tabindex="0"
+                        title="@piece.Player.ToString() @piece.PieceType.ToString() on row @row column @col"
+                        player="@piece.Player.ToString()"
+                        pieceType="@piece.PieceType.ToString()"
+                        src="@Url.Content($"~/images/{theme}Theme/{piece.Player}{piece.PieceType}.png")"
+                        style="grid-row: @(GetAdjustedIndex(row) + 1); grid-column: @(GetAdjustedIndex(col) + 1)" />
             }
         }
     }

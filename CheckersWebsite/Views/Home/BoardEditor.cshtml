@@ -7,10 +7,10 @@
     <div class="row board-editor" xmlns="http://www.w3.org/1999/xhtml">
         <div class="col-lg-1"></div>
         <div class="col-lg-1 piece-col column">
-            <img id="piece-black-checker" class="template-piece" src="@Url.Content($"~/images/SteelTheme/BlackChecker.png")" onmousedown="{ $('.selected-add').removeClass('selected-add'); $('#piece-black-checker').addClass('selected-add'); }" />
-            <img id="piece-black-king" class="template-piece" src="@Url.Content($"~/images/SteelTheme/BlackKing.png")" onmousedown="{ $('.selected-add').removeClass('selected-add'); $('#piece-black-king').addClass('selected-add'); }" />
-            <img id="piece-white-checker" class="template-piece" src="@Url.Content($"~/images/SteelTheme/WhiteChecker.png")" onmousedown="{ $('.selected-add').removeClass('selected-add'); $('#piece-white-checker').addClass('selected-add'); }" />
-            <img id="piece-white-king" class="template-piece" src="@Url.Content($"~/images/SteelTheme/WhiteKing.png")" onmousedown="{ $('.selected-add').removeClass('selected-add'); $('#piece-white-king').addClass('selected-add'); }" />
+            <img id="piece-black-checker" tabindex="0" title="Black Checker Template" class="template-piece" src="@Url.Content($"~/images/SteelTheme/BlackChecker.png")" />
+            <img id="piece-black-king" tabindex="0" title="Black King Template" class="template-piece" src="@Url.Content($"~/images/SteelTheme/BlackKing.png")" />
+            <img id="piece-white-checker" tabindex="0" title="White Checker Template" class="template-piece" src="@Url.Content($"~/images/SteelTheme/WhiteChecker.png")" />
+            <img id="piece-white-king" tabindex="0" title="White King Template" class="template-piece" src="@Url.Content($"~/images/SteelTheme/WhiteKing.png")" />
         </div>
         <div class="col-lg-6 column board-col">
             @{
@@ -70,7 +70,7 @@
 </div>
 <script>
     $(function () {
-        BoardEditorInit();
+        boardEditorInit();
 
         $('#variant-board-editor').change(updateBoardEditor);
         $('#position-board-editor').change(updateBoardEditor);
@@ -84,5 +84,17 @@
                 $('#copied').delay(5000).fadeOut();
             });
         });
+
+        var templateSelected = function (evt) {
+            if (evt.type === 'keydown' && evt.keyCode !== 32 && evt.keyCode !== 13) {
+                return;
+            }
+
+            $('.selected-add').removeClass('selected-add');
+            $(evt.target).addClass('selected-add');
+        }
+
+        $('.template-piece').click(templateSelected);
+        $('.template-piece').keydown(templateSelected);
     });
 </script>
