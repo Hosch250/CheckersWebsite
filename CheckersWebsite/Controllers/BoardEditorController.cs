@@ -1,5 +1,6 @@
 ﻿using CheckersWebsite.Enums;
 using CheckersWebsite.Facade;
+using CheckersWebsite.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
