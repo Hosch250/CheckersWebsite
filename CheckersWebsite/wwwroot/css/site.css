@@ -257,3 +257,7 @@ input[type="radio"].toggle:checked + label {
     margin-bottom: 15px;
     color: red;
 }
+
+.input-group-addon label {
+    margin-bottom: 0;
+}
