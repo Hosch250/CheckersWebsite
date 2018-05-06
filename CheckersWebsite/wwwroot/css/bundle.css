@@ -6827,8 +6827,10 @@ nav .column {
 }
 
 .move-history {
-    border: 1px solid black;
+    border: 1px solid grey;
     display: grid;
+    background-color: grey;
+    border-radius: 10px;
     grid-template-rows: auto 80px;
     padding: 1px;
 }
