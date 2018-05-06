@@ -6827,8 +6827,9 @@ nav .column {
 }
 
 .move-history {
-    border: 1px solid black;
     display: grid;
+    border-radius: 20px;
+    background-color: whitesmoke;
     grid-template-rows: auto 80px;
     padding: 1px;
 }
@@ -7018,4 +7019,10 @@ input[type="radio"].toggle:checked + label {
 
 .input-group-addon label {
     margin-bottom: 0;
+}
+
+.opponent-column {
+    background: whitesmoke;
+    border-radius: 20px;
+    padding: 10px 10px 10px 20px;
 }

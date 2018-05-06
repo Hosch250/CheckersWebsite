@@ -14,13 +14,13 @@
 }
 <div><b>@Resources.ResourceManager.GetString(((Variant)Model.Variant).ToString())</b></div>
 <div>
-    <svg width="20" height="20" style="background-color: white" version="1.1" xmlns="http://www.w3.org/2000/svg">
+    <svg width="20" height="20" style="background-color: whitesmoke" version="1.1" xmlns="http://www.w3.org/2000/svg">
         <circle cx="10" cy="15" r="4" stroke="black" fill="white" stroke-width="2"></circle>
     </svg>
     <span id="white-player-text" class="@(playerID == whitePlayerID ? "bold" : "")">@(whitePlayerID != ComputerPlayer.ComputerPlayerID ? Resources.Human : Resources.ResourceManager.GetString($"Computer{whiteStrength}"))</span>
 </div>
 <div>
-    <svg width="20" height="20" style="background-color: white" version="1.1" xmlns="http://www.w3.org/2000/svg">
+    <svg width="20" height="20" style="background-color: whitesmoke" version="1.1" xmlns="http://www.w3.org/2000/svg">
         <circle cx="10" cy="15" r="4" stroke="black" fill="black" stroke-width="2"></circle>
     </svg>
     <span id="black-player-text" class="@(playerID == blackPlayerID ? "bold" : "")">@(blackPlayerID != ComputerPlayer.ComputerPlayerID ? Resources.Human : Resources.ResourceManager.GetString($"Computer{blackStrength}"))</span>
