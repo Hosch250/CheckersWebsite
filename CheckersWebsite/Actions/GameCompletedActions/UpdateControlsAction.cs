@@ -1,5 +1,6 @@
 ﻿using CheckersWebsite.Controllers;
 using CheckersWebsite.Enums;
+using CheckersWebsite.MediatR;
 using CheckersWebsite.SignalR;
 using MediatR;
 using Microsoft.AspNetCore.SignalR;

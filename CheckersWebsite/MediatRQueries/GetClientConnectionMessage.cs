@@ -1,7 +1,7 @@
 ﻿using System;
 using MediatR;
 
-namespace CheckersWebsite.Controllers
+namespace CheckersWebsite.MediatR
 {
     public class GetClientConnectionMessage : IRequest<string>
     {

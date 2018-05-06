@@ -6,6 +6,7 @@ using CheckersWebsite.Enums;
 using MediatR;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using CheckersWebsite.Actions.MoveActions;
 
 namespace CheckersWebsite.Controllers
 {
