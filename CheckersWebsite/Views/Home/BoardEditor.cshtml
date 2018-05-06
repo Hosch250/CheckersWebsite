@@ -10,10 +10,10 @@
             @{ 
                 var theme = (Theme)ViewData["theme"];
             }
-            <img id="piece-black-checker" class="template-piece" src="@Url.Content($"~/images/{theme}Theme/BlackChecker.png")" />
-            <img id="piece-black-king" class="template-piece" src="@Url.Content($"~/images/{theme}Theme/BlackKing.png")" />
-            <img id="piece-white-checker" class="template-piece" src="@Url.Content($"~/images/{theme}Theme/WhiteChecker.png")" />
-            <img id="piece-white-king" class="template-piece" src="@Url.Content($"~/images/{theme}Theme/WhiteKing.png")" />
+            <img id="piece-black-checker" tabindex="0" title="Black Checker Template" class="template-piece" src="@Url.Content($"~/images/{theme}Theme/BlackChecker.png")" />
+            <img id="piece-black-king" tabindex="0" title="Black King Template" class="template-piece" src="@Url.Content($"~/images/{theme}Theme/BlackKing.png")" />
+            <img id="piece-white-checker" tabindex="0" title="White Checker Template" class="template-piece" src="@Url.Content($"~/images/{theme}Theme/WhiteChecker.png")" />
+            <img id="piece-white-king" tabindex="0" title="White King Template" class="template-piece" src="@Url.Content($"~/images/{theme}Theme/WhiteKing.png")" />
         </div>
         <div class="col-lg-6 column board-col">
             @{
@@ -90,8 +90,10 @@
         });
 
         var selectTemplatePiece = function (evt) {
-            console.log('test');
-            console.log(evt.target);
+            if (evt.type === 'keydown' && evt.keyCode !== 32 && evt.keyCode !== 13) {
+                return;
+            }
+
             $('.selected-add').removeClass('selected-add');
             $(evt.target).addClass('selected-add');
 
@@ -100,5 +102,6 @@
         }
 
         $('.template-piece').mousedown(selectTemplatePiece);
+        $('.template-piece').keydown(selectTemplatePiece);
     });
 </script>

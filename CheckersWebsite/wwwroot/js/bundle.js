@@ -462,9 +462,24 @@ var boardEditorGrabClientCoords = null;
 function boardEditorInit() {
     if ($('.board-editor').length === 1) {
         $('*').on('mousedown', boardEditorGrab);
+        $('*').on('keydown', boardEditorKeyPress);
         $('*').on('dragend', boardEditorDrop);
         $('*').on('mouseup', boardEditorDrop);
         $('*').on('click', boardEditorClick);
+    }
+}
+function boardEditorKeyPress(evt) {
+    if (evt.keyCode !== 32 && evt.keyCode !== 13) {
+        return true;
+    }
+    if (boardEditorDragTarget && $('.selected-add').length === 0 || $('.selected-add').length !== 0) {
+        boardEditorDrop(evt);
+        return false;
+    }
+    else {
+        boardEditorGrab(evt);
+        $('.drag').removeClass('drag');
+        return false;
     }
 }
 function boardEditorGrab(evt) {
@@ -515,14 +530,10 @@ function boardEditorDrop(evt) {
 }
 ;
 function boardEditorMovePiece(evt) {
-    var dropClientCoords = {
-        x: boardEditorGrabClientCoords.x + (evt.screenX - boardEditorGrabScreenCoords.x),
-        y: boardEditorGrabClientCoords.y + (evt.screenY - boardEditorGrabScreenCoords.y)
-    };
-    var boundingSquare = getBoundingSquare(dropClientCoords);
+    var boundingSquare = getBoundingSquare(evt);
     if (boundingSquare) {
         var coord = boundingSquare.id.replace('square', '');
-        var startCoord = evt.target.id.replace('piece', '');
+        var startCoord = boardEditorDragTarget.id.replace('piece', '');
         var row = parseInt(coord[0]);
         var col = parseInt(coord[1]);
         var startRow = parseInt(startCoord[0]);
@@ -542,24 +553,7 @@ function boardEditorMovePiece(evt) {
     }
 }
 function boardEditorAddPieceToBoard(evt) {
-    var dropClientCoords;
-    if (evt.type === 'dragend') {
-        var dropScreenCoords = {
-            x: evt.screenX,
-            y: evt.screenY
-        };
-        dropClientCoords = {
-            x: boardEditorGrabClientCoords.x + (evt.screenX - boardEditorGrabScreenCoords.x),
-            y: boardEditorGrabClientCoords.y + (evt.screenY - boardEditorGrabScreenCoords.y)
-        };
-    }
-    else {
-        dropClientCoords = {
-            x: evt.clientX,
-            y: evt.clientY
-        };
-    }
-    var boundingSquare = getBoundingSquare(dropClientCoords);
+    var boundingSquare = getBoundingSquare(evt);
     if (boundingSquare) {
         var player;
         var pieceType;
@@ -585,12 +579,32 @@ function boardEditorAddPieceToBoard(evt) {
         var row = parseInt(coord[0]);
         var col = parseInt(coord[1]);
         $("#piece" + row + col).remove();
-        var newPiece = "<img id=\"piece" + row + col + "\" class=\"piece\" player=\"" + player + "\" pieceType=\"" + pieceType + "\" src=\"/images/SteelTheme/" + player + pieceType + ".png\" style=\"grid-row: " + (row + 1) + "; grid-column: " + (col + 1) + "\" />";
+        var newPiece = "<img id=\"piece" + row + col + "\"\n                        class=\"piece\"\n                        tabindex=\"0\"\n                        title=\"" + player + " " + pieceType + " on row " + row + " column " + col + "\"\n                        player=\"" + player + "\"\n                        pieceType=\"" + pieceType + "\"\n                        src=\"" + $('.selected-add').attr('src') + "\"\n                        style=\"grid-row: " + (row + 1) + "; grid-column: " + (col + 1) + "\" />";
         $('.board').append(newPiece);
         $('.selected-add').removeClass('selected-add');
     }
 }
-function getBoundingSquare(dropClientCoords) {
+function getBoundingSquare(evt) {
+    var dropClientCoords;
+    if (evt.type === 'dragend') {
+        var dropScreenCoords = {
+            x: evt.screenX,
+            y: evt.screenY
+        };
+        dropClientCoords = {
+            x: boardEditorGrabClientCoords.x + (evt.screenX - boardEditorGrabScreenCoords.x),
+            y: boardEditorGrabClientCoords.y + (evt.screenY - boardEditorGrabScreenCoords.y)
+        };
+    }
+    else if (evt.type === 'keydown') {
+        return $('#' + evt.target.id.replace('piece', 'square'))[0];
+    }
+    else {
+        dropClientCoords = {
+            x: evt.clientX,
+            y: evt.clientY
+        };
+    }
     var squares = $('.drop-target');
     for (var i = 0; i < squares.length; i++) {
         var el = squares[i];
