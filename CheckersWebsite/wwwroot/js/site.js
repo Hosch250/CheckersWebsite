@@ -93,7 +93,6 @@ function displayGame(moveID) {
         dataType: 'html',
         method: 'POST',
         success: function (data) {
-            console.log(data);
             $('.board')[0].outerHTML = data;
             GameInit();
         }

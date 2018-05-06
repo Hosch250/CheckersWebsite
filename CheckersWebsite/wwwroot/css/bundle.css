@@ -6830,7 +6830,7 @@ nav .column {
     border: 1px solid black;
     display: grid;
     grid-template-rows: auto 80px;
-    padding: 0;
+    padding: 1px;
 }
 
 ol.moves li span {
@@ -6854,7 +6854,7 @@ input[type="radio"].toggle:hover + label {
 }
 
 input[type="radio"].toggle:checked + label {
-    background: blue;
+    background: #3B444B;
     color: white;
 }
 
