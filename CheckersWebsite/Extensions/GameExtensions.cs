@@ -89,7 +89,7 @@ namespace CheckersWebsite.Extensions
                 GameStatus = (Status)game.GameStatus,
                 ID = game.ID,
                 InitialPosition = game.InitialPosition,
-                Turns = game.Turns.Select(s => s.ToPdnTurnViewModel()).ToList(),
+                Turns = game.Turns?.Select(s => s.ToPdnTurnViewModel()).ToList() ?? new List<PdnTurnViewModel>(),
                 Variant = (Variant)game.Variant,
                 WhitePlayerID = game.WhitePlayerID,
                 WhitePlayerStrength = game.WhitePlayerStrength

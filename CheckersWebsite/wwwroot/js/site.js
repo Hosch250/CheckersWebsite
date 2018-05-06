@@ -230,6 +230,12 @@ function connectToSignalR() {
     signalRConnection.on('SetHtml', function (selector, value) {
         $("" + selector).html(value);
     });
+    signalRConnection.on('GameCreated', function (html) {
+        $('#lobby').append(html);
+    });
+    signalRConnection.on('GameJoined', function (id) {
+        $("[href=\"~/Home/Game/" + id + "\"").closest('tr').remove();
+    });
     signalRConnection.start().then(function () {
         var playerID = getCookie('playerID');
         if (playerID === '') {

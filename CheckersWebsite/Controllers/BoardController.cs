@@ -376,6 +376,8 @@ namespace CheckersWebsite.Controllers
                 _signalRHub.Clients.All.InvokeAsync("SetAttribute", "resign", "title", "Resign");
                 _signalRHub.Clients.All.InvokeAsync("SetHtml", "#resign .sr-only", "Resign");
 
+                _signalRHub.Clients.All.InvokeAsync("GameJoined", id);
+
                 var viewData = new Dictionary<string, object>
                 {
                     ["playerID"] = playerID,

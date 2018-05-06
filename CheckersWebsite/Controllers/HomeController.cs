@@ -173,6 +173,14 @@ namespace CheckersWebsite.Controllers
 
             _context.Games.Add(newGame);
             _context.SaveChanges();
+
+            var lobbyEntry =
+                    $@"<tr>
+                        <td><a href=""~/Home/Game/{newGame.ID}"">{Resources.Resources.ResourceManager.GetString(((Variant)newGame.Variant).ToString())}</a></td>
+                        <td>{Resources.Resources.ResourceManager.GetString(((Status)newGame.GameStatus).ToString())}</td>
+                    </tr>";
+
+            _signalRHub.Clients.All.InvokeAsync("GameCreated", lobbyEntry);
             
             return Redirect($"/Home/Game/{newGame.ID}");
         }
