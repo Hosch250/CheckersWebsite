@@ -1,13 +1,11 @@
-﻿using CheckersWebsite.SignalR;
-using Microsoft.AspNetCore.SignalR;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Linq;
-using System.Threading.Tasks;
 using CheckersWebsite.Extensions;
 using System.Threading;
-using CheckersWebsite.Views.Controls;
 using CheckersWebsite.Enums;
+using MediatR;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace CheckersWebsite.Controllers
 {
@@ -16,13 +14,13 @@ namespace CheckersWebsite.Controllers
         public static Guid ComputerPlayerID { get; } = new Guid("BB04EFBB-77B1-4EE3-879D-197B3A6B14BF");
 
         private readonly Database.Context _context;
-        private readonly IHubContext<SignalRHub> _signalRHub;
+        private readonly IMediator _mediator;
 
         public ComputerPlayer(Database.Context context,
-            IHubContext<SignalRHub> signalRHub)
+            IMediator mediator)
         {
             _context = context;
-            _signalRHub = signalRHub;
+            _mediator = mediator;
         }
 
         private string GetClientConnection(Guid id)
@@ -30,113 +28,71 @@ namespace CheckersWebsite.Controllers
             return _context.Players.Find(id).ConnectionID;
         }
 
-        internal void DoComputerMove(Guid id)
+        internal Task DoComputerMove(Guid id)
         {
-            var game = _context.Games.FirstOrDefault(f => f.ID == id);
-
-            if (game.GameStatus != (int)Status.InProgress)
+            return Task.Run(() =>
             {
-                return;
-            }
+                var game = _context.Games
+                    .Include("Turns")
+                    .Include("Turns.Moves")
+                    .FirstOrDefault(f => f.ID == id);
 
-            if (game.CurrentPlayer == (int)Player.Black && game.BlackPlayerID != ComputerPlayerID ||
-                game.CurrentPlayer == (int)Player.White && game.WhitePlayerID != ComputerPlayerID)
-            {
-                return;
-            }
-
-            var controller = game.ToGameController();
-            var move = controller.Move(controller.GetMove(game.CurrentPlayer == (int)Player.Black ? game.BlackPlayerStrength : game.WhitePlayerStrength, CancellationToken.None));
-            move.ID = game.ID;
-
-            var turn = move.MoveHistory.Last().ToPdnTurn();
-            if (game.Turns.Any(t => t.MoveNumber == turn.MoveNumber))
-            {
-                var recordedTurn = game.Turns.Single(s => s.MoveNumber == turn.MoveNumber);
-                Database.PdnMove newMove;
-                switch (controller.CurrentPlayer)
+                if (game.GameStatus != (int)Status.InProgress)
                 {
-                    case Player.White:
-                        newMove = move.MoveHistory.Last().WhiteMove.ToPdnMove();
-                        break;
-                    case Player.Black:
-                        newMove = move.MoveHistory.Last().BlackMove.ToPdnMove();
-                        break;
-                    default:
-                        throw new ArgumentException();
+                    return;
                 }
 
-                var existingMove = recordedTurn.Moves.FirstOrDefault(a => a.Player == (int)controller.CurrentPlayer);
-                if (existingMove != null)
+                if (game.CurrentPlayer == (int)Player.Black && game.BlackPlayerID != ComputerPlayerID ||
+                    game.CurrentPlayer == (int)Player.White && game.WhitePlayerID != ComputerPlayerID)
                 {
-                    recordedTurn.Moves.Remove(existingMove);
+                    return;
                 }
-                recordedTurn.Moves.Add(newMove);
 
-                game.Fen = newMove.ResultingFen;
-            }
-            else
-            {
-                game.Turns.Add(move.MoveHistory.Last().ToPdnTurn());
-                game.Fen = turn.Moves.Single().ResultingFen;
-            }
+                var controller = game.ToGameController();
+                var move = controller.Move(controller.GetMove(game.CurrentPlayer == (int)Player.Black ? game.BlackPlayerStrength : game.WhitePlayerStrength, CancellationToken.None));
+                move.ID = game.ID;
 
-            game.CurrentPosition = move.GetCurrentPosition();
-            game.CurrentPlayer = (int)move.CurrentPlayer;
-            game.GameStatus = (int)move.GetGameStatus();
-            game.RowVersion = DateTime.Now;
-
-            _context.SaveChanges();
-
-            Dictionary<string, object> GetViewData(Guid localPlayerID, Player orientation)
-            {
-                return new Dictionary<string, object>
+                var turn = move.MoveHistory.Last().ToPdnTurn();
+                if (game.Turns != null && game.Turns.Any(t => t.MoveNumber == turn.MoveNumber))
                 {
-                    ["playerID"] = localPlayerID,
-                    ["orientation"] = orientation,
-                    ["theme"] = Theme.Steel,
-                    ["blackStrength"] = game.BlackPlayerStrength,
-                    ["whiteStrength"] = game.WhitePlayerStrength
-                };
-            }
+                    var recordedTurn = game.Turns.Single(s => s.MoveNumber == turn.MoveNumber);
+                    Database.PdnMove newMove;
+                    switch (controller.CurrentPlayer)
+                    {
+                        case Player.White:
+                            newMove = move.MoveHistory.Last().WhiteMove.ToPdnMove();
+                            break;
+                        case Player.Black:
+                            newMove = move.MoveHistory.Last().BlackMove.ToPdnMove();
+                            break;
+                        default:
+                            throw new ArgumentException();
+                    }
 
-            var viewModel = game.ToGameViewModel();
+                    var existingMove = recordedTurn.Moves.FirstOrDefault(a => a.Player == (int)controller.CurrentPlayer);
+                    if (existingMove != null)
+                    {
+                        recordedTurn.Moves.Remove(existingMove);
+                    }
+                    recordedTurn.Moves.Add(newMove);
 
-            if (game.BlackPlayerID != ComputerPlayerID)
-            {
-                _signalRHub.Clients.Client(GetClientConnection(game.BlackPlayerID)).InvokeAsync("UpdateBoard", id,
-                    ComponentGenerator.GetBoard(viewModel, GetViewData(game.BlackPlayerID, Player.Black)),
-                    ComponentGenerator.GetBoard(viewModel, GetViewData(game.BlackPlayerID, Player.White)));
-            }
+                    game.Fen = newMove.ResultingFen;
+                }
+                else
+                {
+                    game.Turns.Add(move.MoveHistory.Last().ToPdnTurn());
+                    game.Fen = turn.Moves.Single().ResultingFen;
+                }
 
-            if (game.WhitePlayerID != ComputerPlayerID)
-            {
-                _signalRHub.Clients.Client(GetClientConnection(game.WhitePlayerID)).InvokeAsync("UpdateBoard", id,
-                    ComponentGenerator.GetBoard(viewModel, GetViewData(game.WhitePlayerID, Player.Black)),
-                    ComponentGenerator.GetBoard(viewModel, GetViewData(game.WhitePlayerID, Player.White)));
-            }
+                game.CurrentPosition = move.GetCurrentPosition();
+                game.CurrentPlayer = (int)move.CurrentPlayer;
+                game.GameStatus = (int)move.GetGameStatus();
+                game.RowVersion = DateTime.Now;
 
-            _signalRHub.Clients.AllExcept(new List<string> { GetClientConnection(game.BlackPlayerID), GetClientConnection(game.WhitePlayerID) }).InvokeAsync("UpdateBoard", id,
-                ComponentGenerator.GetBoard(viewModel, GetViewData(Guid.Empty, Player.Black)),
-                ComponentGenerator.GetBoard(viewModel, GetViewData(Guid.Empty, Player.White)));
+                _context.SaveChanges();
 
-            _signalRHub.Clients.All.InvokeAsync("UpdateMoves", ComponentGenerator.GetMoveControl(viewModel.Turns));
-            _signalRHub.Clients.All.InvokeAsync("UpdateOpponentState", ((Player)game.CurrentPlayer).ToString(), move.GetGameStatus().ToString());
-
-            if (game.Turns.Count == 1 && game.Turns.ElementAt(0).Moves.Count == 1)
-            {
-                _signalRHub.Clients.All.InvokeAsync("SetAttribute", "undo", "disabled", "");
-            }
-            else
-            {
-                _signalRHub.Clients.All.InvokeAsync("RemoveAttribute", "undo", "disabled");
-            }
-
-            _signalRHub.Clients.All.InvokeAsync(move.IsDrawn() || move.IsWon() ? "RemoveClass" : "AddClass", "new-game", "hide");
-            _signalRHub.Clients.All.InvokeAsync(move.IsDrawn() || move.IsWon() ? "AddClass" : "RemoveClass", "resign", "hide");
-
-            DoComputerMove(id);
-            return;
+                _mediator.Publish(new OnMoveNotification(game.ToGameViewModel())).Wait();
+            });
         }
     }
 }

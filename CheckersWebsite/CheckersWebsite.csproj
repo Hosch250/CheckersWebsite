@@ -31,6 +31,8 @@
   <ItemGroup>
     <PackageReference Include="FSharp.Core" Version="4.3.4" />
     <PackageReference Include="jquery.TypeScript.DefinitelyTyped" Version="3.1.2" />
+    <PackageReference Include="MediatR" Version="4.1.0" />
+    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="4.1.0" />
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.6" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.0.3" />
     <PackageReference Include="underscore.TypeScript.DefinitelyTyped" Version="1.6.8" />
@@ -97,7 +99,7 @@
     <Content Update="Views\Controls\CheckersBoardEditor.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Update="Views\Controls\Game.cshtml">
+    <Content Update="Views\Home\Game.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Update="Views\Controls\Opponents.cshtml">

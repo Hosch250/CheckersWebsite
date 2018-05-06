@@ -9,22 +9,29 @@ using System.Linq;
 using CheckersWebsite.Views.Controls;
 using CheckersWebsite.Enums;
 using CheckersWebsite.Extensions;
+using MediatR;
+using CheckersWebsite.Actions.MoveActions;
+using CheckersWebsite.Actions.GameJoinedActions;
+using CheckersWebsite.Actions.GameCompletedActions;
 
 namespace CheckersWebsite.Controllers
 {
     public class BoardController : Controller
     {
+        private readonly IMediator _mediator;
         private readonly Database.Context _context;
         private readonly IHubContext<SignalRHub> _signalRHub;
         private readonly ComputerPlayer _computerPlayer;
 
         public BoardController(Database.Context context,
             IHubContext<SignalRHub> signalRHub,
-            ComputerPlayer computerPlayer)
+            ComputerPlayer computerPlayer,
+            IMediator mediator)
         {
             _context = context;
             _signalRHub = signalRHub;
             _computerPlayer = computerPlayer;
+            _mediator = mediator;
         }
 
         private Theme GetThemeOrDefault()
@@ -116,51 +123,9 @@ namespace CheckersWebsite.Controllers
             game.RowVersion = DateTime.Now;
             _context.SaveChanges();
 
-            Dictionary<string, object> GetViewData(Guid localPlayerID, Player orientation)
-            {
-                return new Dictionary<string, object>
-                {
-                    ["playerID"] = localPlayerID,
-                    ["orientation"] = orientation
-                };
-            }
-
             var viewModel = game.ToGameViewModel();
-
-            if (game.BlackPlayerID != ComputerPlayer.ComputerPlayerID)
-            {
-                _signalRHub.Clients.Client(GetClientConnection(game.BlackPlayerID)).InvokeAsync("UpdateBoard", id,
-                    ComponentGenerator.GetBoard(viewModel, GetViewData(game.BlackPlayerID, Player.Black)),
-                    ComponentGenerator.GetBoard(viewModel, GetViewData(game.BlackPlayerID, Player.White)));
-            }
-
-            if (game.WhitePlayerID != ComputerPlayer.ComputerPlayerID)
-            {
-                _signalRHub.Clients.Client(GetClientConnection(game.WhitePlayerID)).InvokeAsync("UpdateBoard", id,
-                    ComponentGenerator.GetBoard(viewModel, GetViewData(game.WhitePlayerID, Player.Black)),
-                    ComponentGenerator.GetBoard(viewModel, GetViewData(game.WhitePlayerID, Player.White)));
-            }
-
-            _signalRHub.Clients.AllExcept(new List<string> { GetClientConnection(game.BlackPlayerID), GetClientConnection(game.WhitePlayerID) }).InvokeAsync("UpdateBoard", id,
-                ComponentGenerator.GetBoard(viewModel, GetViewData(Guid.Empty, Player.Black)),
-                ComponentGenerator.GetBoard(viewModel, GetViewData(Guid.Empty, Player.White)));
-
-            _signalRHub.Clients.All.InvokeAsync("UpdateMoves", ComponentGenerator.GetMoveControl(viewModel.Turns));
-            _signalRHub.Clients.All.InvokeAsync("UpdateOpponentState", ((Player)game.CurrentPlayer).ToString(), move.GetGameStatus().ToString());
-
-            if (game.Turns.Count == 1 && game.Turns.ElementAt(0).Moves.Count == 1)
-            {
-                _signalRHub.Clients.All.InvokeAsync("SetAttribute", "undo", "disabled", "");
-            }
-            else
-            {
-                _signalRHub.Clients.All.InvokeAsync("RemoveAttribute", "undo", "disabled");
-            }
-
-            _signalRHub.Clients.All.InvokeAsync(move.IsDrawn() || move.IsWon() ? "RemoveClass" : "AddClass", "new-game", "hide");
-            _signalRHub.Clients.All.InvokeAsync(move.IsDrawn() || move.IsWon() ? "AddClass" : "RemoveClass", "resign", "hide");
-
-            _computerPlayer.DoComputerMove(game.ID);
+            _mediator.Publish(new OnMoveNotification(viewModel)).Wait();
+            
             return Content("");
         }
 
@@ -225,45 +190,7 @@ namespace CheckersWebsite.Controllers
             game.RowVersion = DateTime.Now;
             _context.SaveChanges();
 
-            var controller = game.ToGameController();
-
-            Dictionary<string, object> GetViewData(Guid localPlayerID, Player orientation)
-            {
-                return new Dictionary<string, object>
-                {
-                    ["playerID"] = localPlayerID,
-                    ["orientation"] = orientation
-                };
-            }
-
-            var viewModel = game.ToGameViewModel();
-
-            _signalRHub.Clients.Client(GetClientConnection(game.BlackPlayerID)).InvokeAsync("UpdateBoard", id,
-                ComponentGenerator.GetBoard(viewModel, GetViewData(game.BlackPlayerID, Player.Black)),
-                ComponentGenerator.GetBoard(viewModel, GetViewData(game.BlackPlayerID, Player.White)));
-
-            _signalRHub.Clients.Client(GetClientConnection(game.WhitePlayerID)).InvokeAsync("UpdateBoard", id,
-                ComponentGenerator.GetBoard(viewModel, GetViewData(game.WhitePlayerID, Player.Black)),
-                ComponentGenerator.GetBoard(viewModel, GetViewData(game.WhitePlayerID, Player.White)));
-
-            _signalRHub.Clients.AllExcept(new List<string> { GetClientConnection(game.BlackPlayerID), GetClientConnection(game.WhitePlayerID) }).InvokeAsync("UpdateBoard", id,
-                ComponentGenerator.GetBoard(viewModel, GetViewData(Guid.Empty, Player.Black)),
-                ComponentGenerator.GetBoard(viewModel, GetViewData(Guid.Empty, Player.White)));
-
-            _signalRHub.Clients.All.InvokeAsync("UpdateMoves", ComponentGenerator.GetMoveControl(viewModel.Turns));
-
-            _signalRHub.Clients.All.InvokeAsync("UpdateOpponentState", ((Player)game.CurrentPlayer).ToString(), Status.InProgress.ToString());
-
-            if (game.Turns.Count == 1 && game.Turns.ElementAt(0).Moves.Count == 1)
-            {
-                _signalRHub.Clients.All.InvokeAsync("SetAttribute", "undo", "disabled", "");
-            }
-            else
-            {
-                _signalRHub.Clients.All.InvokeAsync("RemoveAttribute", "undo", "disabled");
-            }
-
-            _computerPlayer.DoComputerMove(game.ID);
+            _mediator.Publish(new OnMoveNotification(game.ToGameViewModel())).Wait();
             return Content("");
         }
 
@@ -297,9 +224,7 @@ namespace CheckersWebsite.Controllers
             game.RowVersion = DateTime.Now;
             _context.SaveChanges();
 
-            _signalRHub.Clients.All.InvokeAsync("UpdateOpponentState", ((Player)game.CurrentPlayer).ToString(), game.GameStatus.ToString());
-            _signalRHub.Clients.All.InvokeAsync("RemoveClass", "new-game", "hide");
-            _signalRHub.Clients.All.InvokeAsync("AddClass", "resign", "hide");
+            _mediator.Publish(new OnGameCompletedNotification(game.ToGameViewModel()));
 
             return Content("");
         }
@@ -366,17 +291,8 @@ namespace CheckersWebsite.Controllers
             try
             {
                 _context.SaveChanges();
-
-                _signalRHub.Clients.All.InvokeAsync("AddClass", "join", "hide");
-                _signalRHub.Clients.Client(GetClientConnection(playerID.Value)).InvokeAsync("AddClass", game.BlackPlayerID == playerID.Value ? "black-player-text" : "white-player-text", "bold");
-
-                _signalRHub.Clients.Client(GetClientConnection(playerID.Value)).InvokeAsync("AddClass", "new-game", "hide");
-                _signalRHub.Clients.Client(GetClientConnection(playerID.Value)).InvokeAsync("RemoveClass", "resign", "hide");
-
-                _signalRHub.Clients.All.InvokeAsync("SetAttribute", "resign", "title", "Resign");
-                _signalRHub.Clients.All.InvokeAsync("SetHtml", "#resign .sr-only", "Resign");
-
-                _signalRHub.Clients.All.InvokeAsync("GameJoined", id);
+                var gameViewModel = game.ToGameViewModel();
+                _mediator.Publish(new OnGameJoinedNotification(gameViewModel, playerID.Value)).Wait();
 
                 var viewData = new Dictionary<string, object>
                 {
@@ -384,7 +300,7 @@ namespace CheckersWebsite.Controllers
                     ["orientation"] = game.BlackPlayerID == playerID ? Player.Black : Player.White,
                 };
 
-                var board = ComponentGenerator.GetBoard(game.ToGameViewModel(), viewData).Replace("[theme]", GetThemeOrDefault().ToString());
+                var board = ComponentGenerator.GetBoard(gameViewModel, viewData).Replace("[theme]", GetThemeOrDefault().ToString());
                 return Content(board);
             }
             catch (DbUpdateConcurrencyException)

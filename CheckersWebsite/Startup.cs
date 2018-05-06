@@ -1,10 +1,12 @@
 ﻿using CheckersWebsite.Controllers;
 using Database;
+using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System.Reflection;
 
 namespace CheckersWebsite
 {
@@ -25,16 +27,17 @@ namespace CheckersWebsite
             // entity framework
             services.AddEntityFrameworkSqlServer()
                 .AddDbContext<Context>(options =>
-                    options.UseSqlServer(connString)
+                    options.UseSqlServer(connString), ServiceLifetime.Transient
                 );
 
             // Add MVC services to the services container.
             services.AddMvc();
 
             // new context on each request
-            services.AddScoped<Context, Context>();
+            services.AddTransient<Context, Context>();
+            services.AddMediatR();
 
-            services.AddScoped<ComputerPlayer, ComputerPlayer>();
+            services.AddTransient<ComputerPlayer, ComputerPlayer>();
 
             services.AddSignalR();
         }

@@ -785,8 +785,9 @@ var signalRConnection;
 function connectToSignalR() {
     var httpConnection = new signalR.HttpConnection('/signalRHub');
     signalRConnection = new signalR.HubConnection(httpConnection);
-    signalRConnection.on('UpdateBoard', function (id, blackBoard, whiteBoard) {
-        if ($('.board').attr('id').toLowerCase() === id.toLowerCase()) {
+    var lastBoardUpdateTime = new Date();
+    signalRConnection.on('UpdateBoard', function (id, moveDate, blackBoard, whiteBoard) {
+        if ($('.board').attr('id').toLowerCase() === id.toLowerCase() && lastBoardUpdateTime < new Date(moveDate)) {
             var theme = getCookie('theme') || 'Steel';
             switch ($('.board').attr('orientation').toLowerCase()) {
                 case "black":
@@ -797,29 +798,38 @@ function connectToSignalR() {
                     break;
             }
             GameInit();
+            lastBoardUpdateTime = new Date(moveDate);
         }
     });
-    signalRConnection.on('UpdateMoves', function (data) {
-        $('.moves')[0].outerHTML = data;
+    var lastMoveUpdateTime = new Date();
+    signalRConnection.on('UpdateMoves', function (id, moveDate, data) {
+        if ($('.board').attr('id').toLowerCase() === id.toLowerCase() && lastMoveUpdateTime < new Date(moveDate)) {
+            $('.moves')[0].outerHTML = data;
+            lastBoardUpdateTime = new Date(moveDate);
+        }
     });
-    signalRConnection.on('UpdateOpponentState', function (player, winStatus) {
-        switch (winStatus) {
-            case "WhiteWin":
-                $('.player-to-move').html('White Won');
-                $('.win-status').html('1 - 0');
-                break;
-            case "BlackWin":
-                $('.player-to-move').html('Black Won');
-                $('.win-status').html('0 - 1');
-                break;
-            case "Drawn":
-                $('.player-to-move').html('Game Drawn');
-                $('.win-status').html('½ - ½');
-                break;
-            case "InProgress":
-                $('.player-to-move').html(player + "'s Turn");
-                $('.win-status').html('*');
-                break;
+    var lastOpponentStateUpdateTime = new Date();
+    signalRConnection.on('UpdateOpponentState', function (id, moveDate, player, winStatus) {
+        if ($('.board').attr('id').toLowerCase() === id.toLowerCase() && lastOpponentStateUpdateTime < new Date(moveDate)) {
+            switch (winStatus) {
+                case "WhiteWin":
+                    $('.player-to-move').html('White Won');
+                    $('.win-status').html('1 - 0');
+                    break;
+                case "BlackWin":
+                    $('.player-to-move').html('Black Won');
+                    $('.win-status').html('0 - 1');
+                    break;
+                case "Drawn":
+                    $('.player-to-move').html('Game Drawn');
+                    $('.win-status').html('½ - ½');
+                    break;
+                case "InProgress":
+                    $('.player-to-move').html(player + "'s Turn");
+                    $('.win-status').html('*');
+                    break;
+            }
+            lastOpponentStateUpdateTime = new Date(moveDate);
         }
     });
     signalRConnection.on('SetAttribute', function (controlID, attribute, value) {

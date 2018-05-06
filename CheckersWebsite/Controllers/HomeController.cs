@@ -98,15 +98,10 @@ namespace CheckersWebsite.Controllers
             }
 
             ViewData.Add("playerID", playerID);
-            ViewData.Add("blackPlayerID", game.BlackPlayerID);
-            ViewData.Add("whitePlayerID", game.WhitePlayerID);
-            ViewData.Add("orientation", playerID == game.WhitePlayerID ? Player.White : Player.Black);
             ViewData.Add("theme", GetThemeOrDefault());
-            ViewData.Add("blackStrength", game.BlackPlayerStrength);
-            ViewData.Add("whiteStrength", game.WhitePlayerStrength);
+            ViewData.Add("orientation", playerID == game.WhitePlayerID ? Player.White : Player.Black);
 
-            _computerPlayer.DoComputerMove(game.ID);
-            return View("~/Views/Controls/Game.cshtml", game.ToGameViewModel());
+            return View(game.ToGameViewModel());
         }
 
         public ActionResult NewGame(Variant variant, Opponent blackOpponent, Opponent whiteOpponent, int blackStrength, int whiteStrength, string fen)
@@ -174,13 +169,6 @@ namespace CheckersWebsite.Controllers
             _context.Games.Add(newGame);
             _context.SaveChanges();
 
-            var lobbyEntry =
-                    $@"<tr>
-                        <td><a href=""~/Home/Game/{newGame.ID}"">{Resources.Resources.ResourceManager.GetString(((Variant)newGame.Variant).ToString())}</a></td>
-                        <td>{Resources.Resources.ResourceManager.GetString(((Status)newGame.GameStatus).ToString())}</td>
-                    </tr>";
-
-            _signalRHub.Clients.All.InvokeAsync("GameCreated", lobbyEntry);
             
             return Redirect($"/Home/Game/{newGame.ID}");
         }

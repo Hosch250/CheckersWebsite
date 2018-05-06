@@ -31,7 +31,6 @@ namespace CheckersWebsite.SignalR
                 _context.Players.Update(player);
             }
             _context.SaveChanges();
-
             return Task.CompletedTask;
         }
 
