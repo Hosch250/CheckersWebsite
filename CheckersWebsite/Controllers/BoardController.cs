@@ -304,7 +304,7 @@ namespace CheckersWebsite.Controllers
             return Content("");
         }
 
-        public ActionResult DisplayGame(Guid moveID, Player player)
+        public ActionResult DisplayGame(Guid moveID, Player orientation)
         {
             var game = _context.Games
                     .Include("Turns")
@@ -322,7 +322,7 @@ namespace CheckersWebsite.Controllers
             var viewData = new Dictionary<string, object>
             {
                 ["playerID"] = GetPlayerID(),
-                ["orientation"] = player
+                ["orientation"] = orientation
             };
 
             var controller = GameController.FromPosition(Variant.AmericanCheckers, move.ResultingFen);
