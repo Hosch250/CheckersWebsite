@@ -25,7 +25,12 @@ namespace CheckersWebsite.Controllers
             ViewData.Add("theme", GetThemeOrDefault());
 
             var board = position == BoardEditorPosition.Empty ? Board.EmptyBoard() : Board.DefaultBoard(variant);
-            return PartialView("~/Views/Controls/CheckersBoardEditor.cshtml", board);
+            var viewModel = new BoardViewModel
+            {
+                GameBoard = board.GameBoard
+            };
+
+            return PartialView("~/Views/Controls/CheckersBoardEditor.cshtml", viewModel);
         }
 
         public IActionResult GetFEN(Variant variant, Player startingPlayer, List<PieceValueViewModel> pieces)

@@ -7,10 +7,13 @@
     <div class="row board-editor">
         <div class="col-lg-1"></div>
         <div class="col-lg-1 piece-col column">
-            <img id="piece-black-checker" class="template-piece" src="@Url.Content($"~/images/SteelTheme/BlackChecker.png")" />
-            <img id="piece-black-king" class="template-piece" src="@Url.Content($"~/images/SteelTheme/BlackKing.png")" />
-            <img id="piece-white-checker" class="template-piece" src="@Url.Content($"~/images/SteelTheme/WhiteChecker.png")" />
-            <img id="piece-white-king" class="template-piece" src="@Url.Content($"~/images/SteelTheme/WhiteKing.png")" />
+            @{ 
+                var theme = (Theme)ViewData["theme"];
+            }
+            <img id="piece-black-checker" class="template-piece" src="@Url.Content($"~/images/{theme}Theme/BlackChecker.png")" />
+            <img id="piece-black-king" class="template-piece" src="@Url.Content($"~/images/{theme}Theme/BlackKing.png")" />
+            <img id="piece-white-checker" class="template-piece" src="@Url.Content($"~/images/{theme}Theme/WhiteChecker.png")" />
+            <img id="piece-white-king" class="template-piece" src="@Url.Content($"~/images/{theme}Theme/WhiteKing.png")" />
         </div>
         <div class="col-lg-6 column board-col">
             @{
@@ -53,7 +56,8 @@
                                    new SelectListItem
                                    {
                                        Text = Resources.ResourceManager.GetString(s),
-                                       Value = s
+                                       Value = s,
+                                       Selected = s == Player.Black.ToString()
                                    }
                                ),
                                new { @class = "select form-control", id = "player-board-editor" })
