@@ -75,7 +75,7 @@ function boardEditorDrop(evt) {
 }
 ;
 function boardEditorMovePiece(evt) {
-    var boundingSquare = getBoundingSquare(evt);
+    var boundingSquare = getBoardEditorBoundingSquare(evt);
     if (boundingSquare) {
         var coord = boundingSquare.id.replace('square', '');
         var startCoord = boardEditorDragTarget.id.replace('piece', '');
@@ -98,7 +98,7 @@ function boardEditorMovePiece(evt) {
     }
 }
 function boardEditorAddPieceToBoard(evt) {
-    var boundingSquare = getBoundingSquare(evt);
+    var boundingSquare = getBoardEditorBoundingSquare(evt);
     if (boundingSquare) {
         var player;
         var pieceType;
@@ -129,7 +129,7 @@ function boardEditorAddPieceToBoard(evt) {
         $('.selected-add').removeClass('selected-add');
     }
 }
-function getBoundingSquare(evt) {
+function getBoardEditorBoundingSquare(evt) {
     var dropClientCoords;
     if (evt.type === 'dragend') {
         var dropScreenCoords = {

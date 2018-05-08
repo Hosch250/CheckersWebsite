@@ -7,8 +7,24 @@ var GameGrabClientCoords = null;
 function GameInit() {
     if ($('.board-col').length === 1) {
         $('*').on('mousedown', GameGrab);
+        $('*').on('keydown', GameKeyPress);
         $('*').on('dragend', GameDrop);
         $('*').on('mouseup', GameDrop);
+        $('*').on('click', GameClick);
+    }
+}
+function GameKeyPress(evt) {
+    if (evt.keyCode !== 32 && evt.keyCode !== 13) {
+        return true;
+    }
+    if (GameDragTarget) {
+        GameDrop(evt);
+        return false;
+    }
+    else {
+        GameGrab(evt);
+        $('.drag').removeClass('drag');
+        return false;
     }
 }
 function GameGrab(evt) {
@@ -33,6 +49,14 @@ function GameGrab(evt) {
     }
 }
 ;
+function GameClick(evt) {
+    if (!GameDragTarget && evt.target.id.startsWith('square') && $('.selected').length !== 0) {
+        GameDragTarget = $('.selected')[0];
+        GameDrop(evt);
+        return false;
+    }
+    return true;
+}
 function GameDrop(evt) {
     if (GameDragTarget) {
         GameMovePiece(evt);
@@ -45,7 +69,7 @@ function GameMovePiece(evt) {
         x: GameGrabClientCoords.x + (evt.screenX - GameGrabScreenCoords.x),
         y: GameGrabClientCoords.y + (evt.screenY - GameGrabScreenCoords.y)
     };
-    var boundingSquare = getBoundingSquare(dropClientCoords);
+    var boundingSquare = getGameBoundingSquare(evt);
     if (boundingSquare) {
         var coord = boundingSquare.id.replace('square', '');
         var startCoord = evt.target.id.replace('piece', '');
@@ -61,5 +85,39 @@ function GameMovePiece(evt) {
         $(GameDragTarget).css('grid-column', "" + (col + 1));
         boardClick(boundingSquare.id.replace('square', '')[0], boundingSquare.id.replace('square', '')[1]);
     }
+}
+function getGameBoundingSquare(evt) {
+    var dropClientCoords;
+    if (evt.type === 'dragend') {
+        var dropScreenCoords = {
+            x: evt.screenX,
+            y: evt.screenY
+        };
+        dropClientCoords = {
+            x: GameGrabClientCoords.x + (evt.screenX - GameGrabScreenCoords.x),
+            y: GameGrabClientCoords.y + (evt.screenY - GameGrabScreenCoords.y)
+        };
+    }
+    else if (evt.type === 'keydown') {
+        return $('#' + evt.target.id.replace('piece', 'square'))[0];
+    }
+    else {
+        dropClientCoords = {
+            x: evt.clientX,
+            y: evt.clientY
+        };
+    }
+    var squares = $('.drop-target');
+    for (var i = 0; i < squares.length; i++) {
+        var el = squares[i];
+        var boundingRect = el.getBoundingClientRect();
+        if (boundingRect.left <= dropClientCoords.x &&
+            boundingRect.right >= dropClientCoords.x &&
+            boundingRect.top <= dropClientCoords.y &&
+            boundingRect.bottom >= dropClientCoords.y) {
+            return el;
+        }
+    }
+    return null;
 }
 //# sourceMappingURL=dragdrop.js.map

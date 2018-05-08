@@ -88,7 +88,7 @@ function boardEditorDrop(evt) {
 };
 
 function boardEditorMovePiece(evt) {
-    var boundingSquare = getBoundingSquare(evt);
+    var boundingSquare = getBoardEditorBoundingSquare(evt);
 
     if (boundingSquare) {
         var coord = boundingSquare.id.replace('square', '');
@@ -117,7 +117,7 @@ function boardEditorMovePiece(evt) {
 }
 
 function boardEditorAddPieceToBoard(evt) {
-    var boundingSquare = getBoundingSquare(evt);
+    var boundingSquare = getBoardEditorBoundingSquare(evt);
     if (boundingSquare) {
         var player: string;
         var pieceType: string;
@@ -160,7 +160,7 @@ function boardEditorAddPieceToBoard(evt) {
     }
 }
 
-function getBoundingSquare(evt) {
+function getBoardEditorBoundingSquare(evt) {
     var dropClientCoords: { x; y };
     if (evt.type === 'dragend') {
         var dropScreenCoords = {
