@@ -17,14 +17,15 @@
     {
         for (var col = 0; col < 8; col++)
         {
+            var piece = Model[row, col];
+
             <img class="square @(GetAdjustedIndex(col) % 2 == GetAdjustedIndex(row) % 2 ? "" : "drop-target")"
-                 @(GetAdjustedIndex(col) % 2 == GetAdjustedIndex(row) % 2 ? Html.Raw("") : Html.Raw(@"tabindex=""0"""))
+                 @(piece == null ? Html.Raw(@"tabindex=""0""") : Html.Raw(""))
                  title="square on row @row column @col"
                  id="square@(GetAdjustedIndex(row))@(GetAdjustedIndex(col))"
                  src="@Url.Content($"~/images/{theme}Theme/{(GetAdjustedIndex(col) % 2 == GetAdjustedIndex(row) % 2 ? "Light" : "Dark")}{theme}.png")"
                  style="grid-row: @(GetAdjustedIndex(row) + 1); grid-column: @(GetAdjustedIndex(col) + 1)" />
-
-            var piece = Model[row, col];
+                 
             if (piece != null)
             {
                 <img id="piece@(GetAdjustedIndex(row))@(GetAdjustedIndex(col))"

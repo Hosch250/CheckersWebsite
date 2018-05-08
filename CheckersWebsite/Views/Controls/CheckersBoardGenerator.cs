@@ -24,15 +24,16 @@ namespace CheckersWebsite.Views.Controls
                 {
                     for (var col = 0; col < 8; col++)
                     {
+                        var piece = game.Board[row, col];
+
                         write($@"<img class=""square {(GetAdjustedIndex(col) % 2 == GetAdjustedIndex(row) % 2 ? "" : "drop-target")}""" +
-                                  (GetAdjustedIndex(col) % 2 == GetAdjustedIndex(row) % 2 ? "" : @"tabindex=""0""") +
+                                  (piece != null || GetAdjustedIndex(col) % 2 == GetAdjustedIndex(row) % 2 ? "" : @"tabindex=""0""") +
                                   $@"title=""square on row {row} column {col}""" +
                                   $@"onclick=""boardClick({GetAdjustedIndex(row)}, {GetAdjustedIndex(col)})""" +
                                   $@"id=""square{GetAdjustedIndex(row)}{GetAdjustedIndex(col)}""" +
                                   $@"src=""/images/[theme]Theme/{(GetAdjustedIndex(col) % 2 == GetAdjustedIndex(row) % 2 ? "Light" : "Dark")}[theme].png""" +
                                   $@"style=""grid-row: {GetAdjustedIndex(row) + 1}; grid-column: {GetAdjustedIndex(col) + 1}"" />");
 
-                        var piece = game.Board[row, col];
                         if (piece != null)
                         {
                             write($@"<img id=""piece{GetAdjustedIndex(row)}{GetAdjustedIndex(col)}""" +

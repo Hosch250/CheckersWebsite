@@ -240,7 +240,7 @@ input[type="radio"].toggle:checked + label {
 }
 
 .selected-add {
-    border: 5px solid goldenrod;
+    border: 5px solid goldenrod !important;
 }
 
 #copied {
@@ -268,3 +268,9 @@ input[type="radio"].toggle:checked + label {
     border-radius: 20px;
     padding: 10px 10px 10px 20px;
 }
+
+.template-piece:focus,
+.piece:focus,
+.square:focus {
+    border: 5px solid lightblue;
+}                       
