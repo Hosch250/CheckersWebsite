@@ -10,6 +10,8 @@ using Microsoft.AspNetCore.SignalR;
 using CheckersWebsite.SignalR;
 using CheckersWebsite.Enums;
 using CheckersWebsite.ViewModels;
+using CheckersWebsite.Actions.GameCreatedActions;
+using MediatR;
 
 namespace CheckersWebsite.Controllers
 {
@@ -20,14 +22,17 @@ namespace CheckersWebsite.Controllers
         private readonly Database.Context _context;
         private readonly IHubContext<SignalRHub> _signalRHub;
         private readonly ComputerPlayer _computerPlayer;
+        private readonly IMediator _mediator;
 
         public HomeController(Database.Context context,
             IHubContext<SignalRHub> signalRHub,
-            ComputerPlayer computerPlayer)
+            ComputerPlayer computerPlayer,
+            IMediator mediator)
         {
             _context = context;
             _signalRHub = signalRHub;
             _computerPlayer = computerPlayer;
+            _mediator = mediator;
         }
 
         private Guid? GetPlayerID()
@@ -169,7 +174,8 @@ namespace CheckersWebsite.Controllers
             _context.Games.Add(newGame);
             _context.SaveChanges();
 
-            
+            _mediator.Publish(new OnGameCreatedNotification(newGame.ToGameViewModel(), newGame.CurrentPlayer == (int)Player.Black ? newGame.BlackPlayerID : newGame.WhitePlayerID)).Wait();
+
             return Redirect($"/Home/Game/{newGame.ID}");
         }
 
