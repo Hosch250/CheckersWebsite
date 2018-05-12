@@ -204,7 +204,7 @@ function updateBoardEditor() {
 let signalRConnection: any;
 
 function connectToSignalR() {
-    let httpConnection = new signalR.HttpConnection('/signalRHub');
+    let httpConnection = new signalR.HttpConnection('/gameHub');
     signalRConnection = new signalR.HubConnection(httpConnection);
 
     let lastBoardUpdateTime = new Date();
