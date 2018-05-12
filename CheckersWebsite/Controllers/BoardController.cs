@@ -20,11 +20,11 @@ namespace CheckersWebsite.Controllers
     {
         private readonly IMediator _mediator;
         private readonly Database.Context _context;
-        private readonly IHubContext<SignalRHub> _signalRHub;
+        private readonly IHubContext<GameHub> _signalRHub;
         private readonly ComputerPlayer _computerPlayer;
 
         public BoardController(Database.Context context,
-            IHubContext<SignalRHub> signalRHub,
+            IHubContext<GameHub> signalRHub,
             ComputerPlayer computerPlayer,
             IMediator mediator)
         {

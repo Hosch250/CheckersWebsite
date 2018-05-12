@@ -13,10 +13,10 @@ namespace CheckersWebsite.Actions.MoveActions
 {
     public class UpdateBoardAction : INotificationHandler<OnMoveNotification>
     {
-        private readonly IHubContext<SignalRHub> _signalRHub;
+        private readonly IHubContext<GameHub> _signalRHub;
         private readonly Database.Context _context;
         private readonly IMediator _mediator;
-        public UpdateBoardAction(IHubContext<SignalRHub> signalRHub, Database.Context context, IMediator mediator)
+        public UpdateBoardAction(IHubContext<GameHub> signalRHub, Database.Context context, IMediator mediator)
         {
             _signalRHub = signalRHub;
             _context = context;

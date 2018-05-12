@@ -60,7 +60,8 @@ namespace CheckersWebsite
             app.UseWebSockets();
             app.UseSignalR(routes =>
             {
-                routes.MapHub<SignalR.SignalRHub>("signalRHub");
+                routes.MapHub<SignalR.GameHub>("gameHub");
+                routes.MapHub<SignalR.APIHub>("apiHub");
             });
 
             app.UseStaticFiles();

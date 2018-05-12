@@ -12,9 +12,9 @@ namespace CheckersWebsite.Actions.GameJoinedActions
 {
     public class RemoveGameFromLobbyAction : INotificationHandler<OnGameJoinedNotification>
     {
-        private readonly IHubContext<SignalRHub> _signalRHub;
+        private readonly IHubContext<GameHub> _signalRHub;
 
-        public RemoveGameFromLobbyAction(IHubContext<SignalRHub> signalRHub)
+        public RemoveGameFromLobbyAction(IHubContext<GameHub> signalRHub)
         {
             _signalRHub = signalRHub;
         }

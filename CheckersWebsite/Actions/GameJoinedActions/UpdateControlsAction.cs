@@ -14,9 +14,9 @@ namespace CheckersWebsite.Actions.GameJoinedActions
     public class UpdateControlsAction : INotificationHandler<OnGameJoinedNotification>
     {
         private readonly IMediator _mediator;
-        private readonly IHubContext<SignalRHub> _signalRHub;
+        private readonly IHubContext<GameHub> _signalRHub;
 
-        public UpdateControlsAction(IHubContext<SignalRHub> signalRHub, IMediator mediator)
+        public UpdateControlsAction(IHubContext<GameHub> signalRHub, IMediator mediator)
         {
             _signalRHub = signalRHub;
             _mediator = mediator;

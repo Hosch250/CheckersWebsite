@@ -5,11 +5,11 @@ using Microsoft.AspNetCore.SignalR;
 
 namespace CheckersWebsite.SignalR
 {
-    public class SignalRHub : Hub
+    public class GameHub : Hub
     {
         private readonly Database.Context _context;
 
-        public SignalRHub(Database.Context context)
+        public GameHub(Database.Context context)
         {
             _context = context;
         }

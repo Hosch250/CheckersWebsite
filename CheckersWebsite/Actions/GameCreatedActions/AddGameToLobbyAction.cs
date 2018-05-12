@@ -12,9 +12,9 @@ namespace CheckersWebsite.Actions.GameCreatedActions
 {
     public class AddGameToLobbyAction : INotificationHandler<OnGameCreatedNotification>
     {
-        private readonly IHubContext<SignalRHub> _signalRHub;
+        private readonly IHubContext<GameHub> _signalRHub;
 
-        public AddGameToLobbyAction(IHubContext<SignalRHub> signalRHub)
+        public AddGameToLobbyAction(IHubContext<GameHub> signalRHub)
         {
             _signalRHub = signalRHub;
         }

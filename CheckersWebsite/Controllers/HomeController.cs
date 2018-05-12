@@ -20,12 +20,12 @@ namespace CheckersWebsite.Controllers
         private static Random Random = new Random();
 
         private readonly Database.Context _context;
-        private readonly IHubContext<SignalRHub> _signalRHub;
+        private readonly IHubContext<GameHub> _signalRHub;
         private readonly ComputerPlayer _computerPlayer;
         private readonly IMediator _mediator;
 
         public HomeController(Database.Context context,
-            IHubContext<SignalRHub> signalRHub,
+            IHubContext<GameHub> signalRHub,
             ComputerPlayer computerPlayer,
             IMediator mediator)
         {

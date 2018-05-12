@@ -11,9 +11,9 @@ namespace CheckersWebsite.Actions.MoveActions
 {
     public class UpdateMoveHistoryAction : INotificationHandler<OnMoveNotification>
     {
-        private readonly IHubContext<SignalRHub> _signalRHub;
+        private readonly IHubContext<GameHub> _signalRHub;
         private readonly IMediator _mediator;
-        public UpdateMoveHistoryAction(IHubContext<SignalRHub> signalRHub, IMediator mediator)
+        public UpdateMoveHistoryAction(IHubContext<GameHub> signalRHub, IMediator mediator)
         {
             _signalRHub = signalRHub;
             _mediator = mediator;

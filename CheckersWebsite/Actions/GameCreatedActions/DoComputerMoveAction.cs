@@ -10,8 +10,8 @@ namespace CheckersWebsite.Actions.GameCreatedActions
     public class DoComputerMoveAction : INotificationHandler<OnGameCreatedNotification>
     {
         private readonly ComputerPlayer _computerPlayer;
-        private readonly IHubContext<SignalRHub> _signalRHub;
-        public DoComputerMoveAction(IHubContext<SignalRHub> signalRHub, ComputerPlayer computerPlayer)
+        private readonly IHubContext<GameHub> _signalRHub;
+        public DoComputerMoveAction(IHubContext<GameHub> signalRHub, ComputerPlayer computerPlayer)
         {
             _signalRHub = signalRHub;
             _computerPlayer = computerPlayer;
