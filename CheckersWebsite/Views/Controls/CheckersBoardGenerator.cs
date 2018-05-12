@@ -29,7 +29,6 @@ namespace CheckersWebsite.Views.Controls
                         write($@"<img class=""square {(GetAdjustedIndex(col) % 2 == GetAdjustedIndex(row) % 2 ? "" : "drop-target")}""" +
                                   (piece != null || GetAdjustedIndex(col) % 2 == GetAdjustedIndex(row) % 2 ? "" : @"tabindex=""0""") +
                                   $@"title=""square on row {row} column {col}""" +
-                                  $@"onclick=""boardClick({GetAdjustedIndex(row)}, {GetAdjustedIndex(col)})""" +
                                   $@"id=""square{GetAdjustedIndex(row)}{GetAdjustedIndex(col)}""" +
                                   $@"src=""/images/[theme]Theme/{(GetAdjustedIndex(col) % 2 == GetAdjustedIndex(row) % 2 ? "Light" : "Dark")}[theme].png""" +
                                   $@"style=""grid-row: {GetAdjustedIndex(row) + 1}; grid-column: {GetAdjustedIndex(col) + 1}"" />");
