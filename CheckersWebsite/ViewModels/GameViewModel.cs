@@ -1,4 +1,5 @@
 ﻿using CheckersWebsite.Enums;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 
@@ -14,6 +15,8 @@ namespace CheckersWebsite.ViewModels
         public int CurrentPosition { get; set; }
         public string Fen { get; set; }
         public Status GameStatus { get; set; }
+
+        [JsonIgnore]
         public bool DisplayingLastMove { get; set; }
 
         public Guid BlackPlayerID { get; set; }
@@ -23,6 +26,8 @@ namespace CheckersWebsite.ViewModels
         public int WhitePlayerStrength { get; set; }
 
         public List<PdnTurnViewModel> Turns { get; set; }
+
+        [JsonIgnore]
         public BoardViewModel Board { get; set; }
     }
 }
