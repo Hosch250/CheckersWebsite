@@ -22,12 +22,12 @@ namespace CheckersWebsite.Actions.GameCreatedActions
         public Task Handle(OnGameCreatedNotification notification, CancellationToken cancellationToken)
         {
             var lobbyEntry =
-                    $@"<tr>
-                        <td><a href=""~/Home/Game/{notification.ViewModel.ID}"">{Resources.Resources.ResourceManager.GetString(notification.ViewModel.Variant.ToString())}</a></td>
-                        <td>{Resources.Resources.ResourceManager.GetString(notification.ViewModel.GameStatus.ToString())}</td>
-                    </tr>";
+$@"<tr>
+    <td><a href=""~/Home/Game/{notification.ViewModel.ID}"">{Resources.Resources.ResourceManager.GetString(notification.ViewModel.Variant.ToString())}</a></td>
+    <td>{Resources.Resources.ResourceManager.GetString(notification.ViewModel.GameStatus.ToString())}</td>
+</tr>";
 
-            _signalRHub.Clients.All.InvokeAsync("GameCreated", lobbyEntry);
+            _signalRHub.Clients.Group("home").InvokeAsync("GameCreated", lobbyEntry);
             return Task.CompletedTask;
         }
     }

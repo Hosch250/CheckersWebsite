@@ -41,25 +41,35 @@ namespace CheckersWebsite.Actions.MoveActions
         {
             var lastMoveDate = _mediator.Send(new GetLastMoveDateMessage(request.ViewModel)).Result;
 
+            var blackConnection = GetClientConnection(request.ViewModel.BlackPlayerID);
+            var whiteConnection = GetClientConnection(request.ViewModel.WhitePlayerID);
+
             if (request.ViewModel.BlackPlayerID != ComputerPlayer.ComputerPlayerID)
             {
-                _signalRHub.Clients.Client(GetClientConnection(request.ViewModel.BlackPlayerID)).InvokeAsync("UpdateBoard", request.ViewModel.ID, lastMoveDate,
+                _signalRHub.Clients.Client(blackConnection).InvokeAsync("UpdateBoard", request.ViewModel.ID, lastMoveDate,
                     ComponentGenerator.GetBoard(request.ViewModel, GetViewData(request.ViewModel.BlackPlayerID, Player.Black)),
                     ComponentGenerator.GetBoard(request.ViewModel, GetViewData(request.ViewModel.BlackPlayerID, Player.White)));
             }
 
             if (request.ViewModel.WhitePlayerID != ComputerPlayer.ComputerPlayerID)
             {
-                _signalRHub.Clients.Client(GetClientConnection(request.ViewModel.WhitePlayerID)).InvokeAsync("UpdateBoard", request.ViewModel.ID, lastMoveDate,
+                _signalRHub.Clients.Client(whiteConnection).InvokeAsync("UpdateBoard", request.ViewModel.ID, lastMoveDate,
                     ComponentGenerator.GetBoard(request.ViewModel, GetViewData(request.ViewModel.WhitePlayerID, Player.Black)),
                     ComponentGenerator.GetBoard(request.ViewModel, GetViewData(request.ViewModel.WhitePlayerID, Player.White)));
             }
 
+            _signalRHub.Groups.RemoveAsync(blackConnection, request.ViewModel.ID.ToString()).Wait();
+            _signalRHub.Groups.RemoveAsync(whiteConnection, request.ViewModel.ID.ToString()).Wait();
+
             _signalRHub.Clients
-                .AllExcept(new List<string> { GetClientConnection(request.ViewModel.BlackPlayerID), GetClientConnection(request.ViewModel.WhitePlayerID) })
-                .InvokeAsync("UpdateBoard", request.ViewModel.ID, lastMoveDate,
+                .Group(request.ViewModel.ID.ToString())
+                .InvokeAsync("UpdateObserverBoard", request.ViewModel.ID, lastMoveDate,
                     ComponentGenerator.GetBoard(request.ViewModel, GetViewData(Guid.Empty, Player.Black)),
                     ComponentGenerator.GetBoard(request.ViewModel, GetViewData(Guid.Empty, Player.White)));
+
+            _signalRHub.Groups.AddAsync(blackConnection, request.ViewModel.ID.ToString()).Wait();
+            _signalRHub.Groups.AddAsync(whiteConnection, request.ViewModel.ID.ToString()).Wait();
+
             return Task.CompletedTask;
         }
     }

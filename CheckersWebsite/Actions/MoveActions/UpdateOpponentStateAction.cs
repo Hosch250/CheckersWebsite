@@ -21,7 +21,9 @@ namespace CheckersWebsite.Actions.MoveActions
         public Task Handle(OnMoveNotification request, CancellationToken cancellationToken)
         {
             var lastMoveDate = _mediator.Send(new GetLastMoveDateMessage(request.ViewModel)).Result;
-            _signalRHub.Clients.All.InvokeAsync("UpdateOpponentState", request.ViewModel.ID, lastMoveDate, request.ViewModel.CurrentPlayer.ToString(), request.ViewModel.GameStatus.ToString());
+            _signalRHub.Clients
+                .Group(request.ViewModel.ID.ToString())
+                .InvokeAsync("UpdateOpponentState", request.ViewModel.ID, lastMoveDate, request.ViewModel.CurrentPlayer.ToString(), request.ViewModel.GameStatus.ToString());
             return Task.CompletedTask;
         }
     }

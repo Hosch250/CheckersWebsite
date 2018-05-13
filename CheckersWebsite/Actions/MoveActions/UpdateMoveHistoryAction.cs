@@ -23,7 +23,9 @@ namespace CheckersWebsite.Actions.MoveActions
         {
             var lastMoveDate = _mediator.Send(new GetLastMoveDateMessage(request.ViewModel)).Result;
 
-            _signalRHub.Clients.All.InvokeAsync("UpdateMoves", request.ViewModel.ID, lastMoveDate, ComponentGenerator.GetMoveControl(request.ViewModel.Turns));
+            _signalRHub.Clients
+                .Group(request.ViewModel.ID.ToString())
+                .InvokeAsync("UpdateMoves", request.ViewModel.ID, lastMoveDate, ComponentGenerator.GetMoveControl(request.ViewModel.Turns));
             return Task.CompletedTask;
         }
     }

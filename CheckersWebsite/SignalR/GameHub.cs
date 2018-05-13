@@ -9,10 +9,12 @@ namespace CheckersWebsite.SignalR
     public class GameHub : Hub
     {
         private readonly Database.Context _context;
+        private readonly IHttpContextAccessor _contextAccessor;
 
-        public GameHub(Database.Context context)
+        public GameHub(Database.Context context, IHttpContextAccessor contextAccessor)
         {
             _context = context;
+            _contextAccessor = contextAccessor;
         }
 
         public Task MapPlayerConnection(Guid playerID)
@@ -42,7 +44,19 @@ namespace CheckersWebsite.SignalR
 
         public override Task OnConnectedAsync()
         {
-            return base.OnConnectedAsync();
+            var parameter = _contextAccessor.HttpContext.Request.Query["currentPage"].ToString();
+            var group = parameter.Split('/');
+
+            if (parameter == "/" || parameter.ToLower() == "home")
+            {
+                Groups.AddAsync(Context.ConnectionId, "home");
+            }
+            else if (group.Length == 3 && group[0].ToLower() == "home" && group[1].ToLower() == "game")
+            {
+                Groups.AddAsync(Context.ConnectionId, group[2]);
+            }
+
+            return Task.CompletedTask;
         }
 
         public override Task OnDisconnectedAsync(Exception exception)
