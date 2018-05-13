@@ -1,6 +1,5 @@
 ﻿using CheckersWebsite.SignalR;
 using Microsoft.AspNetCore.SignalR;
-using System.Linq;
 using CheckersWebsite.Views.Controls;
 using MediatR;
 using System.Threading;

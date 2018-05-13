@@ -1,5 +1,3 @@
-using System;
-
 namespace CheckersWebsite.Models
 {
     public class ErrorViewModel

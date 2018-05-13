@@ -1,12 +1,8 @@
-﻿using CheckersWebsite.Controllers;
-using CheckersWebsite.Enums;
-using CheckersWebsite.MediatR;
+﻿using CheckersWebsite.MediatR;
 using CheckersWebsite.SignalR;
 using MediatR;
 using Microsoft.AspNetCore.SignalR;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
