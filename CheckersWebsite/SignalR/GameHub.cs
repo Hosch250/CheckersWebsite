@@ -45,7 +45,7 @@ namespace CheckersWebsite.SignalR
         public override Task OnConnectedAsync()
         {
             var parameter = _contextAccessor.HttpContext.Request.Query["currentPage"].ToString();
-            var group = parameter.Split('/');
+            var group = parameter.Split('/', StringSplitOptions.RemoveEmptyEntries);
 
             if (parameter == "/" || parameter.ToLower() == "home")
             {
