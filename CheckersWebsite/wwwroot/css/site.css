@@ -49,6 +49,7 @@ button.btn-link {
     height: 60px;
 }
 
+.center-col,
 .board-col {
     z-index: 99;
     padding: 0;

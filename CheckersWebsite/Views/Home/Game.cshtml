@@ -12,8 +12,8 @@
 }
 
 <div class="row">
-    <div class="col-lg-2"></div>
-    <div class="col-lg-6">
+    <div class="col-lg-2 column"></div>
+    <div class="col-lg-6 column center-col">
         <button id="join" class="btn btn-alert @(blackPlayerID == playerID || whitePlayerID == playerID || blackPlayerID != Guid.Empty && whitePlayerID != Guid.Empty ? "hide" : "")" onclick="joinGame()" title="Join">Join</button>
     </div>
 </div>
@@ -21,7 +21,7 @@
     <div class="col-lg-2 column opponent-column">
         @Html.Partial("~/Views/Controls/Opponents.cshtml", Model)
     </div>
-    <div class="col-lg-6 column board-col match-height-game-control">
+    <div class="col-lg-6 column center-col match-height-game-control board-col">
         <h2 class="player-to-move h3">
             @switch (Model.GameStatus)
             {

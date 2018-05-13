@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.SignalR;
 
 namespace CheckersWebsite.SignalR
@@ -37,6 +38,11 @@ namespace CheckersWebsite.SignalR
         public Task<Guid> GetNewPlayerID()
         {
             return Task.FromResult(Guid.NewGuid());
+        }
+
+        public override Task OnConnectedAsync()
+        {
+            return base.OnConnectedAsync();
         }
 
         public override Task OnDisconnectedAsync(Exception exception)
