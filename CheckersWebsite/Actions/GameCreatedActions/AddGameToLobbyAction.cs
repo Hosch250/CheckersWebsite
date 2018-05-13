@@ -23,7 +23,7 @@ namespace CheckersWebsite.Actions.GameCreatedActions
         {
             var lobbyEntry =
 $@"<tr>
-    <td><a href=""~/Home/Game/{notification.ViewModel.ID}"">{Resources.Resources.ResourceManager.GetString(notification.ViewModel.Variant.ToString())}</a></td>
+    <td><a href=""/Home/Game/{notification.ViewModel.ID}"">{Resources.Resources.ResourceManager.GetString(notification.ViewModel.Variant.ToString())}</a></td>
     <td>{Resources.Resources.ResourceManager.GetString(notification.ViewModel.GameStatus.ToString())}</td>
 </tr>";
 
