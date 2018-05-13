@@ -63,7 +63,7 @@ namespace CheckersWebsite.Actions.MoveActions
 
             _signalRHub.Clients
                 .Group(request.ViewModel.ID.ToString())
-                .InvokeAsync("UpdateObserverBoard", request.ViewModel.ID, lastMoveDate,
+                .InvokeAsync("UpdateBoard", request.ViewModel.ID, lastMoveDate,
                     ComponentGenerator.GetBoard(request.ViewModel, GetViewData(Guid.Empty, Player.Black)),
                     ComponentGenerator.GetBoard(request.ViewModel, GetViewData(Guid.Empty, Player.White)));
 
