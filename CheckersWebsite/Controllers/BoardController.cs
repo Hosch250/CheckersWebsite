@@ -44,6 +44,16 @@ namespace CheckersWebsite.Controllers
             return Enum.Parse(typeof(Theme), Request.Cookies["theme"]) as Theme? ?? Theme.Steel;
         }
 
+        private Guid? GetPlayerID()
+        {
+            if (Request.Cookies.TryGetValue("playerID", out var id))
+            {
+                return Guid.Parse(id);
+            }
+
+            return null;
+        }
+
         private string GetClientConnection(Guid id)
         {
             return _context.Players.Find(id).ConnectionID;
@@ -249,7 +259,7 @@ namespace CheckersWebsite.Controllers
                 ["orientation"] = orientation
             };
 
-            var controller = GameController.FromPosition(Variant.AmericanCheckers, move.ResultingFen);
+            var controller = GameController.FromPosition((Variant) game.Variant, move.ResultingFen);
 
             var viewModel = game.ToGameViewModel();
             viewModel.Board.GameBoard = controller.Board.GameBoard;
@@ -346,16 +356,6 @@ namespace CheckersWebsite.Controllers
 
             var board = ComponentGenerator.GetBoard(viewModel, viewData).Replace("[theme]", GetThemeOrDefault().ToString());
             return Content(board);
-        }
-
-        private Guid? GetPlayerID()
-        {
-            if (Request.Cookies.TryGetValue("playerID", out var id))
-            {
-                return Guid.Parse(id);
-            }
-
-            return null;
         }
     }
 }

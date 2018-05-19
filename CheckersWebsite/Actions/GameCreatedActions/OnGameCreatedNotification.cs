@@ -6,11 +6,11 @@ namespace CheckersWebsite.Actions.GameCreatedActions
 {
     public class OnGameCreatedNotification : INotification
     {
+        public GameViewModel ViewModel { get; }
+
         public OnGameCreatedNotification(GameViewModel viewModel, Guid currentPlayerID)
         {
             ViewModel = viewModel;
         }
-
-        public GameViewModel ViewModel { get; }
     }
 }

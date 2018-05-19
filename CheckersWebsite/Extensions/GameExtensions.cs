@@ -20,6 +20,9 @@ namespace CheckersWebsite.Extensions
                 case Variant.PoolCheckers:
                     pdnMembers = Checkers.GameVariant.PdnMembers.PoolCheckers;
                     break;
+                case Variant.AmericanCheckersOptionalJump:
+                    pdnMembers = Checkers.GameVariant.PdnMembers.AmericanCheckersOptionalJump;
+                    break;
                 default:
                     throw new ArgumentException("Variant Not Implemented");
             }
@@ -59,6 +62,9 @@ namespace CheckersWebsite.Extensions
                         break;
                     case Variant.PoolCheckers:
                         pdnMembers = Checkers.GameVariant.PdnMembers.PoolCheckers;
+                        break;
+                    case Variant.AmericanCheckersOptionalJump:
+                        pdnMembers = Checkers.GameVariant.PdnMembers.AmericanCheckersOptionalJump;
                         break;
                     default:
                         throw new ArgumentException("Variant Not Implemented");

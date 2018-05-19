@@ -79,6 +79,15 @@ namespace CheckersWebsite.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to American Checkers Optional Jump.
+        /// </summary>
+        public static string AmericanCheckersOptionalJump {
+            get {
+                return ResourceManager.GetString("AmericanCheckersOptionalJump", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Black.
         /// </summary>
         public static string Black {

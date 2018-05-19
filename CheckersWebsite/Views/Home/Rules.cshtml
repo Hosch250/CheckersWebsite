@@ -1,8 +1,12 @@
-﻿<div id="rules" class="row">
+﻿@using CheckersWebsite.Enums
+
+<div id="rules" class="row">
     <div class="col-lg-2 column"></div>
     <div class="col-lg-6 column">
-        @Html.Partial("~/Views/Rules/AmericanCheckers.cshtml")
-        <hr />
-        @Html.Partial("~/Views/Rules/PoolCheckers.cshtml")
+        @foreach (var value in Enum.GetNames(typeof(Variant)))
+        {
+            @Html.Partial($"~/Views/Rules/{value}.cshtml")
+            <hr />
+        }
     </div>
 </div>

@@ -15,11 +15,41 @@ namespace CheckersWebsite.Extensions
         public static Generic.Player ConvertBack(this Player value) =>
             value == Player.Black ? Generic.Player.Black : Generic.Player.White;
 
-        public static Variant Convert(this Generic.Variant value) =>
-            value.IsAmericanCheckers ? Variant.AmericanCheckers : Variant.PoolCheckers;
+        public static Variant Convert(this Generic.Variant value)
+        {
+            if (value.IsAmericanCheckers)
+            {
+                return Variant.AmericanCheckers;
+            }
+            else if (value.IsPoolCheckers)
+            {
+                return Variant.PoolCheckers;
+            }
+            else if (value.IsAmericanCheckersOptionalJump)
+            {
+                return Variant.AmericanCheckersOptionalJump;
+            }
 
-        public static Generic.Variant ConvertBack(this Variant value) =>
-            value == Variant.AmericanCheckers ? Generic.Variant.AmericanCheckers : Generic.Variant.PoolCheckers;
+            throw new ArgumentException("Unknown variant", nameof(value));
+        }
+
+        public static Generic.Variant ConvertBack(this Variant value)
+        {
+            if (value == Variant.AmericanCheckers)
+            {
+                return Generic.Variant.AmericanCheckers;
+            }
+            else if (value == Variant.PoolCheckers)
+            {
+                return Generic.Variant.PoolCheckers;
+            }
+            else if (value == Variant.AmericanCheckersOptionalJump)
+            {
+                return Generic.Variant.AmericanCheckersOptionalJump;
+            }
+
+            throw new ArgumentException("Unknown variant", nameof(value));
+        }
 
         public static PieceType Convert(this Generic.PieceType value) =>
             Equals(value, Generic.PieceType.Checker) ? PieceType.Checker : PieceType.King;
@@ -33,13 +63,16 @@ namespace CheckersWebsite.Extensions
             {
                 return Variant.AmericanCheckers;
             }
-
-            if (gameVariant.variant.IsPoolCheckers)
+            else if (gameVariant.variant.IsPoolCheckers)
             {
                 return Variant.PoolCheckers;
             }
+            else if (gameVariant.variant.IsAmericanCheckersOptionalJump)
+            {
+                return Variant.AmericanCheckersOptionalJump;
+            }
 
-            throw new System.ArgumentException("Unknown variant", nameof(gameVariant));
+            throw new ArgumentException("Unknown variant", nameof(gameVariant));
         }
 
         public static GameVariant.GameVariant ToGameVariant(this Variant variant)
@@ -50,6 +83,8 @@ namespace CheckersWebsite.Extensions
                     return GameVariant.GameVariant.AmericanCheckers;
                 case Variant.PoolCheckers:
                     return GameVariant.GameVariant.PoolCheckers;
+                case Variant.AmericanCheckersOptionalJump:
+                    return GameVariant.GameVariant.AmericanCheckersOptionalJump;
                 default:
                     throw new System.ArgumentException(nameof(variant));
             }

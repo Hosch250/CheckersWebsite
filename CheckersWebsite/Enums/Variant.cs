@@ -3,6 +3,7 @@
     public enum Variant
     {
         AmericanCheckers,
-        PoolCheckers
+        PoolCheckers,
+        AmericanCheckersOptionalJump
     }
 }

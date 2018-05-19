@@ -55,6 +55,8 @@ namespace CheckersWebsite.Facade
                     return Checkers.GameController.GameController.newAmericanCheckersGame;
                 case Variant.PoolCheckers:
                     return Checkers.GameController.GameController.newPoolCheckersGame;
+                case Variant.AmericanCheckersOptionalJump:
+                    return Checkers.GameController.GameController.newAmericanCheckersOptionalJumpGame;
                 default:
                     throw new ArgumentException(nameof(variant));
             }

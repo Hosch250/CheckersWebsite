@@ -120,6 +120,9 @@
     <Content Update="Views\Modals\NewGameModal.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Update="Views\Rules\AmericanCheckersOptionalJump.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Update="Views\Rules\AmericanCheckers.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

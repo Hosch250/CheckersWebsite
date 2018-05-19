@@ -123,6 +123,9 @@
   <data name="AmericanCheckers" xml:space="preserve">
     <value>American Checkers</value>
   </data>
+  <data name="AmericanCheckersOptionalJump" xml:space="preserve">
+    <value>American Checkers Optional Jump</value>
+  </data>
   <data name="Black" xml:space="preserve">
     <value>Black</value>
   </data>
