@@ -17,8 +17,8 @@ namespace CheckersWebsite.Views.Controls
                 var playerID = (Guid)viewData["playerID"];
                 var orientation = (Player)viewData["orientation"];
 
-                var isCurrentPlayer = game.DisplayingLastMove && playerID == game.BlackPlayerID && game.CurrentPlayer == Player.Black || playerID == game.WhitePlayerID && game.CurrentPlayer == Player.White;
-                write($@"<div class=""board {game.CurrentPlayer} {(isCurrentPlayer ? "current-player" : "")}"" id=""{game.ID}"" orientation=""{orientation}"">");
+                var isCurrentPlayer = game.DisplayingLastMove && (playerID == game.BlackPlayerID && game.CurrentPlayer == Player.Black || playerID == game.WhitePlayerID && game.CurrentPlayer == Player.White);
+                write($@"<div class=""board {game.CurrentPlayer} {(isCurrentPlayer ? "current-player" : "")}"" id=""{game.ID}"" orientation=""{orientation}"" player=""{playerID}"">");
 
                 for (var row = 0; row < 8; row++)
                 {

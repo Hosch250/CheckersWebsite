@@ -263,7 +263,7 @@ namespace CheckersWebsite.Controllers
 
             var viewModel = game.ToGameViewModel();
             viewModel.Board.GameBoard = controller.Board.GameBoard;
-            viewModel.DisplayingLastMove = false;
+            viewModel.DisplayingLastMove = move.ID == game.Turns.Last().Moves.OrderBy(a => a.CreatedOn).Last().ID;
 
             var board = ComponentGenerator.GetBoard(viewModel, viewData).Replace("[theme]", GetThemeOrDefault().ToString());
             return Content(board);

@@ -40,6 +40,22 @@ namespace CheckersWebsite.SignalR
                 _context.Players.Update(player);
             }
             _context.SaveChanges();
+
+            var parameter = _contextAccessor.HttpContext.Request.Query["currentPage"].ToString();
+            var parts = parameter.Split('/', StringSplitOptions.RemoveEmptyEntries);
+
+            if (parts.Length == 3 && parts[0].ToLower() == "home" && parts[1].ToLower() == "game")
+            {
+                var gameID = Guid.Parse(parts[2]);
+                var game = _context.Games
+                        .Include("Turns")
+                        .Include("Turns.Moves")
+                        .FirstOrDefault(f => f.ID == gameID);
+                var viewModel = game.ToGameViewModel();
+
+                _mediator.Publish(new OnGameConnectedNotification(viewModel));
+            }
+
             return Task.CompletedTask;
         }
 
@@ -60,15 +76,6 @@ namespace CheckersWebsite.SignalR
             else if (group.Length == 3 && group[0].ToLower() == "home" && group[1].ToLower() == "game")
             {
                 Groups.AddToGroupAsync(Context.ConnectionId, group[2]);
-
-                var gameID = Guid.Parse(group[2]);
-                var game = _context.Games
-                        .Include("Turns")
-                        .Include("Turns.Moves")
-                        .FirstOrDefault(f => f.ID == gameID);
-                var viewModel = game.ToGameViewModel();
-
-                _mediator.Publish(new OnGameConnectedNotification(viewModel));
             }
 
             return Task.CompletedTask;
