@@ -1,8 +1,12 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using CheckersWebsite.Actions.GameConnectedActions;
+using CheckersWebsite.Extensions;
+using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.EntityFrameworkCore;
 
 namespace CheckersWebsite.SignalR
 {
@@ -10,11 +14,13 @@ namespace CheckersWebsite.SignalR
     {
         private readonly Database.Context _context;
         private readonly IHttpContextAccessor _contextAccessor;
+        private readonly IMediator _mediator;
 
-        public GameHub(Database.Context context, IHttpContextAccessor contextAccessor)
+        public GameHub(Database.Context context, IHttpContextAccessor contextAccessor, IMediator mediator)
         {
             _context = context;
             _contextAccessor = contextAccessor;
+            _mediator = mediator;
         }
 
         public Task MapPlayerConnection(Guid playerID)
@@ -49,11 +55,20 @@ namespace CheckersWebsite.SignalR
 
             if (parameter == "/" || parameter.ToLower() == "home")
             {
-                Groups.AddAsync(Context.ConnectionId, "home");
+                Groups.AddToGroupAsync(Context.ConnectionId, "home");
             }
             else if (group.Length == 3 && group[0].ToLower() == "home" && group[1].ToLower() == "game")
             {
-                Groups.AddAsync(Context.ConnectionId, group[2]);
+                Groups.AddToGroupAsync(Context.ConnectionId, group[2]);
+
+                var gameID = Guid.Parse(group[2]);
+                var game = _context.Games
+                        .Include("Turns")
+                        .Include("Turns.Moves")
+                        .FirstOrDefault(f => f.ID == gameID);
+                var viewModel = game.ToGameViewModel();
+
+                _mediator.Publish(new OnGameConnectedNotification(viewModel));
             }
 
             return Task.CompletedTask;

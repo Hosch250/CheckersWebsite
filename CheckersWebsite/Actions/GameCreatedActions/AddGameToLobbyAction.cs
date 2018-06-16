@@ -23,7 +23,7 @@ $@"<tr>
     <td>{Resources.Resources.ResourceManager.GetString(notification.ViewModel.GameStatus.ToString())}</td>
 </tr>";
 
-            _signalRHub.Clients.Group("home").InvokeAsync("GameCreated", lobbyEntry);
+            _signalRHub.Clients.Group("home").SendAsync("GameCreated", lobbyEntry);
             return Task.CompletedTask;
         }
     }

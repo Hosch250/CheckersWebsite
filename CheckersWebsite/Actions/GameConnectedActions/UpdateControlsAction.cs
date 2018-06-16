@@ -6,10 +6,12 @@ using MediatR;
 using System.Threading;
 using System.Threading.Tasks;
 using CheckersWebsite.MediatR;
+using System.Linq;
+using System;
 
-namespace CheckersWebsite.Actions.MoveActions
+namespace CheckersWebsite.Actions.GameConnectedActions
 {
-    public class UpdateControlsAction : INotificationHandler<OnMoveNotification>
+    public class UpdateControlsAction : INotificationHandler<OnGameConnectedNotification>
     {
         private readonly IHubContext<GameHub> _signalRHub;
         private readonly IMediator _mediator;
@@ -19,7 +21,7 @@ namespace CheckersWebsite.Actions.MoveActions
             _mediator = mediator;
         }
 
-        public Task Handle(OnMoveNotification request, CancellationToken cancellationToken)
+        public Task Handle(OnGameConnectedNotification request, CancellationToken cancellationToken)
         {
             var clients = new List<IClientProxy>();
 

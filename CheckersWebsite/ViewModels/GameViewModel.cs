@@ -15,6 +15,7 @@ namespace CheckersWebsite.ViewModels
         public int CurrentPosition { get; set; }
         public string Fen { get; set; }
         public Status GameStatus { get; set; }
+        public DateTime CreatedOn { get; set; }
 
         [JsonIgnore]
         public bool DisplayingLastMove { get; set; }

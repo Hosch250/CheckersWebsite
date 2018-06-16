@@ -5,9 +5,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using CheckersWebsite.Controllers;
 
-namespace CheckersWebsite.Actions.MoveActions
+namespace CheckersWebsite.Actions.GameConnectedActions
 {
-    public class UpdateOpponentStateAction : INotificationHandler<OnMoveNotification>
+    public class UpdateOpponentStateAction : INotificationHandler<OnGameConnectedNotification>
     {
         private readonly IHubContext<GameHub> _signalRHub;
         private readonly IMediator _mediator;
@@ -17,7 +17,7 @@ namespace CheckersWebsite.Actions.MoveActions
             _mediator = mediator;
         }
 
-        public Task Handle(OnMoveNotification request, CancellationToken cancellationToken)
+        public Task Handle(OnGameConnectedNotification request, CancellationToken cancellationToken)
         {
             var lastMoveDate = _mediator.Send(new GetLastMoveDateMessage(request.ViewModel)).Result;
             _signalRHub.Clients

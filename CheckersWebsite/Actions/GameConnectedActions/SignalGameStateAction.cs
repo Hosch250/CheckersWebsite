@@ -5,9 +5,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 
-namespace CheckersWebsite.Actions.MoveActions
+namespace CheckersWebsite.Actions.GameConnectedActions
 {
-    public class SignalGameStateAction : INotificationHandler<OnMoveNotification>
+    public class SignalGameStateAction : INotificationHandler<OnGameConnectedNotification>
     {
         private readonly IHubContext<APIHub> _signalRHub;
         public SignalGameStateAction(IHubContext<APIHub> signalRHub)
@@ -15,7 +15,7 @@ namespace CheckersWebsite.Actions.MoveActions
             _signalRHub = signalRHub;
         }
 
-        public Task Handle(OnMoveNotification request, CancellationToken cancellationToken)
+        public Task Handle(OnGameConnectedNotification request, CancellationToken cancellationToken)
         {
             var data = JsonConvert.SerializeObject(request.ViewModel);
             _signalRHub.Clients.All.SendAsync("GameChanged", data);

@@ -10,7 +10,12 @@ namespace CheckersWebsite.Controllers
     {
         public Task<DateTime> Handle(GetLastMoveDateMessage request, CancellationToken cancellationToken)
         {
-            var lastTurn = request.ViewModel.Turns.Last();
+            var lastTurn = request.ViewModel.Turns.LastOrDefault();
+            if (lastTurn == null)
+            {
+                return Task.FromResult(request.ViewModel.CreatedOn);
+            }
+
             DateTime lastMoveDate;
             if (lastTurn.BlackMove == null)
             {

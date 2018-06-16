@@ -24,7 +24,7 @@ namespace CheckersWebsite.Actions.MoveActions
 
             _signalRHub.Clients
                 .Group(request.ViewModel.ID.ToString())
-                .InvokeAsync("UpdateMoves", request.ViewModel.ID, lastMoveDate, ComponentGenerator.GetMoveControl(request.ViewModel.Turns));
+                .SendAsync("UpdateMoves", request.ViewModel.ID, lastMoveDate, ComponentGenerator.GetMoveControl(request.ViewModel.Turns));
             return Task.CompletedTask;
         }
     }

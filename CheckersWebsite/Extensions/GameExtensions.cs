@@ -93,6 +93,7 @@ namespace CheckersWebsite.Extensions
                 DisplayingLastMove = true,
                 Fen = game.Fen,
                 GameStatus = (Status)game.GameStatus,
+                CreatedOn = game.CreatedOn,
                 ID = game.ID,
                 InitialPosition = game.InitialPosition,
                 Turns = game.Turns?.Select(s => s.ToPdnTurnViewModel()).ToList() ?? new List<PdnTurnViewModel>(),

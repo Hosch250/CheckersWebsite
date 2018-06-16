@@ -314,7 +314,7 @@ namespace CheckersWebsite.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                _signalRHub.Clients.All.InvokeAsync("AddClass", "join", "hide");
+                _signalRHub.Clients.All.SendAsync("AddClass", "join", "hide");
 
                 Response.StatusCode = 403;
                 return Content(Resources.Resources.GameJoined);

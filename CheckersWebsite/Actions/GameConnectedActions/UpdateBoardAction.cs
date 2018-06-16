@@ -10,9 +10,9 @@ using System.Threading.Tasks;
 using CheckersWebsite.Controllers;
 using System.Linq;
 
-namespace CheckersWebsite.Actions.MoveActions
+namespace CheckersWebsite.Actions.GameConnectedActions
 {
-    public class UpdateBoardAction : INotificationHandler<OnMoveNotification>
+    public class UpdateBoardAction : INotificationHandler<OnGameConnectedNotification>
     {
         private readonly IHubContext<GameHub> _signalRHub;
         private readonly Database.Context _context;
@@ -38,7 +38,7 @@ namespace CheckersWebsite.Actions.MoveActions
             };
         }
 
-        public Task Handle(OnMoveNotification request, CancellationToken cancellationToken)
+        public Task Handle(OnGameConnectedNotification request, CancellationToken cancellationToken)
         {
             var lastMoveDate = _mediator.Send(new GetLastMoveDateMessage(request.ViewModel)).Result;
 

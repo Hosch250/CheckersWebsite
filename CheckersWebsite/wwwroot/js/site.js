@@ -175,8 +175,9 @@ function updateBoardEditor() {
 }
 var signalRConnection;
 function connectToSignalR() {
-    var httpConnection = new signalR.HttpConnection("/gameHub?currentPage=" + location.pathname);
-    signalRConnection = new signalR.HubConnection(httpConnection);
+    var signalRConnection = new signalR.HubConnectionBuilder()
+        .withUrl("/gameHub?currentPage=" + location.pathname)
+        .build();
     var lastBoardUpdateTime = new Date();
     signalRConnection.on('UpdateBoard', function (id, moveDate, blackBoard, whiteBoard) {
         if ($('.board').attr('id').toLowerCase() === id.toLowerCase() && lastBoardUpdateTime < new Date(moveDate)) {

@@ -28,9 +28,9 @@ namespace CheckersWebsite.Actions.GameCompletedActions
 
             foreach (var client in clients)
             {
-                client.InvokeAsync("SetAttribute", "undo", "disabled", "");
-                client.InvokeAsync("RemoveClass", "new-game", "hide");
-                client.InvokeAsync("AddClass", "resign", "hide");
+                client.SendAsync("SetAttribute", "undo", "disabled", "");
+                client.SendAsync("RemoveClass", "new-game", "hide");
+                client.SendAsync("AddClass", "resign", "hide");
             }
 
             return Task.CompletedTask;

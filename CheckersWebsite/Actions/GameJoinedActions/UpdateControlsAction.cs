@@ -21,11 +21,11 @@ namespace CheckersWebsite.Actions.GameJoinedActions
 
         public Task Handle(OnGameJoinedNotification notification, CancellationToken cancellationToken)
         {
-            _signalRHub.Clients.All.InvokeAsync("AddClass", "join", "hide");
-            _signalRHub.Clients.Client(_mediator.Send(new GetClientConnectionMessage(notification.CurrentPlayerID)).Result).InvokeAsync("AddClass", notification.ViewModel.BlackPlayerID == notification.CurrentPlayerID ? "black-player-text" : "white-player-text", "bold");
+            _signalRHub.Clients.All.SendAsync("AddClass", "join", "hide");
+            _signalRHub.Clients.Client(_mediator.Send(new GetClientConnectionMessage(notification.CurrentPlayerID)).Result).SendAsync("AddClass", notification.ViewModel.BlackPlayerID == notification.CurrentPlayerID ? "black-player-text" : "white-player-text", "bold");
 
-            _signalRHub.Clients.Client(_mediator.Send(new GetClientConnectionMessage(notification.CurrentPlayerID)).Result).InvokeAsync("AddClass", "new-game", "hide");
-            _signalRHub.Clients.Client(_mediator.Send(new GetClientConnectionMessage(notification.CurrentPlayerID)).Result).InvokeAsync("RemoveClass", "resign", "hide");
+            _signalRHub.Clients.Client(_mediator.Send(new GetClientConnectionMessage(notification.CurrentPlayerID)).Result).SendAsync("AddClass", "new-game", "hide");
+            _signalRHub.Clients.Client(_mediator.Send(new GetClientConnectionMessage(notification.CurrentPlayerID)).Result).SendAsync("RemoveClass", "resign", "hide");
 
             var clients = new List<IClientProxy>
             {
@@ -35,8 +35,8 @@ namespace CheckersWebsite.Actions.GameJoinedActions
 
             foreach (var client in clients)
             {
-                client.InvokeAsync("SetAttribute", "resign", "title", "Resign");
-                client.InvokeAsync("SetHtml", "#resign .sr-only", "Resign");
+                client.SendAsync("SetAttribute", "resign", "title", "Resign");
+                client.SendAsync("SetHtml", "#resign .sr-only", "Resign");
             }
 
             return Task.CompletedTask;

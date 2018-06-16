@@ -17,7 +17,7 @@ namespace CheckersWebsite.Actions.GameJoinedActions
 
         public Task Handle(OnGameJoinedNotification notification, CancellationToken cancellationToken)
         {
-            _signalRHub.Clients.Group("home").InvokeAsync("GameJoined", notification.ViewModel.ID);
+            _signalRHub.Clients.Group("home").SendAsync("GameJoined", notification.ViewModel.ID);
             return Task.CompletedTask;
         }
     }
