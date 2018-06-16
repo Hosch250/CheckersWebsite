@@ -3,6 +3,7 @@ using CheckersWebsite.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace CheckersWebsite.Views.Controls
 {
@@ -70,13 +71,14 @@ namespace CheckersWebsite.Views.Controls
                 {
                     write("<li>");
 
-                    write($@"<input id=""{turn.BlackMove?.ID}"" class=""toggle"" name=""move"" type=""radio"" value=""{turn.BlackMove?.DisplayString}"" />");
-                    write($@"<label for=""{turn.BlackMove?.ID}"" onclick=""displayGame('{turn.BlackMove?.ID}')"">{turn.BlackMove?.DisplayString}</label>");
+
+                    write($@"<input id=""{turn.BlackMove?.ID}"" class=""toggle"" name=""move"" type=""radio"" value=""{GetDisplayString(turn.BlackMove)}"" />");
+                    write($@"<label for=""{turn.BlackMove?.ID}"" onclick=""displayGame('{turn.BlackMove?.ID}')"">{GetDisplayString(turn.BlackMove)}</label>");
 
                     if (turn.WhiteMove != null)
                     {
-                        write($@"<input id=""{turn.WhiteMove?.ID}"" class=""toggle"" name=""move"" type=""radio"" value=""{turn.WhiteMove?.DisplayString}"" />");
-                        write($@"<label for=""{turn.WhiteMove?.ID}"" onclick=""displayGame('{turn.WhiteMove?.ID}')"">{turn.WhiteMove?.DisplayString}</label>");
+                        write($@"<input id=""{turn.WhiteMove?.ID}"" class=""toggle"" name=""move"" type=""radio"" value=""{GetDisplayString(turn.WhiteMove)}"" />");
+                        write($@"<label for=""{turn.WhiteMove?.ID}"" onclick=""displayGame('{turn.WhiteMove?.ID}')"">{GetDisplayString(turn.WhiteMove)}</label>");
                     }
 
                     write("</li>");
@@ -86,6 +88,18 @@ namespace CheckersWebsite.Views.Controls
 
                 stringWriter.Flush();
                 return stringWriter.ToString();
+
+                string GetDisplayString(PdnMoveViewModel move)
+                {
+                    if (move == null)
+                    {
+                        return string.Empty;
+                    }
+
+                    var squares = move.Move.Split(',');
+
+                    return squares.Length <= 3 ? move.DisplayString : squares.First() + "&hellip;" + squares.Last();
+                }
             }
         }
     }
