@@ -861,6 +861,11 @@ function connectToSignalR() {
     signalRConnection.on('UpdateBoard', function (id, moveDate, blackBoard, whiteBoard) {
         if ($('.board').attr('id').toLowerCase() === id.toLowerCase() && lastBoardUpdateTime < new Date(moveDate)) {
             var theme = getCookie('theme') || 'Steel';
+            var enableAudio = getCookie('enableAudio') || 'true';
+            if (enableAudio === 'true') {
+                var audio = new Audio("/images/" + theme + "Theme/CheckerClick.mp3");
+                audio.play();
+            }
             switch ($('.board').attr('orientation').toLowerCase()) {
                 case "black":
                     $('.board')[0].outerHTML = blackBoard.replace(/\[theme\]/g, theme);

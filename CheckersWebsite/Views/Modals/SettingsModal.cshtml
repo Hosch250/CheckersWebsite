@@ -22,6 +22,12 @@
                         ),
                         new { @class = "select form-control", id = "theme" })
                 </div>
+                <div class="bold">
+                    <span>Audio</span>
+                </div>
+                <div class="checkbox">
+                    <label for="enableAudio">@Html.CheckBox("enableAudio", true) Enable Audio</label>
+                </div>
             </div>
             <div class="modal-footer">
                 <button id="settings-save" type="button" data-dismiss="modal" class="btn btn-primary">Save</button>
@@ -33,12 +39,19 @@
 <script>
     $(function () {
         $('#settings-save').click(function () {
+            var oldTheme = getCookie('theme') || 'Steel';
+
             document.cookie = `theme=${$('#theme').val()};path=/`;
-            location.reload();
+            document.cookie = `enableAudio=${$('#enableAudio').is(':checked')};path=/`;
+
+            if (getCookie('theme') !== oldTheme) {
+                location.reload();
+            }
         });
 
         $('#settings-modal').on('show.bs.modal', function (e) {
             $('#theme').val(getCookie('theme') || 'Steel');
+            $('#enableAudio').val(getCookie('enableAudio') || true);
         });
     });
 </script>
