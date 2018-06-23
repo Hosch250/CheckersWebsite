@@ -221,7 +221,7 @@ namespace CheckersWebsite.Controllers
                 return Content("");
             }
 
-            if (game.BlackPlayerID == Guid.Empty || game.WhitePlayerID == Guid.Empty)
+            if (game.BlackPlayerID == Guid.Empty || game.WhitePlayerID == Guid.Empty || game.Turns == null)
             {
                 game.GameStatus = (int)Status.Aborted;
             }
