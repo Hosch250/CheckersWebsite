@@ -45,8 +45,8 @@ button.btn-link {
 }
 
 .ctrl-button {
-    width: 60px;
-    height: 60px;
+    width: 50px;
+    height: 50px;
 }
 
 .center-col,
@@ -56,7 +56,7 @@ button.btn-link {
 }
 
 ol.moves {
-    font-size: 20px;
+    font-size: 16px;
     overflow-y: auto;
     margin-bottom: 0;
 }
@@ -89,7 +89,7 @@ input[type="radio"].toggle + label {
     margin: 0;
     padding: 5px;
     font-weight: normal;
-    margin-right: -5px;
+    margin-right: 5px;
     width: 40%;
 }
 
@@ -268,6 +268,42 @@ input[type="radio"].toggle:checked + label {
     background: whitesmoke;
     border-radius: 20px;
     padding: 10px 10px 10px 20px;
+}
+
+.right-column {
+    padding: 0;
+}
+
+.chat-column {
+    margin-top: 10px;
+    background: whitesmoke;
+    border-radius: 20px;
+    padding: 10px 10px 10px 20px;
+}
+
+#chat .header {
+    font-size: 16px;
+}
+
+#chat .row {
+    margin-bottom: -10px;
+    margin-left: -20px;
+    padding-right: 4px;
+}
+
+#chat #chat-form {
+    display: grid;
+    grid-template-columns: auto 33px;
+    margin-bottom: -1px;
+    width: 100%;
+}
+
+#chat-send {
+    margin: -1px 0 -1px -2px;
+}
+
+#chat-send span {
+    padding: 3px 0;
 }
 
 .template-piece:focus,

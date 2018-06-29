@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using CheckersWebsite.Actions.GameConnectedActions;
+using CheckersWebsite.Controllers;
 using CheckersWebsite.Extensions;
 using MediatR;
 using Microsoft.AspNetCore.Http;
@@ -21,6 +22,21 @@ namespace CheckersWebsite.SignalR
             _context = context;
             _contextAccessor = contextAccessor;
             _mediator = mediator;
+        }
+        
+        private string GetClientConnection(Guid id)
+        {
+            return _context.Players.FirstOrDefault(f => f.ID == id)?.ConnectionID;
+        }
+
+        private Guid? GetPlayerID()
+        {
+            if (_contextAccessor.HttpContext.Request.Cookies.TryGetValue("playerID", out var id))
+            {
+                return Guid.Parse(id);
+            }
+
+            return null;
         }
 
         public Task MapPlayerConnection(Guid playerID)
@@ -62,6 +78,39 @@ namespace CheckersWebsite.SignalR
         public Task<Guid> GetNewPlayerID()
         {
             return Task.FromResult(Guid.NewGuid());
+        }
+        
+        public void NewMessage(Guid gameID, string message)
+        {
+            var game = _context.Games.FirstOrDefault(f => f.ID == gameID);
+            var playerID = GetPlayerID();
+
+            if (game == null || playerID == null)
+            {
+                return;
+            }
+
+            var blackConnection = GetClientConnection(game.BlackPlayerID);
+            var whiteConnection = GetClientConnection(game.WhitePlayerID);
+
+            if (Context.ConnectionId == blackConnection || Context.ConnectionId == whiteConnection)
+            {
+                var player = blackConnection == Context.ConnectionId ? Resources.Resources.Black : Resources.Resources.White;
+
+                if (game.BlackPlayerID != ComputerPlayer.ComputerPlayerID && blackConnection != null)
+                {
+                    Clients.Client(blackConnection).SendAsync("ReceiveChatMessage", player + Resources.Resources.Player, message);
+                }
+
+                if (game.WhitePlayerID != ComputerPlayer.ComputerPlayerID && whiteConnection != null)
+                {
+                    Clients.Client(whiteConnection).SendAsync("ReceiveChatMessage", player + Resources.Resources.Player, message);
+                }
+            }
+            else
+            {
+                Clients.GroupExcept(game.ID.ToString(), blackConnection, whiteConnection).SendAsync("ReceiveChatMessage", "Spectator", message);
+            }
         }
 
         public override Task OnConnectedAsync()

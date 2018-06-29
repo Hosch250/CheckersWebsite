@@ -183,6 +183,9 @@
   <data name="Plastic" xml:space="preserve">
     <value>Plastic</value>
   </data>
+  <data name="Player" xml:space="preserve">
+    <value>Player</value>
+  </data>
   <data name="PoolCheckers" xml:space="preserve">
     <value>Pool Checkers</value>
   </data>

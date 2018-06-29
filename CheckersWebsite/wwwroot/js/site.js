@@ -251,6 +251,10 @@ function connectToSignalR() {
     signalRConnection.on('GameJoined', function (id) {
         $("[href=\"~/Home/Game/" + id + "\"").closest('tr').remove();
     });
+    signalRConnection.on('ReceiveChatMessage', function (playerName, message) {
+        var formattedMessage = "<div><span class=\"bold\">" + playerName + ":</span> <span>" + message + "</span></div>";
+        $(".chat-content").append(formattedMessage);
+    });
     signalRConnection.start().then(function () {
         var playerID = getCookie('playerID');
         if (playerID === '') {
@@ -262,6 +266,15 @@ function connectToSignalR() {
         else {
             signalRConnection.invoke('MapPlayerConnection', playerID);
         }
+        $('#message').keydown(function (e) {
+            if (e.keyCode === 13) {
+                $('#chat-form').submit();
+            }
+        });
+        $('#chat-send').on('click', function () {
+            signalRConnection.invoke('NewMessage', $('.board').attr('id'), $('#message').val());
+            return false;
+        });
     });
 }
 connectToSignalR();
