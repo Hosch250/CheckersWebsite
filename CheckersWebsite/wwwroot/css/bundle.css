@@ -7041,6 +7041,8 @@ input[type="radio"].toggle:checked + label {
 
 #chat .header {
     font-size: 16px;
+    border-bottom: 1px solid grey;
+    margin-right: 10px;
 }
 
 #chat .row {

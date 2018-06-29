@@ -186,8 +186,14 @@
   <data name="Player" xml:space="preserve">
     <value>Player</value>
   </data>
+  <data name="PlayerChat" xml:space="preserve">
+    <value>Player Chat</value>
+  </data>
   <data name="PoolCheckers" xml:space="preserve">
     <value>Pool Checkers</value>
+  </data>
+  <data name="SpectatorChat" xml:space="preserve">
+    <value>Spectator Chat</value>
   </data>
   <data name="Steel" xml:space="preserve">
     <value>Steel</value>

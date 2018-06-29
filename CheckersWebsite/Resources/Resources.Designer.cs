@@ -268,11 +268,29 @@ namespace CheckersWebsite.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Player Chat.
+        /// </summary>
+        public static string PlayerChat {
+            get {
+                return ResourceManager.GetString("PlayerChat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Pool Checkers.
         /// </summary>
         public static string PoolCheckers {
             get {
                 return ResourceManager.GetString("PoolCheckers", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Spectator Chat.
+        /// </summary>
+        public static string SpectatorChat {
+            get {
+                return ResourceManager.GetString("SpectatorChat", resourceCulture);
             }
         }
         

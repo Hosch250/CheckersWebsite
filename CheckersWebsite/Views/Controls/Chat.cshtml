@@ -1,7 +1,14 @@
-﻿@model Guid
+﻿@using CheckersWebsite.ViewModels
+@using CheckersWebsite.Resources
+@model GameViewModel
+
+@{
+    var playerID = (Guid)ViewData["playerID"];
+    var playerIDs = new[] { Model.BlackPlayerID, Model.WhitePlayerID };
+}
 
 <div id="chat">
-    <span class="header bold">Chat</span>
+    <div class="header bold">@(playerIDs.Contains(playerID) ? Resources.PlayerChat : Resources.SpectatorChat)</div>
     <div class="chat-content"></div>
     <div class="row">
         <div id="chat-form">
