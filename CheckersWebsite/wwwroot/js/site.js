@@ -268,11 +268,12 @@ function connectToSignalR() {
         }
         $('#message').keydown(function (e) {
             if (e.keyCode === 13) {
-                $('#chat-form').submit();
+                $('#chat-send').click();
             }
         });
         $('#chat-send').on('click', function () {
             signalRConnection.invoke('NewMessage', $('.board').attr('id'), $('#message').val());
+            $('#message').val('');
             return false;
         });
     });
