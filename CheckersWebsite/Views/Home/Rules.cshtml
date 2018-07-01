@@ -1,8 +1,8 @@
 ﻿@using CheckersWebsite.Enums
 
 <div id="rules" class="row">
-    <div class="col-lg-2 column"></div>
-    <div class="col-lg-6 column">
+    <div class="col-lg-3 column"></div>
+    <div class="col-lg-6 center-col column">
         @foreach (var value in Enum.GetNames(typeof(Variant)))
         {
             @Html.Partial($"~/Views/Rules/{value}.cshtml")

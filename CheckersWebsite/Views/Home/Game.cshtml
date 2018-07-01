@@ -12,31 +12,18 @@
 }
 
 <div class="row">
-    <div class="col-lg-2 column"></div>
+    <div class="col-lg-3 column"></div>
     <div class="col-lg-6 column center-col">
         <button id="join" class="btn btn-alert @(blackPlayerID == playerID || whitePlayerID == playerID || blackPlayerID != Guid.Empty && whitePlayerID != Guid.Empty ? "hide" : "")" onclick="joinGame()" title="Join">Join</button>
     </div>
 </div>
 <div class="row">
-    <div class="col-lg-2 column move-history match-height-game-control">
-        @Html.Raw(ComponentGenerator.GetMoveControl(Model.Turns))
-        <div class="controls">
-            <button id="undo" class="ctrl-button btn btn-default @(Model.BlackPlayerID == ComputerPlayer.ComputerPlayerID || Model.WhitePlayerID == ComputerPlayer.ComputerPlayerID ? "hide" : "")" onclick="undo()" title="Undo" disabled="">
-                <span class="glyphicon glyphicon-share-alt"></span>
-                <span class="sr-only">Undo</span>
-            </button>
-            <a id="new-game" class="ctrl-button btn btn-default @(Model.ID == Guid.Empty || Model.GameStatus != Status.InProgress || (blackPlayerID != playerID && whitePlayerID != playerID) ? "" : "hide")" data-toggle="modal" data-target="#create-game-modal" title="Create Game">
-                <span class="glyphicon glyphicon-plus"></span>
-                <span class="sr-only">Create Game</span>
-            </a>
-            <button id="resign" class="ctrl-button btn btn-default @(Model.ID == Guid.Empty || Model.GameStatus != Status.InProgress || (blackPlayerID != playerID && whitePlayerID != playerID) ? "hide" : "")" onclick="resign()" title="@(blackPlayerID == Guid.Empty || whitePlayerID == Guid.Empty ? "Abort" : "Resign")">
-                <span class="glyphicon glyphicon-remove"></span>
-                <span class="sr-only">@(blackPlayerID == Guid.Empty || whitePlayerID == Guid.Empty ? "Abort" : "Resign")</span>
-            </button>
-            <button id="flip-orientation" class="ctrl-button btn btn-default" onclick="flip()" title="Flip Orientation">
-                <span class="glyphicon glyphicon-retweet"></span>
-                <span class="sr-only">Flip Orientation</span>
-            </button>
+    <div class="col-lg-3 column right-column">
+        <div class="opponent-column">
+            @Html.Partial("~/Views/Controls/Opponents.cshtml", Model)
+        </div>
+        <div class="chat-column">
+            @Html.Partial("~/Views/Controls/Chat.cshtml", Model)
         </div>
     </div>
     <div class="col-lg-6 column center-col match-height-game-control board-col">
@@ -63,12 +50,25 @@
         <div id="alert"></div>
         @Html.Raw(ComponentGenerator.GetBoard(Model, ViewData.ToDictionary(a => a.Key, a => a.Value)).Replace("[theme]", theme.ToString()))
     </div>
-    <div class="col-lg-3 column right-column">
-        <div class="opponent-column">
-            @Html.Partial("~/Views/Controls/Opponents.cshtml", Model)
-        </div>
-        <div class="chat-column">
-            @Html.Partial("~/Views/Controls/Chat.cshtml", Model)
+    <div class="col-lg-3 column move-history match-height-game-control">
+        @Html.Raw(ComponentGenerator.GetMoveControl(Model.Turns))
+        <div class="controls">
+            <button id="undo" class="ctrl-button btn btn-default @(Model.BlackPlayerID == ComputerPlayer.ComputerPlayerID || Model.WhitePlayerID == ComputerPlayer.ComputerPlayerID ? "hide" : "")" onclick="undo()" title="Undo" disabled="">
+                <span class="glyphicon glyphicon-share-alt"></span>
+                <span class="sr-only">Undo</span>
+            </button>
+            <a id="new-game" class="ctrl-button btn btn-default @(Model.ID == Guid.Empty || Model.GameStatus != Status.InProgress || (blackPlayerID != playerID && whitePlayerID != playerID) ? "" : "hide")" data-toggle="modal" data-target="#create-game-modal" title="Create Game">
+                <span class="glyphicon glyphicon-plus"></span>
+                <span class="sr-only">Create Game</span>
+            </a>
+            <button id="resign" class="ctrl-button btn btn-default @(Model.ID == Guid.Empty || Model.GameStatus != Status.InProgress || (blackPlayerID != playerID && whitePlayerID != playerID) ? "hide" : "")" onclick="resign()" title="@(blackPlayerID == Guid.Empty || whitePlayerID == Guid.Empty ? "Abort" : "Resign")">
+                <span class="glyphicon glyphicon-remove"></span>
+                <span class="sr-only">@(blackPlayerID == Guid.Empty || whitePlayerID == Guid.Empty ? "Abort" : "Resign")</span>
+            </button>
+            <button id="flip-orientation" class="ctrl-button btn btn-default" onclick="flip()" title="Flip Orientation">
+                <span class="glyphicon glyphicon-retweet"></span>
+                <span class="sr-only">Flip Orientation</span>
+            </button>
         </div>
     </div>
 </div>

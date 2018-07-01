@@ -6820,11 +6820,7 @@ ol.moves {
 }
 
 .column {
-    margin: 0 7.5px;
-}
-
-nav .column {
-    padding: 0;
+    padding: 0 7.5px;
 }
 
 .move-history {
@@ -6867,10 +6863,6 @@ input[type="radio"].toggle:checked + label {
 .player-to-move {
     margin-top: 0;
     text-align: center;
-}
-
-.game-list-col {
-    padding: 0;
 }
 
 .game-list-col div {
@@ -6929,10 +6921,6 @@ input[type="radio"].toggle:checked + label {
     border-color: darkslategrey;
 }
 
-#rules div {
-    padding: 0;
-}
-
 #position {
     grid-template-columns: 50px auto;
     display: grid;
@@ -6959,7 +6947,6 @@ input[type="radio"].toggle:checked + label {
     padding-top: 8px;
     padding-bottom: 8px;
     margin-left: 7px;
-    margin-right: 7px;
 }
 
 .piece-col img {
@@ -6974,7 +6961,6 @@ input[type="radio"].toggle:checked + label {
         grid-template-rows: auto auto auto auto;
         grid-template-columns: auto;
         margin-left: 0px;
-        margin-right: 15px;
     }
 }
 
