@@ -23,6 +23,8 @@ namespace Database
         public int BlackPlayerStrength { get; set; }
         public int WhitePlayerStrength { get; set; }
 
+        public bool IsBotGame { get; set; }
+
         [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         public DateTime CreatedOn { get; set; }
 

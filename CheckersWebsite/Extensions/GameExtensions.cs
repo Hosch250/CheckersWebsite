@@ -96,6 +96,7 @@ namespace CheckersWebsite.Extensions
                 CreatedOn = game.CreatedOn,
                 ID = game.ID,
                 InitialPosition = game.InitialPosition,
+                IsBotGame = game.IsBotGame,
                 Turns = game.Turns?.Select(s => s.ToPdnTurnViewModel()).ToList() ?? new List<PdnTurnViewModel>(),
                 Variant = (Variant)game.Variant,
                 WhitePlayerID = game.WhitePlayerID,

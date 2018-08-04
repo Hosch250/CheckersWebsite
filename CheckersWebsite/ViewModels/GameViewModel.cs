@@ -18,6 +18,9 @@ namespace CheckersWebsite.ViewModels
         public DateTime CreatedOn { get; set; }
 
         [JsonIgnore]
+        public bool IsBotGame { get; set; }
+
+        [JsonIgnore]
         public bool DisplayingLastMove { get; set; }
 
         public Guid BlackPlayerID { get; set; }

@@ -133,6 +133,7 @@ namespace CheckersWebsite.Controllers
             _context.SaveChanges();
 
             var viewModel = game.ToGameViewModel();
+            _mediator.Publish(new OnBotMoveNotification(viewModel)).Wait();
             _mediator.Publish(new OnMoveNotification(viewModel)).Wait();
             
             return Content("");
@@ -199,7 +200,9 @@ namespace CheckersWebsite.Controllers
             game.RowVersion = DateTime.Now;
             _context.SaveChanges();
 
-            _mediator.Publish(new OnMoveNotification(game.ToGameViewModel())).Wait();
+            var viewModel = game.ToGameViewModel();
+            _mediator.Publish(new OnBotMoveNotification(viewModel)).Wait();
+            _mediator.Publish(new OnMoveNotification(viewModel)).Wait();
             return Content("");
         }
 
