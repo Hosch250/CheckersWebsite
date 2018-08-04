@@ -7058,6 +7058,7 @@ input[type="radio"].toggle:checked + label {
 
 #chat .chat-content>div {
     margin-bottom: 2px;
+    word-wrap: break-word;
 }
 
 .template-piece:focus,
