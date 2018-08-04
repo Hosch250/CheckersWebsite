@@ -109,7 +109,7 @@ namespace CheckersWebsite.Controllers
             return View(game.ToGameViewModel());
         }
 
-        public ActionResult NewGame(Variant variant, Opponent blackOpponent, Opponent whiteOpponent, int blackStrength, int whiteStrength, string fen)
+        public ActionResult NewGame(Variant variant, Opponent blackOpponent, Opponent whiteOpponent, int blackStrength, int whiteStrength, string fen, bool isBotGame = false)
         {
             if (blackOpponent == Opponent.Computer && whiteOpponent == Opponent.Computer)
             {
@@ -142,6 +142,8 @@ namespace CheckersWebsite.Controllers
 
             newGame.BlackPlayerStrength = -1;
             newGame.WhitePlayerStrength = -1;
+
+            newGame.IsBotGame = isBotGame;
 
             if (blackOpponent == Opponent.Human && whiteOpponent == Opponent.Human)
             {
