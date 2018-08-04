@@ -1,6 +1,8 @@
 ﻿/// <reference path="../Scripts/typings/jquery/jquery.d.ts"/>
 
 declare var signalR: any;
+declare function returnTrue(): boolean;
+declare function returnFalse(): boolean;
 
 class Coord {
     public constructor(public Row: number, public Col: number) {

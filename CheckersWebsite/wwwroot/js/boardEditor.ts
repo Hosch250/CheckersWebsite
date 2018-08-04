@@ -10,7 +10,7 @@ var boardEditorGrabClientCoords = null;
 function boardEditorInit() {
     if ($('.board-editor').length === 1) {
         $('*').on('mousedown', boardEditorGrab);
-        $('*').on('keydown', boardEditorKeyPress);
+        $('.board-editor *').on('keydown', boardEditorKeyPress);
         $('*').on('dragend', boardEditorDrop);
         $('*').on('mouseup', boardEditorDrop);
         $('*').on('click', boardEditorClick);

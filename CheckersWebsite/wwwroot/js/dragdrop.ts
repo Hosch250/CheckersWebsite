@@ -10,7 +10,7 @@ var GameGrabClientCoords = null;
 function GameInit() {
     if ($('.board-col').length === 1) {
         $('*').on('mousedown', GameGrab);
-        $('*').on('keydown', GameKeyPress);
+        $('.board *').on('keydown', GameKeyPress);
         $('*').on('dragend', GameDrop);
         $('*').on('mouseup', GameDrop);
         $('*').on('click', GameClick);

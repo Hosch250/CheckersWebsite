@@ -33,7 +33,7 @@ button.btn-link {
 .glyphicon-plus {
     top: 0;
     bottom: 0;
-    padding: 16px 0 14.25px 0;
+    padding: 11px 0 14.25px 0;
 }
 
 .home-page-create .glyphicon-plus {
@@ -264,19 +264,18 @@ input[type="radio"].toggle:checked + label {
     margin-top: 10px;
     background: whitesmoke;
     border-radius: 20px;
-    padding: 10px 10px 10px 20px;
 }
 
 #chat .header {
     font-size: 16px;
     border-bottom: 1px solid grey;
-    margin-right: 10px;
+    padding: 10px 10px 10px 20px;
 }
 
 #chat .row {
     margin-bottom: -10px;
     margin-left: -20px;
-    padding-right: 4px;
+    padding: 0 14px 0 20px;
 }
 
 #chat #chat-form {
@@ -294,8 +293,17 @@ input[type="radio"].toggle:checked + label {
     padding: 3px 0;
 }
 
+#chat .chat-content {
+    padding: 10px 10px 16px 20px;
+    overflow-y: auto;
+}
+
+#chat .chat-content>div {
+    margin-bottom: 2px;
+}
+
 .template-piece:focus,
 .piece:focus,
 .square:focus {
     border: 5px solid lightblue;
-}                       
+}
