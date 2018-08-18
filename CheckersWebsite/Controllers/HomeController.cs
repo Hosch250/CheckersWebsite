@@ -23,16 +23,19 @@ namespace CheckersWebsite.Controllers
         private readonly IHubContext<GameHub> _signalRHub;
         private readonly ComputerPlayer _computerPlayer;
         private readonly IMediator _mediator;
+        private readonly BoardController _boardController;
 
         public HomeController(Database.Context context,
             IHubContext<GameHub> signalRHub,
             ComputerPlayer computerPlayer,
-            IMediator mediator)
+            IMediator mediator,
+            BoardController boardController)
         {
             _context = context;
             _signalRHub = signalRHub;
             _computerPlayer = computerPlayer;
             _mediator = mediator;
+            this._boardController = boardController;
         }
 
         private Guid? GetPlayerID()
@@ -115,6 +118,15 @@ namespace CheckersWebsite.Controllers
             {
                 Response.StatusCode = 403;
                 return Redirect("/");
+            }
+
+            if (isBotGame)
+            {
+                var game = _context.Games.FirstOrDefault(f => f.IsBotGame && (f.WhitePlayerID == Guid.Empty || f.BlackPlayerID == Guid.Empty));
+                if (game != null)
+                {
+                    return _boardController.Join(game.ID);
+                }
             }
 
             var playerID = GetPlayerID().Value;
