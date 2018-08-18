@@ -38,6 +38,8 @@ namespace CheckersWebsite
 
             services.AddTransient<ComputerPlayer, ComputerPlayer>();
 
+            services.AddTransient<BoardController, BoardController>();
+
             services.AddSignalR();
         }
 
